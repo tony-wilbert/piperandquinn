@@ -1,15 +1,14 @@
-Transpilation complete!
-Output: 49190 bytes
-( 469 / ) 469 ✓
-{ 305 / } 305 ✓
-[ 50 / ] 50 ✓
-No remaining JSX ✓
- initial-scale=1.0">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Piper & Quinn — Fashion by Sisters</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/@elevenlabs/convai-widget-embed" async type="text/javascript"></script>
   <style>
     * {
       font-family: 'Jost', 'system-ui', 'sans-serif';
@@ -716,6 +715,178 @@ No remaining JSX ✓
         padding: 1.5rem;
       }
     }
+
+    .crew-section {
+      background: #fafaf5;
+      padding: 5rem 2rem;
+      text-align: center;
+    }
+
+    .crew-title {
+      font-size: 2rem;
+      font-weight: 300;
+      letter-spacing: 1px;
+      text-transform: lowercase;
+      margin-bottom: 0.75rem;
+    }
+
+    .crew-subtitle {
+      font-size: 0.95rem;
+      color: #666;
+      font-weight: 400;
+      margin-bottom: 3rem;
+      letter-spacing: 0.3px;
+    }
+
+    .crew-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 1.5rem;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .crew-card {
+      background: white;
+      border-radius: 16px;
+      padding: 1.75rem 1rem 1.25rem;
+      cursor: pointer;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      border: 2px solid transparent;
+    }
+
+    .crew-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+    }
+
+    .crew-card.active {
+      border-color: var(--card-accent, #6DC067);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    }
+
+    .crew-avatar {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      margin: 0 auto 1rem;
+      overflow: hidden;
+      border: 3px solid #f0f0e8;
+    }
+
+    .crew-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top;
+    }
+
+    .crew-avatar-initials {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: white;
+    }
+
+    .crew-name {
+      font-size: 0.95rem;
+      font-weight: 600;
+      text-transform: lowercase;
+      letter-spacing: 0.3px;
+      margin-bottom: 0.2rem;
+    }
+
+    .crew-role {
+      font-size: 0.7rem;
+      color: #888;
+      text-transform: lowercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.75rem;
+      line-height: 1.3;
+    }
+
+    .crew-talk-btn {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      text-transform: lowercase;
+      padding: 6px 14px;
+      border-radius: 20px;
+      border: none;
+      cursor: pointer;
+      transition: opacity 0.2s ease;
+      font-family: 'Jost', sans-serif;
+    }
+
+    .crew-talk-btn:hover {
+      opacity: 0.85;
+    }
+
+    .crew-chat-hint {
+      margin-top: 2.5rem;
+      font-size: 0.85rem;
+      color: #999;
+      font-weight: 400;
+      letter-spacing: 0.3px;
+    }
+
+    .crew-chat-active {
+      margin-top: 2rem;
+      padding: 1.25rem 2rem;
+      background: white;
+      border-radius: 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+
+    .crew-chat-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      animation: pulse-dot 1.5s ease-in-out infinite;
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    @media (max-width: 768px) {
+      .crew-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+      }
+
+      .crew-avatar {
+        width: 56px;
+        height: 56px;
+      }
+
+      .crew-name {
+        font-size: 0.85rem;
+      }
+
+      .crew-role {
+        font-size: 0.65rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .crew-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .crew-section {
+        padding: 3rem 1rem;
+      }
+    }
   </style>
 </head>
 <body>
@@ -814,6 +985,14 @@ No remaining JSX ✓
         { size: 'xl', label: 'XL (18)', minHeight: 67, maxHeight: 70, minChest: 36, maxChest: 38 },
       ],
     };
+
+    var CREW_MEMBERS = [
+      { name: 'Piper', age: 12, role: 'founder & lead designer', bio: 'the one who started it all', agentId: 'agent_7401m4b3y21deyhbcryt8dstz8q8', img: 'img/polo-girl.jpg', orbColor1: '#6DC067', orbColor2: '#ACD9F4', accent: '#6DC067' },
+      { name: 'Quinn', age: 10, role: 'creative director', bio: 'the creative force', agentId: 'agent_0601m4b3ybjwezd8gwwrv5p51c90', img: 'img/sweatshirt-girl.jpg', orbColor1: '#FF69B4', orbColor2: '#E6B8FF', accent: '#FF69B4' },
+      { name: 'Marley', age: 11, role: 'marketing & social', bio: 'the hype machine', agentId: 'agent_1001m4b3ymzzf75tmnd0gps61ndn', img: null, initials: 'M', orbColor1: '#FBB040', orbColor2: '#B1D355', accent: '#FBB040' },
+      { name: 'Suki', age: 11, role: 'stylist & trend scout', bio: 'the trendsetter', agentId: 'agent_8401m4b3z9asedb9b62hmx17a2na', img: null, initials: 'S', orbColor1: '#ACD9F4', orbColor2: '#B8A9C9', accent: '#ACD9F4' },
+      { name: 'Jordyn', age: 12, role: 'operations & logistics', bio: 'the one who gets it done', agentId: 'agent_7601m4b3zjhpeanvfk62araq46qd', img: 'img/lime-polo-dress.jpg', orbColor1: '#2C3E50', orbColor2: '#6DC067', accent: '#2C3E50' },
+    ];
 
     function SizeCalculator({ category, onSizeSelect }) {
       const [showCalc, setShowCalc] = useState(false);
@@ -1009,7 +1188,7 @@ No remaining JSX ✓
                       ) : (
                         React.createElement('div', {style: { width: '100%', height: '100%', background: COLORWAYS.find(c => c.id === product.colorways[0])?.hex || '#f5f5f0' }})
                       )), React.createElement('div', {className: "product-info"}, React.createElement('div', {className: "product-name"}, product.name), React.createElement('div', {className: "product-price"}, "$", product.price)))
-                ))))))
+                ))))), React.createElement(MeetTheCrew, null))
       );
     }
 
@@ -1116,6 +1295,51 @@ No remaining JSX ✓
                     textTransform: 'lowercase'
                   }}, " proceed to checkout ")))
           ))
+      );
+    }
+
+    function MeetTheCrew() {
+      var selectedIdx = useState(null);
+      var activeIdx = selectedIdx[0];
+      var setActiveIdx = selectedIdx[1];
+      var chatContainerRef = React.useRef(null);
+
+      useEffect(function() {
+        if (activeIdx === null) {
+          if (chatContainerRef.current) {
+            chatContainerRef.current.innerHTML = '';
+          }
+          return;
+        }
+        var member = CREW_MEMBERS[activeIdx];
+        if (chatContainerRef.current) {
+          chatContainerRef.current.innerHTML = '';
+          var widget = document.createElement('elevenlabs-convai');
+          widget.setAttribute('agent-id', member.agentId);
+          widget.setAttribute('avatar-orb-color-1', member.orbColor1);
+          widget.setAttribute('avatar-orb-color-2', member.orbColor2);
+          widget.setAttribute('action-text', 'Chat with ' + member.name);
+          chatContainerRef.current.appendChild(widget);
+        }
+      }, [activeIdx]);
+
+      return (
+        React.createElement('div', {className: "crew-section"}, React.createElement('h2', {className: "crew-title"}, "meet the crew"), React.createElement('p', {className: "crew-subtitle"}, "tap a crew member to start a voice chat"), React.createElement('div', {className: "crew-grid"}, CREW_MEMBERS.map(function(member, idx) {
+              return (
+                React.createElement('div', {key: member.name, className: 'crew-card' + (activeIdx === idx ? ' active' : ''), style: { '--card-accent': member.accent }, onClick: function() { setActiveIdx(activeIdx === idx ? null : idx); }}, React.createElement('div', {className: "crew-avatar", style: { borderColor: member.accent }}, member.img ? (
+                      React.createElement('img', {src: member.img, alt: member.name})
+                    ) : (
+                      React.createElement('div', {className: "crew-avatar-initials", style: { background: 'linear-gradient(135deg, ' + member.orbColor1 + ', ' + member.orbColor2 + ')' }}, member.initials)
+                    )), React.createElement('div', {className: "crew-name"}, member.name), React.createElement('div', {className: "crew-role"}, member.role), React.createElement('button', {className: "crew-talk-btn", style: {
+                      background: activeIdx === idx ? member.accent : '#f0f0e8',
+                      color: activeIdx === idx ? 'white' : '#555'
+                    }}, activeIdx === idx ? 'chatting...' : 'talk to ' + member.name.toLowerCase()))
+              );
+            })), activeIdx !== null && (
+            React.createElement('div', {className: "crew-chat-active"}, React.createElement('div', {className: "crew-chat-dot", style: { background: CREW_MEMBERS[activeIdx].accent }}), React.createElement('span', {style: { fontSize: '0.85rem', color: '#555' }}, CREW_MEMBERS[activeIdx].name, " is ready — look for the chat bubble in the corner "))
+          ), activeIdx === null && (
+            React.createElement('div', {className: "crew-chat-hint"}, " pick someone to start chatting ")
+          ), React.createElement('div', {ref: chatContainerRef}))
       );
     }
 
