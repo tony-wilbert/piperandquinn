@@ -11,11 +11,16 @@ export const MODE = "quality"; // performance | balanced | quality (one credit e
 
 // Product id in index.html -> garment picture in /img/tryon, and FASHN's name for its kind.
 // The pictures show the garment only, no person.
+//
+// `cut`: FASHN first cuts the clothes she is wearing out of the photo (its
+// segmentation_free setting, turned off). Without it both dresses kept pieces of the old
+// clothes on 10 October 2026: a trouser leg, a sleeve. FASHN's documentation gives this
+// setting for clothes that "are not removed properly".
 export const GARMENTS = {
   1: { file: "burgundy-polo.jpg", category: "tops" },
   2: { file: "blush-sweater.jpg", category: "tops" },
-  3: { file: "polka-dot-dress.jpg", category: "one-pieces" },
-  4: { file: "lime-polo-dress.jpg", category: "one-pieces" },
+  3: { file: "polka-dot-dress.jpg", category: "one-pieces", cut: true },
+  4: { file: "lime-polo-dress.jpg", category: "one-pieces", cut: true },
   5: { file: "classic-polo.jpg", category: "tops" },
   6: { file: "pleated-skirt.jpg", category: "bottoms" },
   7: { file: "ruffle-skirt.jpg", category: "bottoms" },
