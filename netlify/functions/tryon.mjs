@@ -146,6 +146,7 @@ async function start(req, url) {
         model_image: photo,
         garment_image: home + "/img/tryon/" + g.file,
         category: g.category,
+        segmentation_free: !g.cut,
         garment_photo_type: "flat-lay",
         moderation_level: "conservative",
         mode: MODE,
