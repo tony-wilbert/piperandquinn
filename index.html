@@ -887,6 +887,732 @@
         padding: 3rem 1rem;
       }
     }
+
+    /* ===== CHARACTER SELECT SCREEN ===== */
+    .char-select {
+      min-height: 100vh;
+      background: #0a0a0a;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .char-select::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: radial-gradient(ellipse at 50% 40%, rgba(109,192,103,0.06) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .char-select-label {
+      font-size: 0.8rem;
+      font-weight: 300;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+      margin-bottom: 0.5rem;
+    }
+
+    .char-select-brand {
+      font-size: 2.75rem;
+      font-weight: 300;
+      letter-spacing: 3px;
+      color: white;
+      margin-bottom: 0.5rem;
+      text-transform: lowercase;
+    }
+
+    .char-select-subtitle {
+      font-size: 1rem;
+      font-weight: 300;
+      color: rgba(255,255,255,0.35);
+      margin-bottom: 4rem;
+      letter-spacing: 1px;
+    }
+
+    .char-select-grid {
+      display: flex;
+      gap: 1.25rem;
+      max-width: 1100px;
+      width: 100%;
+      justify-content: center;
+    }
+
+    .char-card {
+      flex: 1;
+      max-width: 190px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 20px;
+      padding: 2rem 1.25rem 1.5rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .char-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 50% 0%, var(--zone-glow, rgba(109,192,103,0.12)) 0%, transparent 70%);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+
+    .char-card:hover {
+      transform: translateY(-8px) scale(1.03);
+      border-color: var(--zone-accent, rgba(255,255,255,0.2));
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 30px var(--zone-glow, rgba(109,192,103,0.08));
+    }
+
+    .char-card:hover::before {
+      opacity: 1;
+    }
+
+    .char-card-avatar {
+      width: 88px;
+      height: 88px;
+      border-radius: 50%;
+      margin: 0 auto 1.25rem;
+      overflow: hidden;
+      border: 2px solid rgba(255,255,255,0.12);
+      position: relative;
+      z-index: 1;
+      transition: border-color 0.4s ease;
+    }
+
+    .char-card:hover .char-card-avatar {
+      border-color: var(--zone-accent, rgba(255,255,255,0.3));
+    }
+
+    .char-card-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top;
+    }
+
+    .char-card-initials {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      font-weight: 600;
+      color: white;
+    }
+
+    .char-card-name {
+      font-size: 1.1rem;
+      font-weight: 500;
+      color: white;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.25rem;
+      position: relative;
+      z-index: 1;
+      text-transform: lowercase;
+    }
+
+    .char-card-role {
+      font-size: 0.65rem;
+      color: rgba(255,255,255,0.4);
+      text-transform: lowercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 1.25rem;
+      line-height: 1.4;
+      position: relative;
+      z-index: 1;
+    }
+
+    .char-card-enter {
+      font-size: 0.65rem;
+      font-weight: 500;
+      letter-spacing: 1px;
+      text-transform: lowercase;
+      padding: 7px 18px;
+      border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: transparent;
+      color: rgba(255,255,255,0.5);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      z-index: 1;
+      font-family: 'Jost', sans-serif;
+    }
+
+    .char-card:hover .char-card-enter {
+      background: var(--zone-accent, rgba(255,255,255,0.1));
+      color: white;
+      border-color: var(--zone-accent, rgba(255,255,255,0.3));
+    }
+
+    .char-select-skip {
+      margin-top: 3rem;
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.25);
+      cursor: pointer;
+      letter-spacing: 1px;
+      transition: color 0.3s ease;
+    }
+
+    .char-select-skip:hover {
+      color: rgba(255,255,255,0.5);
+    }
+
+    /* ===== ZONE PAGES ===== */
+    .zone-page {
+      min-height: 100vh;
+      animation: fadeInZone 0.6s ease;
+    }
+
+    @keyframes fadeInZone {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .zone-hero {
+      height: 50vh;
+      min-height: 380px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .zone-hero-content {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      color: white;
+    }
+
+    .zone-hero-avatar {
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      margin: 0 auto 1.5rem;
+      overflow: hidden;
+      border: 3px solid rgba(255,255,255,0.25);
+    }
+
+    .zone-hero-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top;
+    }
+
+    .zone-hero-name {
+      font-size: 2.5rem;
+      font-weight: 300;
+      letter-spacing: 3px;
+      margin-bottom: 0.4rem;
+      text-transform: lowercase;
+    }
+
+    .zone-hero-role {
+      font-size: 0.8rem;
+      font-weight: 300;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      opacity: 0.6;
+      margin-bottom: 1.25rem;
+    }
+
+    .zone-hero-tagline {
+      font-size: 1.05rem;
+      font-weight: 300;
+      font-style: italic;
+      opacity: 0.7;
+      max-width: 420px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    .zone-voice-bar {
+      padding: 1rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.85);
+      letter-spacing: 0.5px;
+    }
+
+    .zone-section {
+      padding: 4rem 2rem;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .zone-section-title {
+      font-size: 1.5rem;
+      font-weight: 300;
+      letter-spacing: 1px;
+      text-transform: lowercase;
+      margin-bottom: 2.5rem;
+      text-align: center;
+    }
+
+    .zone-products {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(min(260px, 100%), 1fr));
+      gap: 2rem;
+    }
+
+    .zone-back {
+      position: fixed;
+      top: 80px;
+      left: 1.5rem;
+      font-size: 0.72rem;
+      font-weight: 400;
+      letter-spacing: 0.5px;
+      text-transform: lowercase;
+      color: #888;
+      cursor: pointer;
+      z-index: 100;
+      transition: color 0.3s ease;
+      background: rgba(255,255,255,0.92);
+      padding: 6px 14px;
+      border-radius: 16px;
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+
+    .zone-back:hover {
+      color: #333;
+    }
+
+    .zone-nav {
+      display: flex;
+      gap: 0.75rem;
+      justify-content: center;
+      padding: 1.5rem 2rem 3rem;
+      flex-wrap: wrap;
+    }
+
+    .zone-nav-chip {
+      font-size: 0.72rem;
+      font-weight: 400;
+      letter-spacing: 0.5px;
+      text-transform: lowercase;
+      padding: 8px 18px;
+      border-radius: 20px;
+      border: 1px solid #e0e0d8;
+      background: transparent;
+      color: #777;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: 'Jost', sans-serif;
+    }
+
+    .zone-nav-chip:hover {
+      border-color: var(--chip-accent, #6DC067);
+      color: var(--chip-accent, #6DC067);
+      background: rgba(109,192,103,0.04);
+    }
+
+    @media (max-width: 768px) {
+      .char-select-grid {
+        flex-wrap: wrap;
+        gap: 0.75rem;
+      }
+
+      .char-card {
+        max-width: 145px;
+        padding: 1.5rem 1rem 1.25rem;
+      }
+
+      .char-card-avatar {
+        width: 68px;
+        height: 68px;
+      }
+
+      .char-select-brand {
+        font-size: 2rem;
+      }
+
+      .zone-hero {
+        height: 42vh;
+        min-height: 300px;
+      }
+
+      .zone-hero-name {
+        font-size: 1.8rem;
+      }
+
+      .zone-hero-avatar {
+        width: 76px;
+        height: 76px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .char-select-grid {
+        gap: 0.5rem;
+      }
+
+      .char-card {
+        max-width: 120px;
+        padding: 1.25rem 0.5rem 1rem;
+      }
+
+      .char-card-avatar {
+        width: 52px;
+        height: 52px;
+        margin-bottom: 0.75rem;
+      }
+
+      .char-card-name {
+        font-size: 0.85rem;
+      }
+
+      .char-card-role {
+        font-size: 0.55rem;
+        margin-bottom: 0.75rem;
+      }
+
+      .char-card-enter {
+        font-size: 0.55rem;
+        padding: 5px 12px;
+      }
+
+      .char-select-brand {
+        font-size: 1.5rem;
+      }
+
+      .char-select-subtitle {
+        font-size: 0.8rem;
+        margin-bottom: 2.5rem;
+      }
+
+      .zone-hero {
+        height: 38vh;
+        min-height: 260px;
+      }
+
+      .zone-hero-name {
+        font-size: 1.5rem;
+      }
+
+      .zone-hero-tagline {
+        font-size: 0.9rem;
+        padding: 0 1rem;
+      }
+
+      .zone-back {
+        top: 70px;
+        left: 0.75rem;
+        font-size: 0.65rem;
+      }
+    }
+
+    /* ===== TRY-ON ===== */
+    .tryon-open {
+      width: 100%;
+      padding: 12px 32px;
+      background: white;
+      color: black;
+      border: 1px solid black;
+      cursor: pointer;
+      font-family: 'Jost', sans-serif;
+      font-size: 0.875rem;
+      font-weight: 500;
+      letter-spacing: 1px;
+      text-transform: lowercase;
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+
+    .tryon-open:hover {
+      background: black;
+      color: white;
+    }
+
+    .tryon-panel {
+      background: #fafaf8;
+      border: 1px solid #e8e8e3;
+      padding: 1.25rem;
+      position: relative;
+    }
+
+    .tryon-file {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      opacity: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .tryon-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 0.6rem;
+    }
+
+    .tryon-title {
+      font-size: 0.8rem;
+      font-weight: 500;
+      text-transform: lowercase;
+      letter-spacing: 0.5px;
+    }
+
+    .tryon-link {
+      background: none;
+      border: none;
+      padding: 6px 0;
+      font-family: 'Jost', sans-serif;
+      font-size: 0.8rem;
+      color: #666;
+      cursor: pointer;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+      text-transform: lowercase;
+    }
+
+    .tryon-link:hover {
+      color: #333;
+    }
+
+    .tryon-link:disabled {
+      color: #bbb;
+      cursor: default;
+    }
+
+    .tryon-tip {
+      font-size: 0.8rem;
+      color: #555;
+      line-height: 1.5;
+      margin-bottom: 0.9rem;
+    }
+
+    .tryon-photo-row {
+      display: flex;
+      gap: 0.9rem;
+      align-items: center;
+      margin-bottom: 0.9rem;
+    }
+
+    .tryon-thumb {
+      width: 56px;
+      height: 84px;
+      object-fit: cover;
+      object-position: top;
+      background: #eee;
+      flex: none;
+    }
+
+    .tryon-photo-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0 1rem;
+    }
+
+    .tryon-go {
+      width: 100%;
+      padding: 10px;
+      background: #333;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-family: 'Jost', sans-serif;
+      letter-spacing: 0.5px;
+      text-transform: lowercase;
+    }
+
+    .tryon-go:disabled {
+      background: #999;
+      cursor: default;
+    }
+
+    .tryon-bar {
+      height: 2px;
+      background: #e8e8e3;
+      overflow: hidden;
+      margin-top: 0.75rem;
+      position: relative;
+    }
+
+    .tryon-bar::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: -40%;
+      width: 40%;
+      background: #333;
+      animation: tryon-slide 1.2s ease-in-out infinite;
+    }
+
+    @keyframes tryon-slide {
+      from { left: -40%; }
+      to { left: 100%; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .tryon-bar::after {
+        animation: none;
+        left: 0;
+        width: 100%;
+        opacity: 0.35;
+      }
+    }
+
+    .tryon-status {
+      font-size: 0.8rem;
+      color: #333;
+      line-height: 1.5;
+    }
+
+    .tryon-status:not(:empty) {
+      margin-top: 0.75rem;
+    }
+
+    .tryon-status.tryon-error {
+      color: #a4281f;
+    }
+
+    .tryon-note {
+      font-size: 0.72rem;
+      color: #777;
+      line-height: 1.5;
+      margin-top: 0.75rem;
+    }
+
+    .tryon-view {
+      position: absolute;
+      left: 50%;
+      bottom: 0.9rem;
+      transform: translateX(-50%);
+      display: flex;
+      background: rgba(255, 255, 255, 0.95);
+      border: 1px solid rgba(0, 0, 0, 0.15);
+      border-radius: 20px;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+    .tryon-view-btn {
+      background: none;
+      border: none;
+      padding: 9px 14px;
+      font-family: 'Jost', sans-serif;
+      font-size: 0.72rem;
+      letter-spacing: 0.5px;
+      text-transform: lowercase;
+      color: #555;
+      cursor: pointer;
+    }
+
+    .tryon-view-btn.active {
+      background: black;
+      color: white;
+    }
+
+    /* ===== THE OUTFIT A CREW MEMBER SHOWS ===== */
+    .outfit-by {
+      font-size: 0.72rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #888;
+    }
+
+    .outfit-note {
+      font-size: 1.05rem;
+      font-style: italic;
+      color: #333;
+      line-height: 1.5;
+      margin-top: 0.5rem;
+    }
+
+    .outfit-pieces {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .outfit-piece {
+      display: flex;
+      align-items: baseline;
+      gap: 1rem;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid #efefeb;
+    }
+
+    .outfit-piece-name {
+      font-size: 1rem;
+      text-transform: lowercase;
+      letter-spacing: 0.3px;
+    }
+
+    .outfit-piece-price {
+      margin-left: auto;
+      font-size: 0.9rem;
+      color: #666;
+    }
+
+    .outfit-total {
+      display: flex;
+      justify-content: space-between;
+      padding-top: 0.75rem;
+      font-size: 0.9rem;
+      font-weight: 500;
+      text-transform: lowercase;
+    }
+
+    .outfit-photos {
+      display: grid;
+      grid-auto-flow: column;
+      grid-auto-columns: 1fr;
+      gap: 1px;
+      height: 100%;
+      min-height: 400px;
+    }
+
+    .outfit-photos img {
+      width: 100%;
+      height: 100%;
+      min-height: 0;
+      object-fit: cover;
+      object-position: top;
+    }
+
+    @media (max-width: 768px) {
+      .modal-image.tryon-look {
+        max-height: 70vh;
+      }
+
+      .outfit-photos {
+        min-height: 300px;
+        height: 50vh;
+      }
+    }
+
+    /* In a crew zone the voice widget's card sits at the bottom right of the screen.
+       Leave room so the last button in a window can be scrolled clear of it. */
+    body.crew-widget-on .modal-details {
+      padding-bottom: 9rem;
+    }
+
+    /* On a wide screen the details scroll on their own, so the picture stays in view. */
+    @media (min-width: 769px) {
+      .modal-details {
+        max-height: 92vh;
+        overflow-y: auto;
+      }
+    }
   </style>
 </head>
 <body>
@@ -934,18 +1660,18 @@
     }
 
     const PRODUCTS = [
-      { id: 1, name: 'The Burgundy Polo', category: 'tops', price: 52, description: 'Classic polo in rich burgundy — pairs perfectly with the pleated skirt', colorways: ['coral', 'midnight', 'pq-green', 'sky-blue', 'ocean'], sizes: ['xxs', 'xs', 's', 'm', 'l', 'xl'], imageUrl: 'img/burgundy-polo-skirt.jpg', baseHue: 351 },
-      { id: 2, name: 'The Blush Sweater', category: 'tops', price: 62, description: 'Soft pink cashmere-blend knit for breezy afternoons', colorways: ['hot-pink', 'lavender', 'sky-blue', 'coral', 'pq-green'], sizes: ['xxs', 'xs', 's', 'm', 'l', 'xl'], imageUrl: 'img/pink-sweater-skirt.jpg', baseHue: 8 },
-      { id: 3, name: 'The Polka Dot Dress', category: 'dresses', price: 78, description: 'Bold dots that twirl beautifully — our signature piece', colorways: ['hot-pink', 'lavender', 'coral', 'ocean'], sizes: ['xxs', 'xs', 's', 'm', 'l', 'xl'], imageUrl: 'img/polka-dot-dress.jpg', baseHue: 320 },
-      { id: 4, name: 'The Lime Polo Dress', category: 'dresses', price: 72, description: 'Vibrant lime polo dress for sunny days in the city', colorways: ['grass', 'pq-green', 'sunshine', 'sky-blue', 'coral'], sizes: ['xxs', 'xs', 's', 'm', 'l', 'xl'], imageUrl: 'img/lime-polo-dress.jpg', baseHue: 69 },
-      { id: 5, name: 'The Classic Polo', category: 'tops', price: 48, description: 'Timeless pique cotton polo — the foundation of every outfit', colorways: ['sky-blue', 'pq-green', 'coral', 'midnight', 'ocean'], sizes: ['xxs', 'xs', 's', 'm', 'l', 'xl'], imageUrl: 'img/blue-polo-pants.jpg', baseHue: 203 },
-      { id: 6, name: 'The Pleated Skirt', category: 'bottoms', price: 58, description: 'Crisp white pleats with movement — style it your way', colorways: ['coral', 'sky-blue', 'city-khaki', 'midnight', 'white'], sizes: ['xxs', 'xs', 's', 'm', 'l', 'xl'], imageUrl: 'img/burgundy-polo-skirt.jpg', baseHue: 351 },
-      { id: 7, name: 'The Ruffle Skirt', category: 'bottoms', price: 56, description: 'Tiered ruffles in cream — sweet and effortless', colorways: ['hot-pink', 'lavender', 'coral', 'ocean', 'pq-green'], sizes: ['xxs', 'xs', 's', 'm', 'l', 'xl'], imageUrl: 'img/dot-sweater-skirt.jpg', baseHue: 8 },
+      { id: 1, name: 'The Burgundy Polo', category: 'tops', price: 52, description: 'Classic polo in rich burgundy — pairs perfectly with the pleated skirt', colorways: ['coral', 'midnight', 'pq-green', 'sky-blue', 'ocean'], sizes: ['xxs', 'xs', 's', 'm', 'l', 'xl'], imageUrl: 'img/burgundy-polo-skirt.jpg', baseHue: 351, tryOn: true },
+      { id: 2, name: 'The Blush Sweater', category: 'tops', price: 62, description: 'Soft pink cashmere-blend knit for breezy afternoons', colorways: ['hot-pink', 'lavender', 'sky-blue', 'coral', 'pq-green'], sizes: ['xxs', 'xs', 's', 'm', 'l', 'xl'], imageUrl: 'img/pink-sweater-skirt.jpg', baseHue: 8, tryOn: true },
+      { id: 3, name: 'The Polka Dot Dress', category: 'dresses', price: 78, description: 'Bold dots that twirl beautifully — our signature piece', colorways: ['hot-pink', 'lavender', 'coral', 'ocean'], sizes: ['xxs', 'xs', 's', 'm', 'l', 'xl'], imageUrl: 'img/polka-dot-dress.jpg', baseHue: 320, tryOn: true },
+      { id: 4, name: 'The Lime Polo Dress', category: 'dresses', price: 72, description: 'Vibrant lime polo dress for sunny days in the city', colorways: ['grass', 'pq-green', 'sunshine', 'sky-blue', 'coral'], sizes: ['xxs', 'xs', 's', 'm', 'l', 'xl'], imageUrl: 'img/lime-polo-dress.jpg', baseHue: 69, tryOn: true },
+      { id: 5, name: 'The Classic Polo', category: 'tops', price: 48, description: 'Timeless pique cotton polo — the foundation of every outfit', colorways: ['sky-blue', 'pq-green', 'coral', 'midnight', 'ocean'], sizes: ['xxs', 'xs', 's', 'm', 'l', 'xl'], imageUrl: 'img/blue-polo-pants.jpg', baseHue: 203, tryOn: true },
+      { id: 6, name: 'The Pleated Skirt', category: 'bottoms', price: 58, description: 'Crisp white pleats with movement — style it your way', colorways: ['coral', 'sky-blue', 'city-khaki', 'midnight', 'white'], sizes: ['xxs', 'xs', 's', 'm', 'l', 'xl'], imageUrl: 'img/burgundy-polo-skirt.jpg', baseHue: 351, tryOn: true },
+      { id: 7, name: 'The Ruffle Skirt', category: 'bottoms', price: 56, description: 'Tiered ruffles in cream — sweet and effortless', colorways: ['hot-pink', 'lavender', 'coral', 'ocean', 'pq-green'], sizes: ['xxs', 'xs', 's', 'm', 'l', 'xl'], imageUrl: 'img/dot-sweater-skirt.jpg', baseHue: 8, tryOn: true },
     ];
 
-    function Navbar({ currentPage, setCurrentPage, cartCount }) {
+    function Navbar({ currentPage, navigateTo, cartCount }) {
       return (
-        React.createElement('div', {className: "navbar"}, React.createElement('div', {className: "navbar-content"}, React.createElement('div', {className: "navbar-brand", onClick: () => setCurrentPage('home')}, "piper & quinn"), React.createElement('div', {className: "navbar-links"}, React.createElement('div', {className: "navbar-link", onClick: () => setCurrentPage('shop')}, "shop"), React.createElement('div', {className: "navbar-link", onClick: () => setCurrentPage('studio')}, "studio"), React.createElement('div', {className: "navbar-link", onClick: () => setCurrentPage('cart')}, "cart (", cartCount, ")"))))
+        React.createElement('div', {className: "navbar"}, React.createElement('div', {className: "navbar-content"}, React.createElement('div', {className: "navbar-brand", onClick: function() { navigateTo('home'); }}, "piper & quinn"), React.createElement('div', {className: "navbar-links"}, React.createElement('div', {className: "navbar-link", onClick: function() { navigateTo('shop'); }}, "shop"), React.createElement('div', {className: "navbar-link", onClick: function() { navigateTo('studio'); }}, "studio"), React.createElement('div', {className: "navbar-link", onClick: function() { navigateTo('cart'); }}, 'cart (' + cartCount + ')'))))
       );
     }
 
@@ -987,11 +1713,11 @@
     };
 
     var CREW_MEMBERS = [
-      { name: 'Piper', age: 12, role: 'founder & lead designer', bio: 'the one who started it all', agentId: 'agent_7401m4b3y21deyhbcryt8dstz8q8', img: 'img/polo-girl.jpg', orbColor1: '#6DC067', orbColor2: '#ACD9F4', accent: '#6DC067' },
-      { name: 'Quinn', age: 10, role: 'creative director', bio: 'the creative force', agentId: 'agent_0601m4b3ybjwezd8gwwrv5p51c90', img: 'img/sweatshirt-girl.jpg', orbColor1: '#FF69B4', orbColor2: '#E6B8FF', accent: '#FF69B4' },
-      { name: 'Marley', age: 11, role: 'marketing & social', bio: 'the hype machine', agentId: 'agent_1001m4b3ymzzf75tmnd0gps61ndn', img: null, initials: 'M', orbColor1: '#FBB040', orbColor2: '#B1D355', accent: '#FBB040' },
-      { name: 'Suki', age: 11, role: 'stylist & trend scout', bio: 'the trendsetter', agentId: 'agent_8401m4b3z9asedb9b62hmx17a2na', img: null, initials: 'S', orbColor1: '#ACD9F4', orbColor2: '#B8A9C9', accent: '#ACD9F4' },
-      { name: 'Jordyn', age: 12, role: 'operations & logistics', bio: 'the one who gets it done', agentId: 'agent_7601m4b3zjhpeanvfk62araq46qd', img: 'img/lime-polo-dress.jpg', orbColor1: '#2C3E50', orbColor2: '#6DC067', accent: '#2C3E50' },
+      { name: 'Piper', age: 12, role: 'founder & lead designer', bio: 'the one who started it all', zoneName: "piper's design studio", zoneTagline: '"i design what i want to wear — and what my friends keep stealing"', zoneDesc: "welcome to my studio. this is where every p&q piece starts — a sketch, a color, a feeling. these are my favorites from the collection.", agentId: 'agent_7401m4b3y21deyhbcryt8dstz8q8', img: 'img/polo-girl.jpg', orbColor1: '#6DC067', orbColor2: '#ACD9F4', accent: '#6DC067', zoneBg: 'linear-gradient(135deg, #2d5a27 0%, #1a3a15 50%, #0a1a08 100%)', productIds: [1, 5, 6] },
+      { name: 'Quinn', age: 10, role: 'creative director', bio: 'the creative force', zoneName: "quinn's creative lab", zoneTagline: '"fashion is art you can wear — every outfit tells a story"', zoneDesc: "this is where the magic happens. i mix colors, patterns, and vibes until something feels right. check out what i'm loving right now.", agentId: 'agent_0601m4b3ybjwezd8gwwrv5p51c90', img: 'img/sweatshirt-girl.jpg', orbColor1: '#FF69B4', orbColor2: '#E6B8FF', accent: '#FF69B4', zoneBg: 'linear-gradient(135deg, #5a274a 0%, #3a1530 50%, #1a0818 100%)', productIds: [2, 3, 7] },
+      { name: 'Marley', age: 11, role: 'marketing & social', bio: 'the hype machine', zoneName: "marley's hype room", zoneTagline: '"if it\'s fire, i\'ll let you know. if it\'s not, i\'ll let you know too"', zoneDesc: "what's trending, what's dropping, what everyone's talking about. these are the pieces that are about to blow up.", agentId: 'agent_1001m4b3ymzzf75tmnd0gps61ndn', img: null, initials: 'M', orbColor1: '#FBB040', orbColor2: '#B1D355', accent: '#FBB040', zoneBg: 'linear-gradient(135deg, #5a4a1a 0%, #3a3010 50%, #1a1808 100%)', productIds: [3, 4, 1] },
+      { name: 'Suki', age: 11, role: 'stylist & trend scout', bio: 'the trendsetter', zoneName: "suki's trend lounge", zoneTagline: '"style isn\'t what you wear — it\'s how you wear it"', zoneDesc: "i put the looks together. here are the pieces i'd style for you right now — mix, match, make it yours.", agentId: 'agent_8401m4b3z9asedb9b62hmx17a2na', img: null, initials: 'S', orbColor1: '#ACD9F4', orbColor2: '#B8A9C9', accent: '#ACD9F4', zoneBg: 'linear-gradient(135deg, #1a3a5a 0%, #152a3a 50%, #08141a 100%)', productIds: [2, 6, 7] },
+      { name: 'Jordyn', age: 12, role: 'operations & logistics', bio: 'the one who gets it done', zoneName: "jordyn's hq", zoneTagline: '"every great brand needs someone who actually ships the product"', zoneDesc: "i make sure everything runs smooth — quality, shipping, the stuff nobody sees. these are the pieces i stand behind 100%.", agentId: 'agent_7601m4b3zjhpeanvfk62araq46qd', img: 'img/lime-polo-dress.jpg', orbColor1: '#2C3E50', orbColor2: '#6DC067', accent: '#2C3E50', zoneBg: 'linear-gradient(135deg, #1a2a3a 0%, #0f1a25 50%, #080e14 100%)', productIds: [4, 5, 1] },
     ];
 
     function SizeCalculator({ category, onSizeSelect }) {
@@ -1111,10 +1837,438 @@
       );
     }
 
-    function ProductDetail({ product, onClose, onAddToCart }) {
+    // ===== TRY-ON =====
+    // The shopper picks a photo, the page shrinks it and sends it to /api/tryon (a Netlify
+    // function that holds the FASHN key), then asks /api/tryon-status until the look is ready.
+    // The photo lives in the page's memory only: nothing is saved in the browser.
+    var TRYON_START = '/api/tryon';
+    var TRYON_STATUS = '/api/tryon-status';
+    var TRYON_ASK_EVERY = 2000;
+    var TRYON_GIVE_UP = 90000;
+    var el = React.createElement;
+
+    // Shrink a photo to 1536px on its long side and return it as a JPEG data URI.
+    function fitPhoto(file) {
+      return new Promise(function(resolve, reject) {
+        if (!file || (file.type && file.type.indexOf('image/') !== 0)) {
+          reject(new Error("That file isn't a photo. Try a JPG or PNG."));
+          return;
+        }
+        var src = URL.createObjectURL(file);
+        var img = new Image();
+        img.onload = function() {
+          var w = img.naturalWidth, hgt = img.naturalHeight;
+          if (Math.min(w, hgt) < 256) {
+            URL.revokeObjectURL(src);
+            reject(new Error('That photo is too small. Try a bigger one.'));
+            return;
+          }
+          var scale = Math.min(1, 1536 / Math.max(w, hgt));
+          var canvas = document.createElement('canvas');
+          canvas.width = Math.round(w * scale);
+          canvas.height = Math.round(hgt * scale);
+          var ctx = canvas.getContext('2d');
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          ctx.imageSmoothingQuality = 'high';
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          URL.revokeObjectURL(src);
+          var out = '';
+          var qualities = [0.9, 0.8, 0.7];
+          for (var i = 0; i < qualities.length; i++) {
+            out = canvas.toDataURL('image/jpeg', qualities[i]);
+            if (out.length < 2400000) break;
+          }
+          if (out.indexOf('data:image/jpeg') !== 0 || out.length >= 2400000) {
+            reject(new Error("We couldn't get that photo ready. Try a different one."));
+            return;
+          }
+          resolve(out);
+        };
+        img.onerror = function() {
+          URL.revokeObjectURL(src);
+          reject(new Error("We couldn't open that photo. Try a JPG or PNG."));
+        };
+        img.src = src;
+      });
+    }
+
+    // One request to a try-on address. Resolves with the answer, or rejects with an Error
+    // whose message says what went wrong. err.retry means the trouble may pass on its own.
+    function tryonAsk(url, opts) {
+      return fetch(url, opts).then(function(res) {
+        return res.text().then(function(text) {
+          var data = null;
+          try { data = JSON.parse(text); } catch (e) { data = null; }
+          if (res.ok && data && data.ok) return data;
+          var err;
+          if (data && data.message) {
+            err = new Error(data.message);
+            err.retry = !!data.retry;
+          } else if (res.status === 429) {
+            err = new Error("That's a lot of looks at once. Wait a minute and try again.");
+            err.retry = true;
+          } else if (res.status === 404) {
+            err = new Error("Try-on isn't switched on for this site yet.");
+          } else {
+            err = new Error('Try-on had a problem (' + res.status + '). Try again.');
+            err.retry = res.status >= 500;
+          }
+          throw err;
+        });
+      }, function() {
+        var err = new Error("Couldn't reach try-on. Check your connection and try again.");
+        err.retry = true;
+        throw err;
+      });
+    }
+
+    // Keep asking until the look is done. `alive` goes false when the shopper has moved on.
+    function tryonWait(id, started, alive) {
+      var misses = 0;
+      return new Promise(function(resolve, reject) {
+        var ask = function() {
+          if (!alive()) return;
+          if (Date.now() - started > TRYON_GIVE_UP) {
+            reject(new Error('This is taking too long. Try again.'));
+            return;
+          }
+          tryonAsk(TRYON_STATUS + '?id=' + encodeURIComponent(id)).then(function(d) {
+            misses = 0;
+            if (d.state === 'done' && d.image) {
+              resolve(d.image);
+              return;
+            }
+            setTimeout(ask, TRYON_ASK_EVERY);
+          }, function(err) {
+            misses += 1;
+            if (err.retry && misses < 4) {
+              setTimeout(ask, TRYON_ASK_EVERY);
+              return;
+            }
+            reject(err);
+          });
+        };
+        setTimeout(ask, TRYON_ASK_EVERY);
+      });
+    }
+
+    // Make one look: put the pieces on, one pass each. The picture from one pass is the
+    // photo for the next. Resolves with the last picture.
+    function tryonLook(pieces, photo, alive) {
+      var step = function(i, picture) {
+        if (i >= pieces.length) return Promise.resolve(picture);
+        if (picture.indexOf('data:image/') !== 0) {
+          return Promise.reject(new Error("Try-on couldn't put on the second piece. Try again."));
+        }
+        var started = Date.now();
+        return tryonAsk(TRYON_START, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ product: pieces[i].id, photo: picture })
+        }).then(function(d) {
+          return tryonWait(d.id, started, alive);
+        }).then(function(image) {
+          return step(i + 1, image);
+        });
+      };
+      return step(0, photo);
+    }
+
+    // The try-on panel. `pieces` is one product, or two for an outfit (in the order they go on).
+    // `autoGo` is a number that changes each time a look should start on its own.
+    function TryOn({ pieces, photo, setPhoto, look, onLook, startOpen, autoGo, onDone }) {
+      const [open, setOpen] = useState(!!startOpen);
+      const [phase, setPhase] = useState('idle'); // idle | opening | working | error
+      const [message, setMessage] = useState('');
+      const [nudge, setNudge] = useState(0);
+      var fileRef = React.useRef(null);
+      var panelRef = React.useRef(null);
+      var runRef = React.useRef(0);
+      var two = pieces.length > 1;
+
+      // On a phone the panel can sit half off the screen. Bring it into view when she is
+      // using it, so the button and any message are in front of her.
+      var showPanel = function() { setNudge(function(n) { return n + 1; }); };
+      useEffect(function() {
+        var p = panelRef.current;
+        if (!nudge || !p || !p.scrollIntoView) return;
+        var calm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        p.scrollIntoView({ block: 'nearest', behavior: calm ? 'auto' : 'smooth' });
+      }, [nudge]);
+
+      // Leaving the window stops any look still being made.
+      useEffect(function() {
+        return function() { runRef.current = -1; };
+      }, []);
+
+      var busy = phase === 'opening' || phase === 'working';
+
+      var pick = function() {
+        if (busy || !fileRef.current) return;
+        fileRef.current.click();
+      };
+
+      var onFile = function(e) {
+        var file = e.target.files && e.target.files[0];
+        e.target.value = '';
+        if (!file || busy) return;
+        var my = ++runRef.current;
+        setPhase('opening');
+        setMessage('');
+        fitPhoto(file).then(function(dataUrl) {
+          if (runRef.current !== my) return;
+          onLook(null);
+          setPhoto(dataUrl);
+          setPhase('idle');
+          showPanel();
+        }, function(err) {
+          if (runRef.current !== my) return;
+          setPhase('error');
+          setMessage(err.message);
+          showPanel();
+        });
+      };
+
+      var remove = function() {
+        if (busy) return;
+        runRef.current += 1;
+        onLook(null);
+        setPhoto(null);
+        setPhase('idle');
+        setMessage('');
+      };
+
+      var go = function() {
+        if (!photo || busy) return;
+        var my = ++runRef.current;
+        var alive = function() { return runRef.current === my; };
+        setPhase('working');
+        setMessage('');
+        showPanel();
+        tryonLook(pieces, photo, alive).then(function(image) {
+          if (!alive()) return;
+          setPhase('idle');
+          onLook(image);
+          if (onDone) onDone(true, '');
+        }, function(err) {
+          if (!alive()) return;
+          var words = err.message || 'Try-on had a problem. Try again.';
+          setPhase('error');
+          setMessage(words);
+          showPanel();
+          if (onDone) onDone(false, words);
+        });
+      };
+
+      // A crew member showed this outfit and her photo is already in: start without a tap.
+      useEffect(function() {
+        if (autoGo && photo) go();
+      }, [autoGo]);
+
+      if (!open) {
+        return el('button', { className: 'tryon-open', onClick: function() { setOpen(true); showPanel(); } }, 'try it on');
+      }
+
+      var waistUp = pieces.every(function(p) { return p.category === 'tops'; });
+      var tip = waistUp
+        ? 'Use a photo of you facing the camera, from the waist up or full length.'
+        : 'Use a full-length photo of you, facing the camera.';
+
+      var status = '';
+      if (phase === 'working') status = two ? 'This takes about half a minute.' : 'This takes about 15 seconds.';
+      else if (phase === 'error') status = message;
+      else if (look) status = two ? "Here's your look, in the colors we photographed." : "Here's your look, in the color we photographed.";
+
+      var goLabel = 'see it on me';
+      if (phase === 'working') goLabel = 'making your look…';
+      else if (phase === 'error') goLabel = 'try again';
+      else if (look) goLabel = 'make it again';
+
+      var saveName = 'piper-and-quinn-' + pieces.slice().reverse().map(pieceKey).join('-') + '.jpg';
+
+      return el('div', { className: 'tryon-panel', ref: panelRef },
+        el('div', { className: 'tryon-head' },
+          el('div', { className: 'tryon-title' }, 'try it on'),
+          el('button', { className: 'tryon-link', onClick: function() { setOpen(false); } }, 'close')),
+        el('input', { ref: fileRef, type: 'file', accept: 'image/*', onChange: onFile, className: 'tryon-file', tabIndex: -1, 'aria-hidden': 'true' }),
+        photo ? (
+          el(React.Fragment, null,
+            el('div', { className: 'tryon-photo-row' },
+              el('img', { className: 'tryon-thumb', src: photo, alt: 'your photo' }),
+              el('div', { className: 'tryon-photo-links' },
+                el('button', { className: 'tryon-link', disabled: busy, onClick: pick }, 'change photo'),
+                el('button', { className: 'tryon-link', disabled: busy, onClick: remove }, 'remove photo'))),
+            el('button', { className: 'tryon-go', disabled: busy, onClick: go }, goLabel))
+        ) : (
+          el(React.Fragment, null,
+            el('div', { className: 'tryon-tip' }, tip),
+            el('button', { className: 'tryon-go', disabled: busy, onClick: pick }, phase === 'opening' ? 'opening your photo…' : 'choose a photo'))
+        ),
+        phase === 'working' && el('div', { className: 'tryon-bar' }),
+        el('div', { className: 'tryon-status' + (phase === 'error' ? ' tryon-error' : ''), role: 'status', 'aria-live': 'polite' }, status),
+        look && !busy && el('a', { className: 'tryon-link', href: look, download: saveName, style: { display: 'inline-block' } }, 'save picture'),
+        el('div', { className: 'tryon-note' }, "Your photo goes to FASHN, our try-on partner, to make the picture. We don't keep it."));
+    }
+
+    // ===== THE CREW AS STYLISTS =====
+    // A crew member is a voice agent in the ElevenLabs widget. The agent has one button on
+    // this page, show_outfit: it names a dress, or a top and a bottom, and the page shows them.
+    // If her photo is in, the page puts the outfit on her.
+    var STYLIST_FREE_LOOKS = 5; // looks a crew member may start without her tap, per visit
+    var OUTFIT_ORDER = ['bottoms', 'tops', 'dresses']; // the order pieces go on
+
+    // "The Burgundy Polo" -> "burgundy-polo": the name the agent uses for a piece.
+    function pieceKey(product) {
+      return product.name.toLowerCase().replace(/^the\s+/, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+    }
+
+    function findPiece(said) {
+      if (said == null) return null;
+      var key = String(said).toLowerCase().replace(/^\s*the\s+/, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      if (!key) return null;
+      return PRODUCTS.find(function(p) { return p.tryOn && (pieceKey(p) === key || String(p.id) === key); }) || null;
+    }
+
+    // Read what the agent asked for. Returns { pieces, note, problem }.
+    function readOutfit(params) {
+      params = params || {};
+      var asked = [params.dress, params.top, params.bottom].concat(Array.isArray(params.pieces) ? params.pieces : []);
+      var named = asked.filter(function(x) { return x != null && String(x).trim() !== ''; });
+      var unknown = [];
+      var found = [];
+      named.forEach(function(x) {
+        var p = findPiece(x);
+        if (!p) unknown.push(String(x).slice(0, 40));
+        else if (found.indexOf(p) === -1) found.push(p);
+      });
+      var names = PRODUCTS.filter(function(p) { return p.tryOn; }).map(pieceKey).join(', ');
+      if (!found.length) {
+        return { pieces: [], problem: (unknown.length ? 'No piece is called ' + unknown.join(' or ') + '. ' : 'No piece was named. ') + 'The pieces are: ' + names + '.' };
+      }
+      var problem = unknown.length ? 'No piece is called ' + unknown.join(' or ') + '. ' : '';
+      var dress = found.find(function(p) { return p.category === 'dresses'; });
+      var top = found.find(function(p) { return p.category === 'tops'; });
+      var bottom = found.find(function(p) { return p.category === 'bottoms'; });
+      var pieces;
+      if (dress) {
+        pieces = [dress];
+        if (found.length > 1) problem += 'A dress is worn on its own, so only the dress is shown. ';
+      } else {
+        pieces = [bottom, top].filter(Boolean);
+        if (found.length > pieces.length) problem += 'An outfit is one top with one bottom, so only one of each is shown. ';
+      }
+      pieces.sort(function(a, b) { return OUTFIT_ORDER.indexOf(a.category) - OUTFIT_ORDER.indexOf(b.category); });
+      var note = typeof params.note === 'string' ? params.note.replace(/\s+/g, ' ').trim().slice(0, 160) : '';
+      return { pieces: pieces, note: note, problem: problem };
+    }
+
+    // Tell the crew member something without interrupting her (she cannot see the screen).
+    function tellCrew(message) {
+      var w = document.querySelector('elevenlabs-convai');
+      if (!w) return;
+      try {
+        w.dispatchEvent(new CustomEvent('elevenlabs-agent:contextual-update', { detail: { message: message } }));
+      } catch (e) {}
+    }
+
+    // The widget's chat panel covers most of a phone screen. Fold it down to its small card
+    // so the outfit can be seen. The conversation carries on.
+    function foldCrewChat() {
+      try {
+        document.dispatchEvent(new CustomEvent('elevenlabs-agent:expand', { detail: { action: 'collapse' } }));
+      } catch (e) {}
+    }
+
+    function OutfitWindow({ outfit, onClose, onView, tryPhoto, setTryPhoto }) {
+      const [look, setLook] = useState(null);
+      const [showLook, setShowLook] = useState(false);
+      const [lookCount, setLookCount] = useState(0);
+      var contentRef = React.useRef(null);
+      var paneRef = React.useRef(null);
+      var pieces = outfit.pieces;
+
+      var handleLook = function(image) {
+        setLook(image);
+        setShowLook(!!image);
+        if (image) setLookCount(function(n) { return n + 1; });
+      };
+
+      useEffect(function() {
+        var c = contentRef.current, p = paneRef.current;
+        if (!lookCount || !c || !p) return;
+        var top = Math.max(0, p.offsetTop + (p.offsetHeight - c.clientHeight) / 2);
+        var calm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (c.scrollTo) c.scrollTo({ top: top, behavior: calm ? 'auto' : 'smooth' });
+        else c.scrollTop = top;
+      }, [lookCount]);
+
+      var handleDone = function(ok, words) {
+        tellCrew(ok
+          ? 'The outfit is on her in the picture now. You cannot see it. Ask her what she thinks.'
+          : 'The picture could not be made: ' + words);
+      };
+
+      var shown = pieces.slice().reverse(); // read top first, then bottom
+      // one photo per piece; two pieces photographed together show that photo once
+      var photos = [];
+      shown.forEach(function(p) { if (photos.indexOf(p.imageUrl) === -1) photos.push(p.imageUrl); });
+      var total = pieces.reduce(function(sum, p) { return sum + p.price; }, 0);
+      var names = shown.map(function(p) { return p.name.toLowerCase(); }).join(' and ');
+
+      return el('div', { className: 'modal-overlay', onClick: function(e) { if (e.target === e.currentTarget) onClose(); } },
+        el('div', { className: 'modal-content', ref: contentRef, role: 'dialog', 'aria-label': outfit.by.toLowerCase() + "'s pick" },
+          el('button', { className: 'modal-close', onClick: onClose }, 'x'),
+          el('div', { ref: paneRef, style: { overflow: 'hidden', background: '#f5f3f0', position: 'relative' } },
+            (look && showLook)
+              ? el('img', { key: 'look', src: look, alt: 'you in ' + names, className: 'modal-image tryon-look' })
+              : el('div', { key: 'pieces', className: 'outfit-photos' }, photos.map(function(src) {
+                  var inIt = shown.filter(function(p) { return p.imageUrl === src; }).map(function(p) { return p.name; }).join(' and ');
+                  return el('img', { key: src, src: src, alt: inIt });
+                })),
+            look && el('div', { className: 'tryon-view' },
+              el('button', { className: 'tryon-view-btn' + (showLook ? ' active' : ''), 'aria-pressed': showLook, onClick: function() { setShowLook(true); } }, 'my look'),
+              el('button', { className: 'tryon-view-btn' + (!showLook ? ' active' : ''), 'aria-pressed': !showLook, onClick: function() { setShowLook(false); } }, 'the pieces'))),
+          el('div', { className: 'modal-details' },
+            el('div', null,
+              el('div', { className: 'outfit-by' }, outfit.by.toLowerCase() + "'s pick"),
+              outfit.note && el('div', { className: 'outfit-note' }, outfit.note)),
+            el('div', { className: 'outfit-pieces' },
+              shown.map(function(p) {
+                return el('div', { key: p.id, className: 'outfit-piece' },
+                  el('span', { className: 'outfit-piece-name' }, p.name),
+                  el('span', { className: 'outfit-piece-price' }, '$' + p.price),
+                  el('button', { className: 'tryon-link', onClick: function() { onView(p); } }, 'view'));
+              }),
+              pieces.length > 1 && el('div', { className: 'outfit-total' }, el('span', null, 'together'), el('span', null, '$' + total))),
+            el(TryOn, { pieces: pieces, photo: tryPhoto, setPhoto: setTryPhoto, look: look, onLook: handleLook, startOpen: true, autoGo: outfit.auto ? outfit.n : 0, onDone: handleDone }))));
+    }
+
+    function ProductDetail({ product, onClose, onAddToCart, tryPhoto, setTryPhoto }) {
       const [selectedColor, setSelectedColor] = useState(product.colorways[0]);
       const [selectedSize, setSelectedSize] = useState(null);
       const [added, setAdded] = useState(false);
+      const [look, setLook] = useState(null);
+      const [showLook, setShowLook] = useState(false);
+      const [lookCount, setLookCount] = useState(0);
+      var contentRef = React.useRef(null);
+      var paneRef = React.useRef(null);
+
+      var handleLook = function(image) {
+        setLook(image);
+        setShowLook(!!image);
+        if (image) setLookCount(function(n) { return n + 1; });
+      };
+
+      // When a look arrives, bring the picture into view (on a phone it sits above the panel).
+      useEffect(function() {
+        var c = contentRef.current, p = paneRef.current;
+        if (!lookCount || !c || !p) return;
+        var top = Math.max(0, p.offsetTop + (p.offsetHeight - c.clientHeight) / 2);
+        var calm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (c.scrollTo) c.scrollTo({ top: top, behavior: calm ? 'auto' : 'smooth' });
+        else c.scrollTop = top;
+      }, [lookCount]);
 
       // Calculate hue rotation for color change
       var getImageFilter = function() {
@@ -1158,12 +2312,12 @@
       var colorName = currentColorObj ? currentColorObj.name : '';
 
       return (
-        React.createElement('div', {className: "modal-overlay", onClick: handleOverlayClick}, React.createElement('div', {className: "modal-content"}, React.createElement('button', {className: "modal-close", onClick: onClose}, "x"), React.createElement('div', {style: { overflow: 'hidden', background: '#f5f3f0' }}, React.createElement('img', {src: product.imageUrl, alt: product.name, className: "modal-image", style: { filter: getImageFilter(), transition: 'filter 0.4s ease' }})), React.createElement('div', {className: "modal-details"}, React.createElement('div', null, React.createElement('div', {className: "modal-product-name"}, product.name), React.createElement('div', {className: "modal-product-price"}, "$", product.price)), React.createElement('div', {className: "modal-product-desc"}, product.description), React.createElement('div', null, React.createElement('div', {style: { fontSize: '0.8rem', fontWeight: '500', marginBottom: '0.75rem', textTransform: 'lowercase', letterSpacing: '0.5px' }}, " color — ", colorName.toLowerCase()), React.createElement('div', {style: { display: 'flex', gap: '0.75rem', flexWrap: 'wrap', alignItems: 'center' }}, product.colorways.map(cw => {
+        React.createElement('div', {className: "modal-overlay", onClick: handleOverlayClick}, React.createElement('div', {className: "modal-content", ref: contentRef}, React.createElement('button', {className: "modal-close", onClick: onClose}, "x"), React.createElement('div', {ref: paneRef, style: { overflow: 'hidden', background: '#f5f3f0', position: 'relative' }}, (look && showLook) ? (React.createElement('img', {key: "look", src: look, alt: 'you in ' + product.name.toLowerCase(), className: "modal-image tryon-look"})) : (React.createElement('img', {key: "product", src: product.imageUrl, alt: product.name, className: "modal-image", style: { filter: getImageFilter(), transition: 'filter 0.4s ease' }})), look && (React.createElement('div', {className: "tryon-view"}, React.createElement('button', {className: 'tryon-view-btn' + (showLook ? ' active' : ''), 'aria-pressed': showLook, onClick: function() { setShowLook(true); }}, "my look"), React.createElement('button', {className: 'tryon-view-btn' + (!showLook ? ' active' : ''), 'aria-pressed': !showLook, onClick: function() { setShowLook(false); }}, "product photo")))), React.createElement('div', {className: "modal-details"}, React.createElement('div', null, React.createElement('div', {className: "modal-product-name"}, product.name), React.createElement('div', {className: "modal-product-price"}, "$", product.price)), React.createElement('div', {className: "modal-product-desc"}, product.description), product.tryOn && React.createElement(TryOn, {pieces: [product], photo: tryPhoto, setPhoto: setTryPhoto, look: look, onLook: handleLook}), React.createElement('div', null, React.createElement('div', {style: { fontSize: '0.8rem', fontWeight: '500', marginBottom: '0.75rem', textTransform: 'lowercase', letterSpacing: '0.5px' }}, " color — ", colorName.toLowerCase()), React.createElement('div', {style: { display: 'flex', gap: '0.75rem', flexWrap: 'wrap', alignItems: 'center' }}, product.colorways.map(cw => {
                     const color = COLORWAYS.find(c => c.id === cw);
                     if (!color) return null;
                     var isSelected = selectedColor === cw;
                     return (
-                      React.createElement('div', {key: cw, onClick: () => setSelectedColor(cw), title: color.name, style: {
+                      React.createElement('div', {key: cw, onClick: () => { setSelectedColor(cw); setShowLook(false); }, title: color.name, style: {
                           width: isSelected ? '36px' : '32px',
                           height: isSelected ? '36px' : '32px',
                           borderRadius: '50%',
@@ -1180,15 +2334,20 @@
       );
     }
 
-    function HomePage({ setCurrentPage, onSelectProduct }) {
+    function CharacterSelect({ onSelectCrewMember, navigateTo }) {
       return (
-        React.createElement('div', null, React.createElement('div', {className: "hero-section"}, React.createElement('div', {className: "hero-overlay"}, React.createElement('div', {className: "hero-text"}, "made by sisters.", React.createElement('br', null), "worn by friends."), React.createElement('div', {className: "tagline"}, "fashion for the next generation"), React.createElement('button', {className: "cta-button", onClick: () => setCurrentPage('shop')}, "shop now"))), React.createElement('div', {className: "sisters-grid"}, React.createElement('div', {style: { position: 'relative', overflow: 'hidden' }}, React.createElement('img', {src: "img/polo-girl.jpg", alt: "Piper in San Francisco"}), React.createElement('div', {className: "sister-caption", style: { position: 'absolute', bottom: '2rem', left: '2rem', color: 'white' }}, React.createElement('div', {style: { fontSize: '0.75rem', letterSpacing: '3px', textTransform: 'uppercase', marginBottom: '0.5rem' }}, "meet piper"), React.createElement('div', {style: { fontSize: '1.5rem', fontWeight: '300' }}, "the one who started it all"))), React.createElement('div', {style: { position: 'relative', overflow: 'hidden' }}, React.createElement('img', {src: "img/sweatshirt-girl.jpg", alt: "Quinn in cozy style"}), React.createElement('div', {className: "sister-caption", style: { position: 'absolute', bottom: '2rem', left: '2rem', color: 'white' }}, React.createElement('div', {style: { fontSize: '0.75rem', letterSpacing: '3px', textTransform: 'uppercase', marginBottom: '0.5rem' }}, "meet quinn"), React.createElement('div', {style: { fontSize: '1.5rem', fontWeight: '300' }}, "the creative force")))), React.createElement('div', {className: "main-content"}, React.createElement('div', {className: "story-section"}, React.createElement('h2', {className: "story-title"}, "the story of piper & quinn"), React.createElement('p', {className: "story-text"}, " Two sisters from San Francisco discovered that fashion should be fun, colorful, and made with intention. Piper, age 12, and Quinn, age 10, started designing clothes for their friends — pieces that celebrate youth, confidence, and play. Every garment is crafted with bold prints, vibrant colors, and the kind of quality that lasts through countless adventures. This is fashion for friends, by sisters who understand what you want to wear. ")), React.createElement('div', {style: { margin: '6rem 0' }}, React.createElement('h2', {style: { fontSize: '1.75rem', fontWeight: '300', textAlign: 'center', letterSpacing: '1px', marginBottom: '3rem' }}, "shop the collection"), React.createElement('div', {style: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(220px, 100%), 1fr))', gap: '2rem' }}, PRODUCTS.slice(0, 4).map((product) => (
-                  React.createElement('div', {key: product.id, className: "product-card", onClick: () => onSelectProduct(product)}, React.createElement('div', {className: "product-card-image-wrapper"}, product.imageUrl ? (
-                        React.createElement('img', {src: product.imageUrl, alt: product.name, className: "product-image"})
-                      ) : (
-                        React.createElement('div', {style: { width: '100%', height: '100%', background: COLORWAYS.find(c => c.id === product.colorways[0])?.hex || '#f5f5f0' }})
-                      )), React.createElement('div', {className: "product-info"}, React.createElement('div', {className: "product-name"}, product.name), React.createElement('div', {className: "product-price"}, "$", product.price)))
-                ))))), React.createElement(MeetTheCrew, null))
+        React.createElement('div', {className: "char-select"}, React.createElement('div', {className: "char-select-label"}, "welcome to"), React.createElement('div', {className: "char-select-brand"}, "piper & quinn"), React.createElement('div', {className: "char-select-subtitle"}, "choose your guide"), React.createElement('div', {className: "char-select-grid"}, CREW_MEMBERS.map(function(member, idx) {
+              return (
+                React.createElement('div', {key: member.name, className: "char-card", style: {
+                    '--zone-accent': member.accent,
+                    '--zone-glow': member.accent + '25'
+                  }, onClick: function() { onSelectCrewMember(idx); }}, React.createElement('div', {className: "char-card-avatar"}, member.img ? (
+                      React.createElement('img', {src: member.img, alt: member.name})
+                    ) : (
+                      React.createElement('div', {className: "char-card-initials", style: { background: 'linear-gradient(135deg, ' + member.orbColor1 + ', ' + member.orbColor2 + ')' }}, member.initials)
+                    )), React.createElement('div', {className: "char-card-name"}, member.name), React.createElement('div', {className: "char-card-role"}, member.role), React.createElement('button', {className: "char-card-enter"}, "enter zone"))
+              );
+            })), React.createElement('div', {className: "char-select-skip", onClick: function() { navigateTo('shop'); }}, " or skip to the shop → "))
       );
     }
 
@@ -1298,20 +2457,13 @@
       );
     }
 
-    function MeetTheCrew() {
-      var selectedIdx = useState(null);
-      var activeIdx = selectedIdx[0];
-      var setActiveIdx = selectedIdx[1];
+    function CrewZone({ memberIdx, onSelectProduct, onBack, onSwitchZone, onShowOutfit }) {
+      var member = CREW_MEMBERS[memberIdx];
       var chatContainerRef = React.useRef(null);
+      var showOutfitRef = React.useRef(onShowOutfit);
+      showOutfitRef.current = onShowOutfit;
 
       useEffect(function() {
-        if (activeIdx === null) {
-          if (chatContainerRef.current) {
-            chatContainerRef.current.innerHTML = '';
-          }
-          return;
-        }
-        var member = CREW_MEMBERS[activeIdx];
         if (chatContainerRef.current) {
           chatContainerRef.current.innerHTML = '';
           var widget = document.createElement('elevenlabs-convai');
@@ -1319,27 +2471,49 @@
           widget.setAttribute('avatar-orb-color-1', member.orbColor1);
           widget.setAttribute('avatar-orb-color-2', member.orbColor2);
           widget.setAttribute('action-text', 'Chat with ' + member.name);
+          // Let the page tell the agent things (the widget ignores them without this).
+          widget.setAttribute('allow-events', 'true');
+          // When a conversation starts, hand the agent its button on this page.
+          widget.addEventListener('elevenlabs-convai:call', function(e) {
+            if (!e.detail || !e.detail.config) return;
+            e.detail.config.clientTools = Object.assign({}, e.detail.config.clientTools, {
+              show_outfit: function(params) { return showOutfitRef.current(params, member); }
+            });
+          });
           chatContainerRef.current.appendChild(widget);
+          document.body.classList.add('crew-widget-on');
         }
-      }, [activeIdx]);
+        return function() {
+          document.body.classList.remove('crew-widget-on');
+          if (chatContainerRef.current) {
+            chatContainerRef.current.innerHTML = '';
+          }
+        };
+      }, [memberIdx]);
+
+      var zoneProducts = member.productIds.map(function(id) {
+        return PRODUCTS.find(function(p) { return p.id === id; });
+      }).filter(Boolean);
 
       return (
-        React.createElement('div', {className: "crew-section"}, React.createElement('h2', {className: "crew-title"}, "meet the crew"), React.createElement('p', {className: "crew-subtitle"}, "tap a crew member to start a voice chat"), React.createElement('div', {className: "crew-grid"}, CREW_MEMBERS.map(function(member, idx) {
+        React.createElement('div', {className: "zone-page"}, React.createElement('div', {className: "zone-back", onClick: onBack}, '←', " back to crew"), React.createElement('div', {className: "zone-hero", style: { background: member.zoneBg }}, React.createElement('div', {className: "zone-hero-content"}, React.createElement('div', {className: "zone-hero-avatar", style: { borderColor: member.accent }}, member.img ? (
+                  React.createElement('img', {src: member.img, alt: member.name})
+                ) : (
+                  React.createElement('div', {className: "char-card-initials", style: { background: 'linear-gradient(135deg, ' + member.orbColor1 + ', ' + member.orbColor2 + ')' }}, member.initials)
+                )), React.createElement('div', {className: "zone-hero-name"}, member.name), React.createElement('div', {className: "zone-hero-role"}, member.role), React.createElement('div', {className: "zone-hero-tagline"}, member.zoneTagline))), React.createElement('div', {className: "zone-voice-bar", style: { background: member.accent }}, React.createElement('div', {className: "crew-chat-dot", style: { background: 'white' }}), React.createElement('span', null, member.name, " is here ", '—', " tap the chat bubble to talk")), React.createElement('div', {className: "zone-section"}, React.createElement('p', {style: { textAlign: 'center', fontSize: '1.05rem', color: '#555', lineHeight: '1.8', maxWidth: '580px', margin: '0 auto 3rem', fontWeight: '300' }}, member.zoneDesc), React.createElement('h2', {className: "zone-section-title"}, member.name.toLowerCase() + "'s picks"), React.createElement('div', {className: "zone-products"}, zoneProducts.map(function(product) {
+                return (
+                  React.createElement('div', {key: product.id, className: "product-card", onClick: function() { onSelectProduct(product); }}, React.createElement('div', {className: "product-card-image-wrapper"}, product.imageUrl ? (
+                        React.createElement('img', {src: product.imageUrl, alt: product.name, className: "product-image"})
+                      ) : (
+                        React.createElement('div', {style: { width: '100%', height: '100%', background: '#f5f5f0' }})
+                      )), React.createElement('div', {className: "product-info"}, React.createElement('div', {className: "product-name"}, product.name), React.createElement('div', {className: "product-price"}, '$' + product.price)))
+                );
+              }))), React.createElement('div', {style: { padding: '2rem 2rem 0', textAlign: 'center', borderTop: '1px solid #f0f0e8' }}, React.createElement('div', {style: { fontSize: '0.8rem', color: '#aaa', marginBottom: '0.75rem', letterSpacing: '0.5px', textTransform: 'lowercase' }}, "visit another zone")), React.createElement('div', {className: "zone-nav"}, CREW_MEMBERS.map(function(m, idx) {
+              if (idx === memberIdx) return null;
               return (
-                React.createElement('div', {key: member.name, className: 'crew-card' + (activeIdx === idx ? ' active' : ''), style: { '--card-accent': member.accent }, onClick: function() { setActiveIdx(activeIdx === idx ? null : idx); }}, React.createElement('div', {className: "crew-avatar", style: { borderColor: member.accent }}, member.img ? (
-                      React.createElement('img', {src: member.img, alt: member.name})
-                    ) : (
-                      React.createElement('div', {className: "crew-avatar-initials", style: { background: 'linear-gradient(135deg, ' + member.orbColor1 + ', ' + member.orbColor2 + ')' }}, member.initials)
-                    )), React.createElement('div', {className: "crew-name"}, member.name), React.createElement('div', {className: "crew-role"}, member.role), React.createElement('button', {className: "crew-talk-btn", style: {
-                      background: activeIdx === idx ? member.accent : '#f0f0e8',
-                      color: activeIdx === idx ? 'white' : '#555'
-                    }}, activeIdx === idx ? 'chatting...' : 'talk to ' + member.name.toLowerCase()))
+                React.createElement('button', {key: m.name, className: "zone-nav-chip", style: { '--chip-accent': m.accent }, onClick: function() { onSwitchZone(idx); }}, m.name.toLowerCase() + "'s zone")
               );
-            })), activeIdx !== null && (
-            React.createElement('div', {className: "crew-chat-active"}, React.createElement('div', {className: "crew-chat-dot", style: { background: CREW_MEMBERS[activeIdx].accent }}), React.createElement('span', {style: { fontSize: '0.85rem', color: '#555' }}, CREW_MEMBERS[activeIdx].name, " is ready — look for the chat bubble in the corner "))
-          ), activeIdx === null && (
-            React.createElement('div', {className: "crew-chat-hint"}, " pick someone to start chatting ")
-          ), React.createElement('div', {ref: chatContainerRef}))
+            })), React.createElement('div', {ref: chatContainerRef}))
       );
     }
 
@@ -1353,6 +2527,32 @@
       const [currentPage, setCurrentPage] = useState('home');
       const [cart, setCart] = useState([]);
       const [selectedProduct, setSelectedProduct] = useState(null);
+      const [activeZoneIdx, setActiveZoneIdx] = useState(null);
+      const [tryPhoto, setTryPhoto] = useState(null);
+      const [outfit, setOutfit] = useState(null);
+      var tryPhotoRef = React.useRef(null);
+      tryPhotoRef.current = tryPhoto;
+      var freeLooksRef = React.useRef(0);
+
+      // A crew member pressed show_outfit. Show it, and answer her with what happened.
+      var handleShowOutfit = function(params, member) {
+        var asked = readOutfit(params);
+        if (!asked.pieces.length) return asked.problem;
+        var hasPhoto = !!tryPhotoRef.current;
+        var auto = hasPhoto && freeLooksRef.current < STYLIST_FREE_LOOKS;
+        if (auto) freeLooksRef.current += 1;
+        setSelectedProduct(null);
+        setOutfit({ pieces: asked.pieces, note: asked.note, by: member.name, auto: auto, n: Date.now() + Math.random() });
+        foldCrewChat();
+        var shown = asked.pieces.slice().reverse();
+        var two = shown.length > 1;
+        var total = shown.reduce(function(sum, p) { return sum + p.price; }, 0);
+        var said = 'On her screen now: ' + shown.map(function(p) { return p.name + ' ($' + p.price + ')'; }).join(' with ') + (two ? ', $' + total + ' together. ' : '. ');
+        if (auto) said += 'Her photo is in, so the page is putting ' + (two ? 'the outfit' : 'it') + ' on her. That takes about ' + (two ? 'half a minute' : '15 seconds') + '. You cannot see the picture.';
+        else if (hasPhoto) said += 'Her photo is in. She can tap "see it on me" to try it on.';
+        else said += 'She has not added a photo. She can tap "choose a photo" to see it on her.';
+        return asked.problem + said;
+      };
 
       const handleAddToCart = (product, colorway, size) => {
         const existingItem = cart.find(
@@ -1369,10 +2569,41 @@
         }
       };
 
+      var navigateTo = function(page) {
+        if (page === 'home') {
+          setActiveZoneIdx(null);
+        }
+        setCurrentPage(page);
+        window.scrollTo(0, 0);
+      };
+
+      var handleSelectCrewMember = function(idx) {
+        setActiveZoneIdx(idx);
+        setCurrentPage('zone');
+        window.scrollTo(0, 0);
+      };
+
+      var handleBackToCrew = function() {
+        setActiveZoneIdx(null);
+        setCurrentPage('home');
+        window.scrollTo(0, 0);
+      };
+
+      var showNavbar = currentPage !== 'home';
+
       return (
-        React.createElement('div', null, React.createElement(Navbar, {currentPage: currentPage, setCurrentPage: setCurrentPage, cartCount: cart.length}), currentPage === 'home' && React.createElement(HomePage, {setCurrentPage: setCurrentPage, onSelectProduct: setSelectedProduct}), currentPage === 'shop' && React.createElement(ShopPage, {setCurrentPage: setCurrentPage, onSelectProduct: setSelectedProduct}), currentPage === 'studio' && React.createElement(DesignStudio, null), currentPage === 'cart' && React.createElement(CartPage, {cart: cart, setCart: setCart}), selectedProduct && (
-            React.createElement(ProductDetail, {product: selectedProduct, onClose: () => setSelectedProduct(null), onAddToCart: handleAddToCart})
-          ), React.createElement(Footer, null))
+        React.createElement('div', null, showNavbar && React.createElement(Navbar, {currentPage: currentPage, navigateTo: navigateTo, cartCount: cart.length}), currentPage === 'home' && (
+            React.createElement(CharacterSelect, {onSelectCrewMember: handleSelectCrewMember, navigateTo: navigateTo})
+          ), currentPage === 'zone' && activeZoneIdx !== null && (
+            React.createElement(CrewZone, {memberIdx: activeZoneIdx, onSelectProduct: setSelectedProduct, onBack: handleBackToCrew, onShowOutfit: handleShowOutfit, onSwitchZone: function(idx) {
+                setActiveZoneIdx(idx);
+                window.scrollTo(0, 0);
+              }})
+          ), currentPage === 'shop' && React.createElement(ShopPage, {setCurrentPage: navigateTo, onSelectProduct: setSelectedProduct}), currentPage === 'studio' && React.createElement(DesignStudio, null), currentPage === 'cart' && React.createElement(CartPage, {cart: cart, setCart: setCart}), outfit && (
+            React.createElement(OutfitWindow, {key: outfit.n, outfit: outfit, onClose: () => setOutfit(null), onView: setSelectedProduct, tryPhoto: tryPhoto, setTryPhoto: setTryPhoto})
+          ), selectedProduct && (
+            React.createElement(ProductDetail, {product: selectedProduct, onClose: () => setSelectedProduct(null), onAddToCart: handleAddToCart, tryPhoto: tryPhoto, setTryPhoto: setTryPhoto})
+          ), currentPage !== 'home' && React.createElement(Footer, null))
       );
     }
 
