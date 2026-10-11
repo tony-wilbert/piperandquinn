@@ -683,8 +683,28 @@
       border-bottom: 1px solid var(--line);
     }
 
+    /* the piece in her color, beside its name */
+    .cart-item-main {
+      display: flex;
+      align-items: center;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .cart-item-shot {
+      flex: none;
+      width: 64px;
+      height: 64px;
+      margin-right: 1rem;
+      padding: 5px;
+      box-sizing: border-box;
+      border-radius: 10px;
+      background: var(--orbit-white);
+    }
+
     .cart-item-details {
       flex: 1;
+      min-width: 0;
     }
 
     .cart-item-name {
@@ -910,6 +930,12 @@
       object-position: center;
       min-height: 400px;
       background: var(--orbit-white);
+    }
+
+    /* The piece on its own, in her color: room around it, like a product shot. */
+    .modal-image.piece-shot {
+      padding: 8% 8% calc(8% + 2.75rem);   /* and clear of the switch at its foot */
+      box-sizing: border-box;
     }
 
     .modal-details {
@@ -1330,6 +1356,12 @@
       gap: 3rem 2rem;
       max-width: 860px;
       margin: 0 auto 2rem;
+    }
+
+    /* the two sisters, in a row of their own above the others */
+    .team-grid.team-sisters {
+      max-width: 560px;
+      margin-bottom: 3rem;
     }
 
     .team-card {
@@ -2218,7 +2250,15 @@
       height: 100%;
       object-fit: cover;
       object-position: top 20%;
-      transition: filter 0.4s ease;
+    }
+
+    .guide-piece-photo canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+      padding: 6px;
+      box-sizing: border-box;
+      object-fit: contain;
     }
 
     .guide-piece-main {
@@ -2553,30 +2593,14 @@
       { id: 'midnight', name: 'Midnight', hex: '#1B2A4A' },
     ];
 
-    // Hue helper: extract hue (0-360) from hex color
-    function hexToHue(hex) {
-      var r = parseInt(hex.slice(1, 3), 16) / 255;
-      var g = parseInt(hex.slice(3, 5), 16) / 255;
-      var b = parseInt(hex.slice(5, 7), 16) / 255;
-      var max = Math.max(r, g, b), min = Math.min(r, g, b);
-      var h = 0;
-      if (max !== min) {
-        var d = max - min;
-        if (max === r) h = ((g - b) / d + (g < b ? 6 : 0)) / 6;
-        else if (max === g) h = ((b - r) / d + 2) / 6;
-        else h = ((r - g) / d + 4) / 6;
-      }
-      return Math.round(h * 360);
-    }
-
     const PRODUCTS = [
-      { id: 1, name: 'The Burgundy Polo', category: 'tops', price: 52, description: 'Classic polo in rich burgundy. Pairs perfectly with the pleated skirt.', colorways: ['coral', 'midnight', 'pq-green', 'sky-blue', 'ocean'], sizes: ['xxs', 'xs', 's', 'm', 'l', 'xl'], imageUrl: 'img/burgundy-polo-skirt.jpg', baseHue: 351, tryOn: true },
-      { id: 2, name: 'The Blush Sweater', category: 'tops', price: 62, description: 'Soft pink cashmere-blend knit for breezy afternoons', colorways: ['hot-pink', 'lavender', 'sky-blue', 'coral', 'pq-green'], sizes: ['xxs', 'xs', 's', 'm', 'l', 'xl'], imageUrl: 'img/pink-sweater-skirt.jpg', baseHue: 8, tryOn: true },
-      { id: 3, name: 'The Polka Dot Dress', category: 'dresses', price: 78, description: 'Bold dots that twirl beautifully. Our signature piece.', colorways: ['hot-pink', 'lavender', 'coral', 'ocean'], sizes: ['xxs', 'xs', 's', 'm', 'l', 'xl'], imageUrl: 'img/polka-dot-dress.jpg', baseHue: 320, tryOn: true },
-      { id: 4, name: 'The Lime Polo Dress', category: 'dresses', price: 72, description: 'Vibrant lime polo dress for sunny days in the city', colorways: ['grass', 'pq-green', 'sunshine', 'sky-blue', 'coral'], sizes: ['xxs', 'xs', 's', 'm', 'l', 'xl'], imageUrl: 'img/lime-polo-dress.jpg', baseHue: 69, tryOn: true },
-      { id: 5, name: 'The Classic Polo', category: 'tops', price: 48, description: 'Timeless pique cotton polo. The foundation of every outfit.', colorways: ['sky-blue', 'pq-green', 'coral', 'midnight', 'ocean'], sizes: ['xxs', 'xs', 's', 'm', 'l', 'xl'], imageUrl: 'img/blue-polo-pants.jpg', baseHue: 203, tryOn: true },
-      { id: 6, name: 'The Pleated Skirt', category: 'bottoms', price: 58, description: 'Crisp white pleats with movement. Style it your way.', colorways: ['coral', 'sky-blue', 'city-khaki', 'midnight', 'white'], sizes: ['xxs', 'xs', 's', 'm', 'l', 'xl'], imageUrl: 'img/burgundy-polo-skirt.jpg', baseHue: 351, tryOn: true },
-      { id: 7, name: 'The Ruffle Skirt', category: 'bottoms', price: 56, description: 'Tiered ruffles in cream. Sweet and effortless.', colorways: ['hot-pink', 'lavender', 'coral', 'ocean', 'pq-green'], sizes: ['xxs', 'xs', 's', 'm', 'l', 'xl'], imageUrl: 'img/dot-sweater-skirt.jpg', baseHue: 8, tryOn: true },
+      { id: 1, name: 'The Burgundy Polo', category: 'tops', price: 52, description: 'Classic polo in rich burgundy. Pairs perfectly with the pleated skirt.', colorways: ['coral', 'midnight', 'pq-green', 'sky-blue', 'ocean'], sizes: ['xxs', 'xs', 's', 'm', 'l', 'xl'], imageUrl: 'img/burgundy-polo-skirt.jpg', tryOn: true },
+      { id: 2, name: 'The Blush Sweater', category: 'tops', price: 62, description: 'Soft pink cashmere-blend knit for breezy afternoons', colorways: ['hot-pink', 'lavender', 'sky-blue', 'coral', 'pq-green'], sizes: ['xxs', 'xs', 's', 'm', 'l', 'xl'], imageUrl: 'img/pink-sweater-skirt.jpg', tryOn: true },
+      { id: 3, name: 'The Polka Dot Dress', category: 'dresses', price: 78, description: 'Bold dots that twirl beautifully. Our signature piece.', colorways: ['hot-pink', 'lavender', 'coral', 'ocean'], sizes: ['xxs', 'xs', 's', 'm', 'l', 'xl'], imageUrl: 'img/polka-dot-dress.jpg', tryOn: true },
+      { id: 4, name: 'The Lime Polo Dress', category: 'dresses', price: 72, description: 'Vibrant lime polo dress for sunny days in the city', colorways: ['grass', 'pq-green', 'sunshine', 'sky-blue', 'coral'], sizes: ['xxs', 'xs', 's', 'm', 'l', 'xl'], imageUrl: 'img/lime-polo-dress.jpg', tryOn: true },
+      { id: 5, name: 'The Classic Polo', category: 'tops', price: 48, description: 'Timeless pique cotton polo. The foundation of every outfit.', colorways: ['sky-blue', 'pq-green', 'coral', 'midnight', 'ocean'], sizes: ['xxs', 'xs', 's', 'm', 'l', 'xl'], imageUrl: 'img/blue-polo-pants.jpg', tryOn: true },
+      { id: 6, name: 'The Pleated Skirt', category: 'bottoms', price: 58, description: 'Crisp white pleats with movement. Style it your way.', colorways: ['coral', 'sky-blue', 'city-khaki', 'midnight', 'white'], sizes: ['xxs', 'xs', 's', 'm', 'l', 'xl'], imageUrl: 'img/burgundy-polo-skirt.jpg', tryOn: true },
+      { id: 7, name: 'The Ruffle Skirt', category: 'bottoms', price: 56, description: 'Tiered ruffles in cream. Sweet and effortless.', colorways: ['hot-pink', 'lavender', 'coral', 'ocean', 'pq-green'], sizes: ['xxs', 'xs', 's', 'm', 'l', 'xl'], imageUrl: 'img/dot-sweater-skirt.jpg', tryOn: true },
     ];
 
     // ===== THE BRAND'S PARTS =====
@@ -2658,8 +2682,8 @@
     // `agentId` is the member's ElevenLabs voice agent. `img` is a square picture of the head
     // and shoulders (tools/make_crew.py cuts them), or null for the first letter of the name.
     var CREW_MEMBERS = [
-      { name: 'Piper', role: 'founder & lead designer', zoneTagline: '"i design what i want to wear, and what my friends keep stealing"', zoneDesc: "welcome to my studio. this is where every p&q piece starts: a sketch, a color, a feeling. these are my favorites from the collection.", agentId: 'agent_7401m4b3y21deyhbcryt8dstz8q8', img: 'img/crew-piper.jpg', accent: '#6DC067', orbColor1: '#6DC067', orbColor2: '#ACD9F4', productIds: [1, 5, 6] },
-      { name: 'Quinn', role: 'creative director', zoneTagline: '"fashion is art you can wear. every outfit tells a story"', zoneDesc: "this is where the magic happens. i mix colors, patterns, and vibes until something feels right. check out what i'm loving right now.", agentId: 'agent_0601m4b3ybjwezd8gwwrv5p51c90', img: 'img/crew-quinn.jpg', accent: '#E84B8A', orbColor1: '#E84B8A', orbColor2: '#C4A7D7', productIds: [2, 3, 7] },
+      { name: 'Piper', role: 'lead designer', helps: 'classic pieces, and outfits that just work.', zoneTagline: '"i design what i want to wear, and what my friends keep stealing"', zoneDesc: "welcome to my studio. this is where every p&q piece starts: a sketch, a color, a feeling. these are my favorites from the collection.", agentId: 'agent_7401m4b3y21deyhbcryt8dstz8q8', img: 'img/crew-piper.jpg', accent: '#6DC067', orbColor1: '#6DC067', orbColor2: '#ACD9F4', productIds: [1, 5, 6] },
+      { name: 'Quinn', role: 'creative director', helps: 'bold prints, ruffles, and color.', zoneTagline: '"fashion is art you can wear. every outfit tells a story"', zoneDesc: "this is where the magic happens. i mix colors, patterns, and vibes until something feels right. check out what i'm loving right now.", agentId: 'agent_0601m4b3ybjwezd8gwwrv5p51c90', img: 'img/crew-quinn.jpg', accent: '#E84B8A', orbColor1: '#E84B8A', orbColor2: '#C4A7D7', productIds: [2, 3, 7] },
       { name: 'Kate', role: 'marketing & social', team: true, helps: "what's trending, and what's actually worth it.", zoneTagline: '"if it\'s fire, i\'ll let you know. if it\'s not, i\'ll let you know too"', zoneDesc: "what's trending, what's dropping, what everyone's talking about. these are the pieces that are about to blow up.", agentId: 'agent_1001m4b3ymzzf75tmnd0gps61ndn', img: 'img/crew-kate.jpg', accent: '#FBB040', orbColor1: '#FBB040', orbColor2: '#F7D559', productIds: [3, 4, 1] },
       { name: 'Birdie', role: 'pattern designer', team: true, helps: 'prints, colors, and what goes with what.', zoneTagline: '"a print should make you smile before you know why"', zoneDesc: "this is where the prints happen. dots, stripes, the color nobody expected. these are the pieces that show them off.", agentId: 'agent_8401m4b3z9asedb9b62hmx17a2na', img: 'img/crew-birdie.jpg', accent: '#ACD9F4', orbColor1: '#ACD9F4', orbColor2: '#C4A7D7', productIds: [3, 7, 4] },
       { name: 'Otto', role: 'finance & operations', team: true, helps: 'sizes, prices, and how to choose.', zoneTagline: '"every great brand needs someone who actually ships the product"', zoneDesc: "i make sure everything runs smooth: quality, shipping, the numbers nobody sees. these are the pieces i stand behind 100%.", agentId: 'agent_7601m4b3zjhpeanvfk62araq46qd', img: 'img/crew-otto.jpg', accent: '#B1D355', orbColor1: '#B1D355', orbColor2: '#6DC067', productIds: [4, 5, 1] },
@@ -3135,10 +3159,38 @@
       home: 'the home page, with Piper and Quinn',
       shop: 'the shop page, with all seven pieces',
       studio: 'the studio page, where she puts a color and a print on a piece and can send it in as an idea',
-      team: 'the team page, with Kate, Birdie and Otto',
+      team: 'the team page, with Piper, Quinn, Kate, Birdie and Otto',
       cart: 'the cart page',
     };
     var PAGE_ALSO = { store: 'shop', collection: 'shop', shopping: 'shop', designstudio: 'studio', design: 'studio', crew: 'team', bag: 'cart', basket: 'cart', checkout: 'cart', start: 'home', main: 'home' };
+
+    // ===== THE ADDRESS =====
+    // The address follows the page she is on: #shop, #studio, #team, #cart, or a crew member's
+    // name. So the browser's back and forward move between the site's pages and do not leave
+    // it, and a link can open a page.
+    function routeHash(page, zoneIdx) {
+      if (page === 'zone') return zoneIdx !== null && CREW_MEMBERS[zoneIdx] ? '#' + CREW_MEMBERS[zoneIdx].name.toLowerCase() : '';
+      return PAGE_WORDS[page] && page !== 'home' ? '#' + page : '';
+    }
+
+    // The page the address names: { page, zone }. An address that names nothing is home.
+    function readRoute() {
+      var said = '';
+      try { said = decodeURIComponent(String(window.location.hash || '')).replace(/^#/, '').toLowerCase(); } catch (e) {}
+      if (said !== 'home' && Object.prototype.hasOwnProperty.call(PAGE_WORDS, said)) return { page: said, zone: null };
+      var idx = CREW_MEMBERS.findIndex(function(m) { return m.name.toLowerCase() === said; });
+      return idx !== -1 ? { page: 'zone', zone: idx } : { page: 'home', zone: null };
+    }
+
+    // Put the page she is on into the address, as a new step in the browser's history.
+    function noteRoute(page, zoneIdx) {
+      try {
+        var here = window.location.pathname + window.location.search;
+        var to = here + routeHash(page, zoneIdx);
+        if (to === here + window.location.hash) return;
+        window.history.pushState({ pq: true }, '', to);
+      } catch (e) {}
+    }
 
     function cartWords(cart) {
       if (!cart.length) return 'Her cart is empty.';
@@ -3359,28 +3411,6 @@
     }
 
     // How a piece's photo is tinted to show a color (the photos are of one color each).
-    function colorFilter(product, colorId) {
-      var colorObj = COLORWAYS.find(function(c) { return c.id === colorId; });
-      if (!colorObj) return 'none';
-      var targetHue = hexToHue(colorObj.hex);
-      var baseHue = product.baseHue || 0;
-      var rotation = targetHue - baseHue;
-      // For white/near-white, desaturate instead of rotating
-      var r = parseInt(colorObj.hex.slice(1, 3), 16);
-      var g = parseInt(colorObj.hex.slice(3, 5), 16);
-      var b = parseInt(colorObj.hex.slice(5, 7), 16);
-      var maxC = Math.max(r, g, b), minC = Math.min(r, g, b);
-      var saturation = maxC === 0 ? 0 : (maxC - minC) / maxC;
-      if (saturation < 0.1) {
-        // Near-white or neutral: desaturate and brighten
-        return 'saturate(0.15) brightness(1.3)';
-      }
-      if (colorObj.id === 'midnight') {
-        return 'hue-rotate(' + rotation + 'deg) brightness(0.4) saturate(0.6)';
-      }
-      return 'hue-rotate(' + rotation + 'deg) saturate(1.1)';
-    }
-
     function colorName(colorId) {
       var colorObj = COLORWAYS.find(function(c) { return c.id === colorId; });
       return colorObj ? colorObj.name.toLowerCase() : colorId;
@@ -3393,11 +3423,12 @@
         el('path', { d: 'M12 18v4' }));
     }
 
-    // A piece as it shows in the chat: its photo, its price, a color, a size, "add to cart".
+    // A piece as it shows in the chat: the piece in a color, its price, its colors, a size, "add to cart".
     function ChatPiece({ product, startColor, onAdd, onView }) {
       const [color, setColor] = useState(startColor || product.colorways[0]);
       const [size, setSize] = useState(null);
       const [added, setAdded] = useState(0);
+      const [noShot, setNoShot] = useState(false); // the piece's own picture could not be loaded: its photo stands in
 
       var add = function() {
         if (!size) return;
@@ -3407,7 +3438,9 @@
 
       return el('div', { className: 'guide-piece', 'data-piece': pieceKey(product) },
         el('button', { className: 'guide-piece-photo', onClick: function() { onView(product); }, 'aria-label': 'view ' + product.name.toLowerCase() },
-          el('img', { src: product.imageUrl, alt: '', style: { filter: colorFilter(product, color) } })),
+          noShot
+            ? el('img', { src: product.imageUrl, alt: '' })
+            : el(PieceShot, { product: product, color: color, size: 240, onState: function(s) { if (s === 'failed') setNoShot(true); } })),
         el('div', { className: 'guide-piece-main' },
           el('div', { className: 'guide-piece-top' },
             el('span', { className: 'guide-piece-name' }, product.name),
@@ -3935,6 +3968,11 @@
       const [look, setLook] = useState(null);
       const [showLook, setShowLook] = useState(false);
       const [lookCount, setLookCount] = useState(0);
+      // What the picture side shows when it is not her look: the piece on its own in the color
+      // she has picked, or the product photo. If the piece's own picture cannot be loaded, the
+      // photo stands in.
+      const [shot, setShot] = useState('color'); // color | photo
+      const [shotState, setShotState] = useState('loading');
       var contentRef = React.useRef(null);
       var paneRef = React.useRef(null);
       ask.seen.color = selectedColor;
@@ -3945,6 +3983,7 @@
         if (!ask.colorN || !ask.color) return;
         setSelectedColor(ask.color);
         setShowLook(false);
+        setShot('color');
       }, [ask.colorN]);
 
       var handleLook = function(image) {
@@ -3963,10 +4002,6 @@
         else c.scrollTop = top;
       }, [lookCount]);
 
-      var getImageFilter = function() {
-        return colorFilter(product, selectedColor);
-      };
-
       const handleAdd = () => {
         if (!selectedSize) return;
         onAddToCart(product, selectedColor, selectedSize);
@@ -3984,14 +4019,15 @@
 
       var currentColorObj = COLORWAYS.find(function(c) { return c.id === selectedColor; });
       var colorName = currentColorObj ? currentColorObj.name : '';
+      var onPhoto = shot === 'photo' || shotState === 'failed';
 
       return (
-        React.createElement('div', {className: "modal-overlay", onClick: handleOverlayClick}, React.createElement('div', {className: "modal-content", ref: contentRef, 'data-piece': pieceKey(product)}, React.createElement('button', {className: "modal-close", onClick: onClose, 'aria-label': "close"}, "×"), React.createElement('div', {ref: paneRef, className: "modal-pane"}, (look && showLook) ? (React.createElement('img', {key: "look", src: look, alt: 'you in ' + product.name.toLowerCase(), className: "modal-image tryon-look"})) : (React.createElement('img', {key: "product", src: product.imageUrl, alt: product.name, className: "modal-image", style: { filter: getImageFilter(), transition: 'filter 0.4s ease' }})), look && (React.createElement('div', {className: "tryon-view"}, React.createElement('button', {className: 'tryon-view-btn' + (showLook ? ' active' : ''), 'aria-pressed': showLook, onClick: function() { setShowLook(true); }}, "my look"), React.createElement('button', {className: 'tryon-view-btn' + (!showLook ? ' active' : ''), 'aria-pressed': !showLook, onClick: function() { setShowLook(false); }}, "product photo")))), React.createElement('div', {className: "modal-details"}, React.createElement('div', null, React.createElement('div', {className: "modal-product-name"}, product.name), React.createElement('div', {className: "modal-product-price"}, "$", product.price)), React.createElement('div', {className: "modal-product-desc"}, product.description), product.tryOn && React.createElement(TryOn, {pieces: [product], photo: tryPhoto, setPhoto: setTryPhoto, look: look, onLook: handleLook, lookRef: ask.look}), React.createElement('div', null, React.createElement('div', {className: "label"}, "color: ", colorName.toLowerCase()), React.createElement('div', {style: { display: 'flex', gap: '0.75rem', flexWrap: 'wrap', alignItems: 'center' }}, product.colorways.map(cw => {
+        React.createElement('div', {className: "modal-overlay", onClick: handleOverlayClick}, React.createElement('div', {className: "modal-content", ref: contentRef, 'data-piece': pieceKey(product)}, React.createElement('button', {className: "modal-close", onClick: onClose, 'aria-label': "close"}, "×"), React.createElement('div', {ref: paneRef, className: "modal-pane"}, (look && showLook) ? (React.createElement('img', {key: "look", src: look, alt: 'you in ' + product.name.toLowerCase(), className: "modal-image tryon-look"})) : onPhoto ? (React.createElement('img', {key: "product", src: product.imageUrl, alt: product.name, className: "modal-image"})) : (React.createElement(PieceShot, {key: "shot", product: product, color: selectedColor, size: 1000, className: "modal-image piece-shot", label: product.name.toLowerCase() + ' in ' + colorName.toLowerCase(), onState: setShotState})), (look || shotState !== 'failed') && (React.createElement('div', {className: "tryon-view"}, look && React.createElement('button', {className: 'tryon-view-btn' + (showLook ? ' active' : ''), 'aria-pressed': showLook, onClick: function() { setShowLook(true); }}, "my look"), shotState !== 'failed' && React.createElement('button', {className: 'tryon-view-btn' + (!showLook && !onPhoto ? ' active' : ''), 'aria-pressed': !showLook && !onPhoto, onClick: function() { setShot('color'); setShowLook(false); }}, "in " + colorName.toLowerCase()), React.createElement('button', {className: 'tryon-view-btn' + (!showLook && onPhoto ? ' active' : ''), 'aria-pressed': !showLook && onPhoto, onClick: function() { setShot('photo'); setShowLook(false); }}, "photo")))), React.createElement('div', {className: "modal-details"}, React.createElement('div', null, React.createElement('div', {className: "modal-product-name"}, product.name), React.createElement('div', {className: "modal-product-price"}, "$", product.price)), React.createElement('div', {className: "modal-product-desc"}, product.description), product.tryOn && React.createElement(TryOn, {pieces: [product], photo: tryPhoto, setPhoto: setTryPhoto, look: look, onLook: handleLook, lookRef: ask.look}), React.createElement('div', null, React.createElement('div', {className: "label"}, "color: ", colorName.toLowerCase()), React.createElement('div', {style: { display: 'flex', gap: '0.75rem', flexWrap: 'wrap', alignItems: 'center' }}, product.colorways.map(cw => {
                     const color = COLORWAYS.find(c => c.id === cw);
                     if (!color) return null;
                     var isSelected = selectedColor === cw;
                     return (
-                      React.createElement('div', {key: cw, onClick: () => { setSelectedColor(cw); setShowLook(false); }, title: color.name, style: {
+                      React.createElement('div', {key: cw, onClick: () => { setSelectedColor(cw); setShowLook(false); setShot('color'); }, title: color.name, style: {
                           width: isSelected ? '36px' : '32px',
                           height: isSelected ? '36px' : '32px',
                           borderRadius: '50%',
@@ -4029,24 +4065,30 @@
           el('button', { type: 'button', className: 'home-make', onClick: function() { navigateTo('studio'); } }, 'or design your own')));
     }
 
-    // The team: Kate, Birdie and Otto. Back-up for when she wants a second opinion.
+    // The team: all five. Piper and Quinn first, in a row of their own, then Kate, Birdie and
+    // Otto. She can ask any of them.
     function TeamPage({ onSelectCrewMember }) {
-      return el('div', { className: 'main-content fade-in' },
-        el('h1', { className: 'page-title' }, 'the team'),
-        el('p', { className: 'team-lede' }, 'piper and quinn design it. kate, birdie and otto help you find it.'),
-        el('div', { className: 'team-grid' }, CREW_MEMBERS.map(function(member, idx) {
-          if (!member.team) return null;
+      var cards = function(sisters) {
+        return CREW_MEMBERS.map(function(member, idx) {
+          if (!!member.team === sisters) return null;
           return el('button', { key: member.name, type: 'button', className: 'team-card', style: { '--zone-accent': member.accent }, onClick: function() { onSelectCrewMember(idx); } },
             el(CrewAvatar, { member: member, className: 'team-face' }),
             el('span', { className: 'team-name' }, member.name),
             el('span', { className: 'team-role' }, member.role),
             el('span', { className: 'team-helps' }, member.helps),
             el('span', { className: 'team-go' }, 'ask ' + member.name.toLowerCase()));
-        })));
+        });
+      };
+      return el('div', { className: 'main-content fade-in' },
+        el('h1', { className: 'page-title' }, 'the team'),
+        el('p', { className: 'team-lede' }, 'piper and quinn design it. kate, birdie and otto help you find it.'),
+        el('div', { className: 'team-grid team-sisters' }, cards(true)),
+        el('div', { className: 'team-grid' }, cards(false)));
     }
 
     function ShopPage({ setCurrentPage, onSelectProduct }) {
       const [activeCategory, setActiveCategory] = useState('all');
+      useEffect(studioWarm, []);
       const categories = ['all', 'dresses', 'tops', 'bottoms'];
 
       const filteredProducts = activeCategory === 'all'
@@ -4348,6 +4390,23 @@
       }, [piece.key, design.color, design.print, design.ink, again]);
       // with no label it is decoration: the button it sits in carries the name
       return el('canvas', { ref: ref, width: size, height: size, className: className, role: label ? 'img' : undefined, 'aria-label': label || undefined, 'aria-hidden': label ? undefined : 'true', 'data-state': state, 'data-piece': piece.key, 'data-design': studioKey(design) });
+    }
+
+    // A piece on its own, in one of the colors it comes in: the studio's picture of it, with
+    // no print but its own. The Polka Dot Dress keeps its dots.
+    var PIECE_PRINT = { 'polka-dot-dress': { print: 'classic-polka', ink: 'white' } };
+    function pieceDesign(product, color) {
+      var key = pieceKey(product);
+      var own = PIECE_PRINT[key] || { print: 'none', ink: 'white' };
+      return { piece: key, color: color, print: own.print, ink: studioInk(color, own.ink) };
+    }
+    function PieceShot({ product, color, size, className, label, onState }) {
+      return el(StudioGarment, { piece: studioPiece(pieceKey(product)), design: pieceDesign(product, color), size: size, className: className, label: label, onState: onState });
+    }
+
+    // Ask for every piece's shade map ahead of the first window she opens.
+    function studioWarm() {
+      STUDIO_PIECES.forEach(function(p) { studioShade(p.key, function() {}); });
     }
 
     function StudioPrintSwatch({ print, color, ink }) {
@@ -4700,9 +4759,11 @@
           el(React.Fragment, null,
             el('div', { style: { maxWidth: '700px', margin: '0 auto' } }, cart.map((item, idx) =>
               el('div', { key: idx, className: 'cart-item' },
-                el('div', { className: 'cart-item-details' },
-                  el('div', { className: 'cart-item-name' }, item.product.name),
-                  el('div', { className: 'cart-item-meta' }, item.colorway && el('span', null, colorName(item.colorway), ' • '), item.size && el('span', null, 'size ', item.size, ' • '), '$', item.product.price)),
+                el('div', { className: 'cart-item-main' },
+                  el(PieceShot, { product: item.product, color: item.colorway, size: 160, className: 'cart-item-shot' }),
+                  el('div', { className: 'cart-item-details' },
+                    el('div', { className: 'cart-item-name' }, item.product.name),
+                    el('div', { className: 'cart-item-meta' }, item.colorway && el('span', null, colorName(item.colorway), ' • '), item.size && el('span', null, 'size ', item.size, ' • '), '$', item.product.price))),
                 el('div', { className: 'quantity-control' },
                   el('button', { className: 'qty-button', 'aria-label': 'one fewer', onClick: () => updateQuantity(idx, item.qty - 1) }, '-'),
                   el('span', null, item.qty),
@@ -4726,6 +4787,7 @@
       var zoneProducts = member.productIds.map(function(id) {
         return PRODUCTS.find(function(p) { return p.id === id; });
       }).filter(Boolean);
+      useEffect(studioWarm, []);
 
       return el('div', { className: 'zone-page', style: { '--zone-accent': member.accent } },
         el('div', { className: 'zone-hero', style: { background: 'linear-gradient(180deg, ' + tint(member.accent, 0.7) + ' 0%, ' + tint(member.accent, 0.9) + ' 100%)' } },
@@ -4776,11 +4838,16 @@
     }
 
     function App() {
-      const [currentPage, setCurrentPage] = useState('home');   // home | zone | shop | studio | team | cart
+      // Where the address says she is as the site opens. A link to a crew member's page makes
+      // that member her guide, as a tap on the member does.
+      var firstRef = React.useRef(null);
+      if (firstRef.current === null) firstRef.current = readRoute();
+      var first = firstRef.current;
+      const [currentPage, setCurrentPage] = useState(first.page);   // home | zone | shop | studio | team | cart
       const [cart, setCart] = useState([]);
       const [piece, setPiece] = useState(null);                 // the piece window that is open (see ProductDetail)
-      const [activeZoneIdx, setActiveZoneIdx] = useState(null); // whose page she is on, on the zone page
-      const [guideIdx, setGuideIdx] = useState(null);           // her guide: with her on every page until she picks another or closes the chat
+      const [activeZoneIdx, setActiveZoneIdx] = useState(first.zone); // whose page she is on, on the zone page
+      const [guideIdx, setGuideIdx] = useState(first.zone);     // her guide: with her on every page until she picks another or closes the chat
       const [tryPhoto, setTryPhoto] = useState(null);
       const [outfit, setOutfit] = useState(null);
       const [design, setDesign] = useState(STUDIO_START);        // what she has made in the studio: it stays as she goes from page to page
@@ -4795,8 +4862,8 @@
       var pieceRef = React.useRef(null);
       var pieceCount = React.useRef(0);
       var cartRef = React.useRef([]);
-      var pageRef = React.useRef('home');
-      var zoneRef = React.useRef(null);
+      var pageRef = React.useRef(first.page);
+      var zoneRef = React.useRef(first.zone);
       var quietPage = React.useRef(true); // the first page, and a page her guide took her to, need no note
       var designRef = React.useRef(STUDIO_START);
       var toldDesign = React.useRef(studioKey(STUDIO_START)); // the design her guide last heard about
@@ -4981,6 +5048,7 @@
         pageRef.current = page;
         setActiveZoneIdx(null);
         setCurrentPage(page);
+        noteRoute(page, null);
         window.scrollTo(0, 0);
       };
 
@@ -5061,6 +5129,7 @@
         setActiveZoneIdx(idx);
         setGuideIdx(idx);
         setCurrentPage('zone');
+        noteRoute('zone', idx);
         window.scrollTo(0, 0);
       };
 
@@ -5074,6 +5143,34 @@
           if (window.crewSound) window.crewSound(false);
         };
       }, [!!guide]);
+
+      // The browser's back or forward, or an address she typed. A window that is open closes
+      // first, and the page stays. A try-on that is under way is never closed this way. Going
+      // back to a crew member's page does not change her guide.
+      useEffect(function() {
+        var onPop = function() {
+          var to = readRoute();
+          if (tryingOn()) {
+            noteRoute(pageRef.current, zoneRef.current);
+            return;
+          }
+          if (pieceRef.current || outfitRef.current) {
+            if (pieceRef.current) tellCrew('She closed ' + pieceRef.current.product.name + '.');
+            closePiece();
+            closeOutfit();
+            noteRoute(pageRef.current, zoneRef.current);
+            return;
+          }
+          if (to.page === pageRef.current && to.zone === zoneRef.current) return;
+          zoneRef.current = to.zone;
+          pageRef.current = to.page;
+          setActiveZoneIdx(to.zone);
+          setCurrentPage(to.page);
+          window.scrollTo(0, 0);
+        };
+        window.addEventListener('popstate', onPop);
+        return function() { window.removeEventListener('popstate', onPop); };
+      }, []);
 
       // Her guide cannot see the screen: say where she has gone.
       useEffect(function() {
