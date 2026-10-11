@@ -24,6 +24,7 @@ export const GARMENTS = {
   5: { file: "classic-polo.jpg", category: "tops" },
   6: { file: "pleated-skirt.jpg", category: "bottoms" },
   7: { file: "ruffle-skirt.jpg", category: "bottoms" },
+  8: { file: "wide-leg-pants.jpg", category: "bottoms" },
 };
 
 // The site's own addresses: the live site, and Netlify's addresses for this project

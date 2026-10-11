@@ -14,7 +14,7 @@ import { getStore } from "./blobs-11.1.4.mjs";
 import { setting, clip } from "./tryon-core.mjs";
 
 // What the design studio offers. The names are the ones the page sends.
-export const PIECES = ["burgundy-polo", "blush-sweater", "polka-dot-dress", "lime-polo-dress", "classic-polo", "pleated-skirt", "ruffle-skirt"];
+export const PIECES = ["burgundy-polo", "blush-sweater", "polka-dot-dress", "lime-polo-dress", "classic-polo", "pleated-skirt", "ruffle-skirt", "wide-leg-pants"];
 export const COLORS = ["pq-green", "sky-blue", "grass", "orange-tee", "city-khaki", "coral", "lavender", "hot-pink", "sunshine", "ocean", "white", "midnight"];
 export const PRINTS = ["classic-polka", "city-grid", "confetti-scatter", "cabana-stripe", "mod-block", "circle-link"];
 
