@@ -141,6 +141,11 @@ export function stamp(at) {
 //
 // The client's "only if new" writes are not used: for those it reports every answer but
 // 412 as a success.
+//
+// The store is asked for its latest state, not a cached copy ("strong" consistency). The
+// count of ideas, and how often a design has been sent, come from a listing, and a listing
+// must hold what was sent a moment ago. On 11 October 2026 the cached listing on the
+// preview was more than a minute behind a write.
 export function openBox(name) {
   let tell;
   const failed = new Promise((_, reject) => {
@@ -173,7 +178,7 @@ export function openBox(name) {
 
   let store;
   try {
-    store = getStore({ name, fetch: once });
+    store = getStore({ name, fetch: once, consistency: "strong" });
   } catch (e) {
     if (e && e.name === "MissingBlobsEnvironmentError") return null;
     throw e;
