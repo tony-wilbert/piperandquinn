@@ -32,19 +32,22 @@
     (function () {
       var macSafari = false;
       try { macSafari = navigator.vendor === 'Apple Computer, Inc.' && !('ontouchend' in document); } catch (e) {}
-      var loaded = false, guide = false;
+      var loaded = false, missing = false, guide = false;
       var set = function (on) {
         if (!macSafari) return;
         try { if (on) document.ontouchend = null; else delete document.ontouchend; } catch (e) {}
       };
-      window.crewSound = function (on) { guide = !!on; set(guide || !loaded); };
+      window.crewSound = function (on) { guide = !!on; set(guide || !(loaded || missing)); };
       window.crewVoiceLoaded = function () { loaded = true; set(guide); };
+      window.crewVoiceMissing = function () { missing = true; set(guide); };
+      // where the library is: 'here', 'coming' (still loading) or 'missing' (it could not be loaded)
+      window.crewVoiceState = function () { return loaded ? 'here' : missing ? 'missing' : 'coming'; };
       set(true);
     })();
   </script>
   <!-- The crew's voices: ElevenLabs' client library, one fixed version, kept with the site
        (see vendor/README.md). The page is checked against this file. -->
-  <script src="vendor/elevenlabs-client-1.27.0.js" async onload="crewVoiceLoaded()"></script>
+  <script src="vendor/elevenlabs-client-1.27.0.js" async onload="crewVoiceLoaded()" onerror="crewVoiceMissing()"></script>
   <style>
     /* ===== THE BRAND =====
        From the piper & quinn brand style guide, version 1.0 (october 2026).
@@ -432,6 +435,10 @@
     }
 
     .navbar-brand {
+      background: none;
+      border: none;
+      padding: 0;
+      font: inherit;
       font-size: 1.5rem;
       cursor: pointer;
     }
@@ -446,9 +453,15 @@
     }
 
     .navbar-link {
-      cursor: pointer;
-      padding-bottom: 2px;
+      background: none;
+      border: none;
       border-bottom: 2px solid transparent;
+      padding: 0 0 2px;
+      font: inherit;
+      color: inherit;
+      letter-spacing: inherit;
+      text-transform: lowercase;
+      cursor: pointer;
       transition: border-color 0.2s ease;
     }
 
@@ -811,7 +824,7 @@
       }
 
       .navbar-links {
-        gap: 0.9rem;
+        gap: 0.8rem;
         font-size: 0.85rem;
       }
 
@@ -861,115 +874,25 @@
       }
 
       .navbar-links {
-        gap: 0.6rem;
-        font-size: 0.8rem;
+        gap: 0.5rem;
+        font-size: 0.78rem;
       }
     }
 
-    /* ===== HOME: CHOOSE YOUR GUIDE ===== */
-    .char-select {
-      min-height: 100vh;
-      background: linear-gradient(135deg, #f0faf0 0%, #e8f4fc 50%, #f5f9e8 100%);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 3rem 1.5rem;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .char-select::before {
-      content: '';
+    .sr-only {
       position: absolute;
-      top: -20%;
-      right: -10%;
-      width: 500px;
-      height: 500px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(109, 192, 103, 0.08) 0%, transparent 70%);
-      pointer-events: none;
-    }
-
-    .char-select::after {
-      content: '';
-      position: absolute;
-      bottom: -15%;
-      left: -5%;
-      width: 400px;
-      height: 400px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(172, 217, 244, 0.1) 0%, transparent 70%);
-      pointer-events: none;
-    }
-
-    .char-select > * {
-      position: relative;
-      z-index: 1;
-    }
-
-    .char-select-brand {
-      font-size: 4.25rem;
-      line-height: 1.1;
-    }
-
-    .char-select-tagline {
-      font-size: 1.6rem;
-      margin-top: 0.25rem;
-    }
-
-    .char-select-subtitle {
-      font-size: 0.8rem;
-      font-weight: 400;
-      color: var(--beluga);
-      margin: 3.5rem 0 1.5rem;
-      letter-spacing: 0.3em;
-      text-transform: uppercase;
-    }
-
-    .char-select-grid {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1.1rem;
-      max-width: 1040px;
-      width: 100%;
-      justify-content: center;
-    }
-
-    .char-card {
-      flex: 0 0 184px;
-      background: #fff;
-      border: 1px solid var(--line-soft);
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow);
-      padding: 1.75rem 1rem 1.4rem;
-      text-align: center;
-      cursor: pointer;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .char-card:hover {
-      transform: translateY(-6px);
-      box-shadow: var(--shadow-up);
-    }
-
-    .char-card-avatar {
-      width: 92px;
-      height: 92px;
-      border-radius: 50%;
-      margin: 0 auto 1.1rem;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
       overflow: hidden;
-      box-shadow: 0 0 0 3px #fff, 0 0 0 6px var(--zone-accent, var(--pq-green));
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
     }
 
-    .char-card-avatar img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: top;
-    }
-
-    .char-card-initials {
+    /* A crew member with no picture yet: the first letter of the name. */
+    .crew-initial {
       width: 100%;
       height: 100%;
       display: flex;
@@ -981,52 +904,187 @@
       text-transform: lowercase;
     }
 
-    .char-card-name {
-      font-size: 1.25rem;
-      font-weight: 400;
-      color: var(--ink);
-      letter-spacing: 0.02em;
-      margin-bottom: 0.2rem;
-      text-transform: lowercase;
+    /* ===== HOME: THE TWO SISTERS =====
+       The name of the brand, set with the sisters themselves: piper, the ampersand, quinn. */
+    .home {
+      --face: clamp(112px, 30vw, 248px);
+      min-height: calc(100vh - var(--nav-h));
+      min-height: calc(100svh - var(--nav-h));
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem 1rem 4rem;
+      text-align: center;
     }
 
-    .char-card-role {
-      font-size: 0.78rem;
-      color: var(--beluga);
-      text-transform: lowercase;
-      letter-spacing: 0.03em;
-      margin-bottom: 1.1rem;
-      line-height: 1.35;
-      min-height: 2.1em;
+    .home-pair {
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
     }
 
-    .char-card-enter {
-      font-size: 0.78rem;
-      font-weight: 500;
-      letter-spacing: 0.05em;
-      text-transform: lowercase;
-      padding: 8px 18px;
-      border-radius: 999px;
+    .home-sister {
+      width: var(--face);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: none;
       border: none;
-      background: var(--zone-accent, var(--pq-green));
-      color: var(--ink);
+      padding: 0;
+      font: inherit;
+      color: inherit;
+      text-transform: lowercase;
       cursor: pointer;
-      font-family: 'Jost', sans-serif;
     }
 
-    .char-select-skip {
-      margin-top: 2.75rem;
+    .home-face {
+      width: 100%;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      overflow: hidden;
+      box-shadow: 0 0 0 4px #fff, 0 0 0 8px var(--zone-accent, var(--pq-green));
+      transition: transform 0.3s ease;
+    }
+
+    .home-face img,
+    .team-face img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top;
+    }
+
+    .home-sister:hover .home-face,
+    .team-card:hover .team-face {
+      transform: translateY(-6px);
+    }
+
+    /* the wordmark's ampersand, level with the middle of the two faces */
+    .home-amp {
+      flex: none;
+      width: clamp(52px, 12vw, 120px);
+      margin-top: calc(var(--face) / 2 - 0.55em);
+      font-size: clamp(2.1rem, 8vw, 6rem);
+      font-weight: 300;
+      line-height: 1;
+      color: var(--sky-blue);
+    }
+
+    .home-name {
+      margin-top: 1.25rem;
+      font-size: clamp(1.9rem, 5.4vw, 3.4rem);
+      font-weight: 300;
+      letter-spacing: 0.02em;
+      line-height: 1.1;
+      color: var(--pq-green);
+    }
+
+    .home-role {
+      margin-top: 0.35rem;
+      min-height: 2.7em;
+      font-size: 0.85rem;
+      line-height: 1.35;
+      color: var(--ink-soft);
+    }
+
+    .home-go,
+    .team-go {
+      margin-top: 0.6rem;
+      padding-bottom: 3px;
       font-size: 0.9rem;
-      color: var(--ink);
-      cursor: pointer;
       letter-spacing: 0.04em;
-      padding-bottom: 2px;
+      border-bottom: 2px solid var(--zone-accent, var(--pq-green));
+    }
+
+    .home-tagline {
+      margin: 3rem 0 0;
+      font-size: clamp(1.25rem, 3.4vw, 1.6rem);
+    }
+
+    .home-skip {
+      margin-top: 1.5rem;
+      background: none;
+      border: none;
       border-bottom: 2px solid var(--sky-blue);
+      padding: 0 0 2px;
+      font: inherit;
+      font-size: 0.9rem;
+      letter-spacing: 0.04em;
+      color: var(--ink);
+      text-transform: lowercase;
+      cursor: pointer;
       transition: border-color 0.2s ease;
     }
 
-    .char-select-skip:hover {
+    .home-skip:hover {
       border-bottom-color: var(--pq-green);
+    }
+
+    /* ===== THE TEAM: BACK-UP, ON A TAB OF ITS OWN ===== */
+    .team-lede {
+      max-width: 520px;
+      margin: -1.5rem auto 3rem;
+      text-align: center;
+      font-size: 1.1rem;
+      font-weight: 300;
+      line-height: 1.7;
+    }
+
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 3rem 2rem;
+      max-width: 860px;
+      margin: 0 auto 2rem;
+    }
+
+    .team-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      background: none;
+      border: none;
+      padding: 0;
+      font: inherit;
+      color: inherit;
+      text-transform: lowercase;
+      cursor: pointer;
+    }
+
+    .team-face {
+      width: 132px;
+      height: 132px;
+      border-radius: 50%;
+      overflow: hidden;
+      box-shadow: 0 0 0 3px #fff, 0 0 0 6px var(--zone-accent, var(--pq-green));
+      transition: transform 0.3s ease;
+    }
+
+    .team-name {
+      margin-top: 1.1rem;
+      font-size: 1.6rem;
+      font-weight: 300;
+      letter-spacing: 0.02em;
+      line-height: 1.1;
+    }
+
+    .team-role {
+      margin-top: 0.25rem;
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+    }
+
+    .team-helps {
+      max-width: 240px;
+      margin-top: 0.7rem;
+      font-size: 0.98rem;
+      line-height: 1.5;
+    }
+
+    .team-go {
+      margin-top: 0.8rem;
     }
 
     /* ===== ZONE PAGES ===== */
@@ -1043,7 +1101,7 @@
 
     .zone-hero {
       min-height: 400px;
-      padding: 4.5rem 1.5rem 3rem;
+      padding: 3.5rem 1.5rem 3rem;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -1133,28 +1191,6 @@
       gap: 2rem;
     }
 
-    .zone-back {
-      position: absolute;
-      top: 1rem;
-      left: 1.5rem;
-      font-size: 0.8rem;
-      font-weight: 400;
-      letter-spacing: 0.04em;
-      text-transform: lowercase;
-      color: var(--ink);
-      cursor: pointer;
-      z-index: 40;
-      transition: border-color 0.2s ease;
-      background: rgba(255, 255, 255, 0.94);
-      padding: 7px 15px;
-      border-radius: 999px;
-      border: 1px solid var(--line);
-    }
-
-    .zone-back:hover {
-      border-color: var(--ink);
-    }
-
     .zone-other {
       padding: 2rem 2rem 0;
       text-align: center;
@@ -1196,20 +1232,6 @@
       background: var(--chip-accent, var(--pq-green));
     }
 
-    @media (max-width: 900px) {
-      .char-select-grid {
-        max-width: 560px;
-      }
-
-      .char-card {
-        flex-basis: 164px;
-      }
-
-      .char-select-brand {
-        font-size: 3.25rem;
-      }
-    }
-
     @media (max-width: 768px) {
       .zone-hero {
         min-height: 320px;
@@ -1226,59 +1248,22 @@
     }
 
     @media (max-width: 560px) {
-      .char-select {
-        padding: 2.5rem 1rem;
+      .home {
+        padding: 2.25rem 1rem 3rem;
       }
 
-      .char-select-grid {
-        gap: 0.75rem;
-        max-width: 340px;
+      .home-tagline {
+        margin-top: 2.25rem;
       }
 
-      .char-card {
-        flex-basis: calc(50% - 0.375rem);
-        padding: 1.25rem 0.6rem 1.1rem;
-      }
-
-      .char-card-avatar {
-        width: 68px;
-        height: 68px;
-        margin-bottom: 0.85rem;
-      }
-
-      .char-card-initials {
-        font-size: 1.7rem;
-      }
-
-      .char-card-name {
-        font-size: 1.05rem;
-      }
-
-      .char-card-role {
-        font-size: 0.72rem;
-        margin-bottom: 0.85rem;
-      }
-
-      .char-card-enter {
-        font-size: 0.72rem;
-        padding: 7px 14px;
-      }
-
-      .char-select-brand {
-        font-size: 2.5rem;
-      }
-
-      .char-select-tagline {
-        font-size: 1.25rem;
-      }
-
-      .char-select-subtitle {
-        margin: 2.5rem 0 1.25rem;
+      .team-face {
+        width: 112px;
+        height: 112px;
       }
 
       .zone-hero {
         min-height: 280px;
-        padding: 4rem 1rem 2.25rem;
+        padding: 2.5rem 1rem 2.25rem;
       }
 
       .zone-hero-name {
@@ -1289,13 +1274,6 @@
         font-size: 1rem;
         padding: 0 0.5rem;
       }
-
-      .zone-back {
-        top: 0.75rem;
-        left: 0.75rem;
-        font-size: 0.75rem;
-      }
-
     }
 
     /* ===== TRY-ON ===== */
@@ -1617,20 +1595,123 @@
       align-items: center;
       gap: 0.75rem;
       padding: 0.8rem 1rem;
-      border-bottom: 1px solid var(--line);
       text-align: left;
     }
 
-    .guide-bar {
-      width: 100%;
+    .guide-head {
+      border-bottom: 1px solid var(--line);
+    }
+
+    /* Narrow screens: the bar, and beside it what she needs while the chat is folded. */
+    .guide-top {
+      display: flex;
+      align-items: center;
       min-height: var(--guide-bar);
-      background: #fff;
-      border: none;
       border-bottom: 1px solid transparent;
+    }
+
+    .guide-bar {
+      flex: 1;
+      min-width: 0;
+      background: none;
+      border: none;
       font: inherit;
       color: inherit;
       text-transform: lowercase;
       cursor: pointer;
+    }
+
+    .guide-acts {
+      flex: none;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding-right: 0.9rem;
+    }
+
+    .guide-close {
+      flex: none;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--ink-soft);
+      font-size: 1.15rem;
+      font-weight: 300;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .guide-close:hover {
+      border-color: var(--ink);
+      color: var(--ink);
+    }
+
+    /* Narrow screens, chat folded: the guide's last line above the bar, and the pieces in it. */
+    .guide-peek {
+      display: none;
+    }
+
+    .guide-peek-main {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .guide-peek-words {
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 3;
+      overflow: hidden;
+      max-width: 100%;
+      padding: 0.5rem 0.85rem;
+      background: var(--guide-tint);
+      border: none;
+      border-radius: 16px;
+      border-bottom-left-radius: 6px;
+      font: inherit;
+      font-size: 0.92rem;
+      line-height: 1.4;
+      color: inherit;
+      text-align: left;
+      text-transform: lowercase;
+      cursor: pointer;
+    }
+
+    .guide-peek-pieces {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+      overflow-x: auto;
+    }
+
+    .guide-peek-piece {
+      flex: none;
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+      max-width: 200px;
+      padding: 4px 12px 4px 4px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      font: inherit;
+      font-size: 0.82rem;
+      line-height: 1.25;
+      color: var(--ink);
+      text-align: left;
+      text-transform: lowercase;
+      cursor: pointer;
+    }
+
+    .guide-peek-piece img {
+      flex: none;
+      width: 40px;
+      height: 52px;
+      border-radius: 8px;
+      object-fit: cover;
+      object-position: top 20%;
+      background: var(--orbit-white);
     }
 
     .guide-face {
@@ -1650,7 +1731,7 @@
       object-position: top;
     }
 
-    .guide-face .char-card-initials {
+    .guide-face .crew-initial {
       font-size: 1.1rem;
     }
 
@@ -2071,7 +2152,7 @@
         z-index: 45;
       }
 
-      .guide-bar {
+      .guide-top {
         display: none;
       }
 
@@ -2105,8 +2186,21 @@
         display: none;
       }
 
-      .guide.open .guide-bar {
+      .guide.open .guide-top {
         border-bottom-color: var(--line);
+      }
+
+      /* folded: what she needs while she looks around. open: the way to send the guide off. */
+      .guide:not(.open) .guide-top .guide-close,
+      .guide.open .guide-bar-live {
+        display: none;
+      }
+
+      .guide:not(.open) .guide-peek {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.5rem;
+        padding: 0.8rem 0.9rem 0.1rem 1rem;
       }
 
       .guide.open {
@@ -2122,6 +2216,11 @@
       body.guide-on .modal-details {
         padding-bottom: 6.5rem;
       }
+
+      /* and clear of a line from the guide that is showing above the bar */
+      body.guide-peek-on .modal-details {
+        padding-bottom: 17rem;
+      }
     }
   </style>
 </head>
@@ -2129,7 +2228,7 @@
   <div id="root"></div>
 
   <script>
-// Pre-transpiled — no Babel runtime needed
+// Written without JSX: no build step, and no Babel in the browser.
 
     function initApp() {
       if (typeof React === 'undefined' || typeof ReactDOM === 'undefined') {
@@ -2173,13 +2272,13 @@
     }
 
     const PRODUCTS = [
-      { id: 1, name: 'The Burgundy Polo', category: 'tops', price: 52, description: 'Classic polo in rich burgundy — pairs perfectly with the pleated skirt', colorways: ['coral', 'midnight', 'pq-green', 'sky-blue', 'ocean'], sizes: ['xxs', 'xs', 's', 'm', 'l', 'xl'], imageUrl: 'img/burgundy-polo-skirt.jpg', baseHue: 351, tryOn: true },
+      { id: 1, name: 'The Burgundy Polo', category: 'tops', price: 52, description: 'Classic polo in rich burgundy. Pairs perfectly with the pleated skirt.', colorways: ['coral', 'midnight', 'pq-green', 'sky-blue', 'ocean'], sizes: ['xxs', 'xs', 's', 'm', 'l', 'xl'], imageUrl: 'img/burgundy-polo-skirt.jpg', baseHue: 351, tryOn: true },
       { id: 2, name: 'The Blush Sweater', category: 'tops', price: 62, description: 'Soft pink cashmere-blend knit for breezy afternoons', colorways: ['hot-pink', 'lavender', 'sky-blue', 'coral', 'pq-green'], sizes: ['xxs', 'xs', 's', 'm', 'l', 'xl'], imageUrl: 'img/pink-sweater-skirt.jpg', baseHue: 8, tryOn: true },
-      { id: 3, name: 'The Polka Dot Dress', category: 'dresses', price: 78, description: 'Bold dots that twirl beautifully — our signature piece', colorways: ['hot-pink', 'lavender', 'coral', 'ocean'], sizes: ['xxs', 'xs', 's', 'm', 'l', 'xl'], imageUrl: 'img/polka-dot-dress.jpg', baseHue: 320, tryOn: true },
+      { id: 3, name: 'The Polka Dot Dress', category: 'dresses', price: 78, description: 'Bold dots that twirl beautifully. Our signature piece.', colorways: ['hot-pink', 'lavender', 'coral', 'ocean'], sizes: ['xxs', 'xs', 's', 'm', 'l', 'xl'], imageUrl: 'img/polka-dot-dress.jpg', baseHue: 320, tryOn: true },
       { id: 4, name: 'The Lime Polo Dress', category: 'dresses', price: 72, description: 'Vibrant lime polo dress for sunny days in the city', colorways: ['grass', 'pq-green', 'sunshine', 'sky-blue', 'coral'], sizes: ['xxs', 'xs', 's', 'm', 'l', 'xl'], imageUrl: 'img/lime-polo-dress.jpg', baseHue: 69, tryOn: true },
-      { id: 5, name: 'The Classic Polo', category: 'tops', price: 48, description: 'Timeless pique cotton polo — the foundation of every outfit', colorways: ['sky-blue', 'pq-green', 'coral', 'midnight', 'ocean'], sizes: ['xxs', 'xs', 's', 'm', 'l', 'xl'], imageUrl: 'img/blue-polo-pants.jpg', baseHue: 203, tryOn: true },
-      { id: 6, name: 'The Pleated Skirt', category: 'bottoms', price: 58, description: 'Crisp white pleats with movement — style it your way', colorways: ['coral', 'sky-blue', 'city-khaki', 'midnight', 'white'], sizes: ['xxs', 'xs', 's', 'm', 'l', 'xl'], imageUrl: 'img/burgundy-polo-skirt.jpg', baseHue: 351, tryOn: true },
-      { id: 7, name: 'The Ruffle Skirt', category: 'bottoms', price: 56, description: 'Tiered ruffles in cream — sweet and effortless', colorways: ['hot-pink', 'lavender', 'coral', 'ocean', 'pq-green'], sizes: ['xxs', 'xs', 's', 'm', 'l', 'xl'], imageUrl: 'img/dot-sweater-skirt.jpg', baseHue: 8, tryOn: true },
+      { id: 5, name: 'The Classic Polo', category: 'tops', price: 48, description: 'Timeless pique cotton polo. The foundation of every outfit.', colorways: ['sky-blue', 'pq-green', 'coral', 'midnight', 'ocean'], sizes: ['xxs', 'xs', 's', 'm', 'l', 'xl'], imageUrl: 'img/blue-polo-pants.jpg', baseHue: 203, tryOn: true },
+      { id: 6, name: 'The Pleated Skirt', category: 'bottoms', price: 58, description: 'Crisp white pleats with movement. Style it your way.', colorways: ['coral', 'sky-blue', 'city-khaki', 'midnight', 'white'], sizes: ['xxs', 'xs', 's', 'm', 'l', 'xl'], imageUrl: 'img/burgundy-polo-skirt.jpg', baseHue: 351, tryOn: true },
+      { id: 7, name: 'The Ruffle Skirt', category: 'bottoms', price: 56, description: 'Tiered ruffles in cream. Sweet and effortless.', colorways: ['hot-pink', 'lavender', 'coral', 'ocean', 'pq-green'], sizes: ['xxs', 'xs', 's', 'm', 'l', 'xl'], imageUrl: 'img/dot-sweater-skirt.jpg', baseHue: 8, tryOn: true },
     ];
 
     // ===== THE BRAND'S PARTS =====
@@ -2204,18 +2303,18 @@
       return el('div', { className: className },
         member.img
           ? el('img', { src: member.img, alt: member.name })
-          : el('div', { className: 'char-card-initials', style: { background: tint(member.accent, 0.55) } }, member.name.charAt(0)));
+          : el('div', { className: 'crew-initial', style: { background: tint(member.accent, 0.55) } }, member.name.charAt(0)));
     }
 
     function Navbar({ currentPage, navigateTo, cartCount }) {
       var link = function(page, words) {
-        return el('div', { className: 'navbar-link' + (currentPage === page ? ' active' : ''), onClick: function() { navigateTo(page); } }, words);
+        return el('button', { type: 'button', className: 'navbar-link' + (currentPage === page ? ' active' : ''), onClick: function() { navigateTo(page); } }, words);
       };
       return el('div', { className: 'navbar' },
         el('div', { className: 'color-rule' }),
         el('div', { className: 'navbar-content' },
-          el('div', { className: 'navbar-brand', onClick: function() { navigateTo('home'); } }, el(Wordmark, null)),
-          el('div', { className: 'navbar-links' }, link('shop', 'shop'), link('studio', 'studio'), link('cart', 'cart (' + cartCount + ')'))));
+          el('button', { type: 'button', className: 'navbar-brand', 'aria-label': 'piper & quinn: home', onClick: function() { navigateTo('home'); } }, el(Wordmark, null)),
+          el('div', { className: 'navbar-links' }, link('shop', 'shop'), link('studio', 'studio'), link('team', 'team'), link('cart', 'cart (' + cartCount + ')'))));
     }
 
     // Size chart: height (inches) -> size
@@ -2255,15 +2354,17 @@
       ],
     };
 
-    // The crew. Each has a color from the guide's palette: the four core colors, and hot pink
-    // for Quinn. `agentId` is the member's ElevenLabs voice agent. `img` is a square picture of the
-    // head and shoulders (tools/make_crew.py cuts them), or null for the first letter of the name.
+    // The crew. Piper and Quinn are the sisters, and the home page is theirs. Kate, Birdie and
+    // Otto are the team: back-up, on a tab of their own (`team`, and `helps`: what to ask them).
+    // Each has a color from the guide's palette: the four core colors, and hot pink for Quinn.
+    // `agentId` is the member's ElevenLabs voice agent. `img` is a square picture of the head
+    // and shoulders (tools/make_crew.py cuts them), or null for the first letter of the name.
     var CREW_MEMBERS = [
-      { name: 'Piper', role: 'founder & lead designer', zoneTagline: '"i design what i want to wear — and what my friends keep stealing"', zoneDesc: "welcome to my studio. this is where every p&q piece starts — a sketch, a color, a feeling. these are my favorites from the collection.", agentId: 'agent_7401m4b3y21deyhbcryt8dstz8q8', img: 'img/crew-piper.jpg', accent: '#6DC067', orbColor1: '#6DC067', orbColor2: '#ACD9F4', productIds: [1, 5, 6] },
-      { name: 'Quinn', role: 'creative director', zoneTagline: '"fashion is art you can wear — every outfit tells a story"', zoneDesc: "this is where the magic happens. i mix colors, patterns, and vibes until something feels right. check out what i'm loving right now.", agentId: 'agent_0601m4b3ybjwezd8gwwrv5p51c90', img: 'img/crew-quinn.jpg', accent: '#E84B8A', orbColor1: '#E84B8A', orbColor2: '#C4A7D7', productIds: [2, 3, 7] },
-      { name: 'Kate', role: 'marketing & social', zoneTagline: '"if it\'s fire, i\'ll let you know. if it\'s not, i\'ll let you know too"', zoneDesc: "what's trending, what's dropping, what everyone's talking about. these are the pieces that are about to blow up.", agentId: 'agent_1001m4b3ymzzf75tmnd0gps61ndn', img: 'img/crew-kate.jpg', accent: '#FBB040', orbColor1: '#FBB040', orbColor2: '#F7D559', productIds: [3, 4, 1] },
-      { name: 'Birdie', role: 'pattern designer', zoneTagline: '"a print should make you smile before you know why"', zoneDesc: "this is where the prints happen. dots, stripes, the color nobody expected. these are the pieces that show them off.", agentId: 'agent_8401m4b3z9asedb9b62hmx17a2na', img: 'img/crew-birdie.jpg', accent: '#ACD9F4', orbColor1: '#ACD9F4', orbColor2: '#C4A7D7', productIds: [3, 7, 4] },
-      { name: 'Otto', role: 'finance & operations', zoneTagline: '"every great brand needs someone who actually ships the product"', zoneDesc: "i make sure everything runs smooth: quality, shipping, the numbers nobody sees. these are the pieces i stand behind 100%.", agentId: 'agent_7601m4b3zjhpeanvfk62araq46qd', img: 'img/crew-otto.jpg', accent: '#B1D355', orbColor1: '#B1D355', orbColor2: '#6DC067', productIds: [4, 5, 1] },
+      { name: 'Piper', role: 'founder & lead designer', zoneTagline: '"i design what i want to wear, and what my friends keep stealing"', zoneDesc: "welcome to my studio. this is where every p&q piece starts: a sketch, a color, a feeling. these are my favorites from the collection.", agentId: 'agent_7401m4b3y21deyhbcryt8dstz8q8', img: 'img/crew-piper.jpg', accent: '#6DC067', orbColor1: '#6DC067', orbColor2: '#ACD9F4', productIds: [1, 5, 6] },
+      { name: 'Quinn', role: 'creative director', zoneTagline: '"fashion is art you can wear. every outfit tells a story"', zoneDesc: "this is where the magic happens. i mix colors, patterns, and vibes until something feels right. check out what i'm loving right now.", agentId: 'agent_0601m4b3ybjwezd8gwwrv5p51c90', img: 'img/crew-quinn.jpg', accent: '#E84B8A', orbColor1: '#E84B8A', orbColor2: '#C4A7D7', productIds: [2, 3, 7] },
+      { name: 'Kate', role: 'marketing & social', team: true, helps: "what's trending, and what's actually worth it.", zoneTagline: '"if it\'s fire, i\'ll let you know. if it\'s not, i\'ll let you know too"', zoneDesc: "what's trending, what's dropping, what everyone's talking about. these are the pieces that are about to blow up.", agentId: 'agent_1001m4b3ymzzf75tmnd0gps61ndn', img: 'img/crew-kate.jpg', accent: '#FBB040', orbColor1: '#FBB040', orbColor2: '#F7D559', productIds: [3, 4, 1] },
+      { name: 'Birdie', role: 'pattern designer', team: true, helps: 'prints, colors, and what goes with what.', zoneTagline: '"a print should make you smile before you know why"', zoneDesc: "this is where the prints happen. dots, stripes, the color nobody expected. these are the pieces that show them off.", agentId: 'agent_8401m4b3z9asedb9b62hmx17a2na', img: 'img/crew-birdie.jpg', accent: '#ACD9F4', orbColor1: '#ACD9F4', orbColor2: '#C4A7D7', productIds: [3, 7, 4] },
+      { name: 'Otto', role: 'finance & operations', team: true, helps: 'sizes, prices, and how to choose.', zoneTagline: '"every great brand needs someone who actually ships the product"', zoneDesc: "i make sure everything runs smooth: quality, shipping, the numbers nobody sees. these are the pieces i stand behind 100%.", agentId: 'agent_7601m4b3zjhpeanvfk62araq46qd', img: 'img/crew-otto.jpg', accent: '#B1D355', orbColor1: '#B1D355', orbColor2: '#6DC067', productIds: [4, 5, 1] },
     ];
 
     function SizeCalculator({ category, onSizeSelect }) {
@@ -2673,9 +2774,13 @@
     // A crew member is a voice agent at ElevenLabs. The page talks with the agent through
     // ElevenLabs' client library (vendor/), by voice or in writing, and draws the
     // conversation itself: what is said, and each piece she talks about, with its own
-    // "add to cart". An agent may also have one button on this page, show_outfit: it names
-    // a dress, or a top and a bottom, and the page shows them. If her photo is in, the page
-    // puts the outfit on her.
+    // "add to cart". An agent has four buttons on this page:
+    //   show_piece    put one piece on her screen, in a color if one was named
+    //   show_outfit   show a dress, or a top and a bottom. If her photo is in, the page
+    //                 puts the outfit on her.
+    //   add_to_cart   put a piece in her cart, in the size she said
+    //   go_to         take her to a page: home, shop, studio, team or cart
+    // Each button answers the agent in words, because the agent cannot see the screen.
     var STYLIST_FREE_LOOKS = 5; // looks a crew member may start without her tap, per visit
     var OUTFIT_ORDER = ['bottoms', 'tops', 'dresses']; // the order pieces go on
 
@@ -2689,6 +2794,58 @@
       var key = String(said).toLowerCase().replace(/^\s*the\s+/, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
       if (!key) return null;
       return PRODUCTS.find(function(p) { return p.tryOn && (pieceKey(p) === key || String(p.id) === key); }) || null;
+    }
+
+    // A color as the guide or she might say it -> the id of a color this piece comes in, or null.
+    var COLOR_ALSO = {
+      green: ['pq-green', 'grass'], blue: ['sky-blue', 'ocean', 'midnight'], pink: ['hot-pink'], purple: ['lavender'], lilac: ['lavender'],
+      yellow: ['sunshine'], navy: ['midnight'], khaki: ['city-khaki'], tan: ['city-khaki'], beige: ['city-khaki'], orange: ['orange-tee'],
+      lime: ['grass'], teal: ['ocean'], red: ['coral'], cream: ['white'],
+    };
+    function findColor(said, product) {
+      if (said == null) return null;
+      var squash = function(s) { return String(s).toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]/g, ''); };
+      var key = squash(said);
+      if (!key) return null;
+      var comes = COLORWAYS.filter(function(c) { return product.colorways.indexOf(c.id) !== -1; });
+      var hit = comes.find(function(c) { return squash(c.id) === key || squash(c.name) === key; });
+      if (hit) return hit.id;
+      return (COLOR_ALSO[key] || []).find(function(id) { return product.colorways.indexOf(id) !== -1; }) || null;
+    }
+
+    // A size as it might be said: "s", "small", "size S", or the age on the size chart ("12").
+    var SIZE_ALSO = {
+      xxsmall: 'xxs', extraextrasmall: 'xxs', doubleextrasmall: 'xxs', xsmall: 'xs', extrasmall: 'xs', small: 's', medium: 'm', large: 'l', xlarge: 'xl', extralarge: 'xl',
+      '8': 'xxs', '9': 'xxs', '10': 'xs', '11': 'xs', '12': 's', '13': 's', '14': 'm', '15': 'm', '16': 'l', '17': 'l', '18': 'xl',
+    };
+    function findSize(said, product) {
+      if (said == null) return null;
+      var key = String(said).toLowerCase().replace(/^\s*size\s+/, '').replace(/[^a-z0-9]/g, '');
+      key = SIZE_ALSO[key] || key;
+      return product.sizes.indexOf(key) !== -1 ? key : null;
+    }
+
+    // ['a', 'b', 'c'] -> 'a, b and c'
+    function listWords(words) {
+      if (words.length < 2) return words.join('');
+      return words.slice(0, -1).join(', ') + ' and ' + words[words.length - 1];
+    }
+
+    // The pages, in words for the guide, and other things a page gets called.
+    var PAGE_WORDS = {
+      home: 'the home page, with Piper and Quinn',
+      shop: 'the shop page, with all seven pieces',
+      studio: 'the studio page, where she can put a color and a pattern on a piece',
+      team: 'the team page, with Kate, Birdie and Otto',
+      cart: 'the cart page',
+    };
+    var PAGE_ALSO = { store: 'shop', collection: 'shop', shopping: 'shop', designstudio: 'studio', design: 'studio', crew: 'team', bag: 'cart', basket: 'cart', checkout: 'cart', start: 'home', main: 'home' };
+
+    function cartWords(cart) {
+      if (!cart.length) return 'Her cart is empty.';
+      var count = cart.reduce(function(n, item) { return n + item.qty; }, 0);
+      var total = cart.reduce(function(sum, item) { return sum + item.product.price * item.qty; }, 0);
+      return 'Her cart has ' + count + (count === 1 ? ' thing' : ' things') + ', $' + total + ' in all.';
     }
 
     // Read what the agent asked for. Returns { pieces, note, problem }.
@@ -2776,12 +2933,31 @@
         .trim();
     }
 
+    // The voice library loads by itself while she looks around. If she is quicker than it,
+    // wait for it, for a quarter of a minute at most. Fails at once if it could not be loaded.
+    function crewLibrary() {
+      return new Promise(function(resolve, reject) {
+        var since = Date.now();
+        (function look() {
+          var lib = window.ElevenLabsClient;
+          if (lib && lib.Conversation) return resolve(lib);
+          var where = window.crewVoiceState ? window.crewVoiceState() : 'missing';
+          if (where !== 'coming' || Date.now() - since > 15000) {
+            var missing = new Error('the voice library is not here');
+            missing.name = 'NoLibrary';
+            return reject(missing);
+          }
+          setTimeout(look, 100);
+        })();
+      });
+    }
+
     // Start one conversation with a crew member, by voice or in writing. Returns at once with
-    // { end, say, tell, mute, ready }: `ready` settles when the conversation is up, and `end`
-    // may be called at any time, also before that.
+    // { end, say, tell, mute, hush, ready }: `ready` settles when the conversation is up, and
+    // `end` may be called at any time, also before that.
     // hooks: onSay(who, words), onMode(mode), onOver(why)
     function openCrewTalk(member, written, tools, hooks) {
-      var talk = { call: null, over: false };
+      var talk = { call: null, over: false, up: false, waiting: [] };
       var settle = function(why) {
         if (talk.settled) return;
         talk.settled = true;
@@ -2796,50 +2972,63 @@
         if (talk.call && !talk.over) try { talk.call.sendUserMessage(words); return true; } catch (e) {}
         return false;
       };
+      // Something for the crew member to know. Said before the conversation is up, it waits.
       talk.tell = function(words) {
-        if (talk.call && !talk.over) try { talk.call.sendContextualUpdate(words); } catch (e) {}
+        if (talk.over || !words) return;
+        if (!talk.up) { talk.waiting.push(words); return; }
+        try { talk.call.sendContextualUpdate(words); } catch (e) {}
       };
       talk.mute = function(off) {
         if (talk.call && !talk.over) try { talk.call.setMicMuted(!!off); } catch (e) {}
       };
-      var lib = window.ElevenLabsClient;
-      if (!lib || !lib.Conversation) {
-        var missing = new Error('the voice library is not here');
-        missing.name = 'NoLibrary';
-        talk.ready = Promise.reject(missing);
-        return talk;
-      }
-      talk.ready = lib.Conversation.startSession({
-        agentId: member.agentId,
-        connectionType: 'websocket',
-        textOnly: !!written,
-        clientTools: tools,
-        libsampleratePath: CREW_RESAMPLER,
-        // The library hands the conversation over a moment before it has finished bringing it
-        // up. If she has gone by then, end it once that moment has passed: a conversation
-        // ended any sooner is marked as up again by the library and left running.
-        onConversationCreated: function(call) {
+      // The crew member's sound off, or back on. A conversation in writing has none.
+      talk.hush = function(off) {
+        if (talk.call && !talk.over) try { talk.call.setVolume({ volume: off ? 0 : 1 }); } catch (e) {}
+      };
+      var begin = function(lib) {
+        return lib.Conversation.startSession({
+          agentId: member.agentId,
+          connectionType: 'websocket',
+          textOnly: !!written,
+          clientTools: tools,
+          libsampleratePath: CREW_RESAMPLER,
+          // The library hands the conversation over a moment before it has finished bringing it
+          // up. If she has gone by then, end it once that moment has passed: a conversation
+          // ended any sooner is marked as up again by the library and left running.
+          onConversationCreated: function(call) {
+            talk.call = call;
+            Promise.resolve().then(function() { if (talk.over) endCrewCall(call); });
+          },
+          onMessage: function(m) {
+            if (talk.over || !m || typeof m.message !== 'string') return;
+            var words = crewWords(m.message);
+            if (!words) return;
+            hooks.onSay(m.role === 'user' || m.source === 'user' ? 'me' : 'crew', words);
+          },
+          onModeChange: function(m) { if (!talk.over && m) hooks.onMode(m.mode); },
+          onDisconnect: function(details) {
+            var why = details && details.reason;
+            talk.over = true;
+            settle(why === 'user' ? 'ended' : why === 'agent' ? 'hung-up' : 'dropped');
+          },
+          onError: function() {},
+        }).then(function(call) {
           talk.call = call;
-          Promise.resolve().then(function() { if (talk.over) endCrewCall(call); });
-        },
-        onMessage: function(m) {
-          if (talk.over || !m || typeof m.message !== 'string') return;
-          var words = crewWords(m.message);
-          if (!words) return;
-          hooks.onSay(m.role === 'user' || m.source === 'user' ? 'me' : 'crew', words);
-        },
-        onModeChange: function(m) { if (!talk.over && m) hooks.onMode(m.mode); },
-        onDisconnect: function(details) {
-          var why = details && details.reason;
-          talk.over = true;
-          settle(why === 'user' ? 'ended' : why === 'agent' ? 'hung-up' : 'dropped');
-        },
-        onError: function() {},
-      }).then(function(call) {
-        talk.call = call;
-        if (talk.over) endCrewCall(call);
-        return talk;
-      });
+          if (talk.over) { endCrewCall(call); return talk; }
+          talk.up = true;
+          talk.waiting.splice(0).forEach(talk.tell);
+          return talk;
+        });
+      };
+      // With the library here, the conversation starts inside her tap. A phone readies its
+      // sound in that tap. If the library is still on its way, wait for it, and start
+      // nothing if she has left by then.
+      var lib = window.ElevenLabsClient;
+      try {
+        talk.ready = lib && lib.Conversation ? begin(lib) : crewLibrary().then(function(late) { return talk.over ? talk : begin(late); });
+      } catch (e) {
+        talk.ready = Promise.reject(e);
+      }
       return talk;
     }
 
@@ -2862,6 +3051,14 @@
       return found.map(function(f) { return f.piece; });
     }
 
+    // Did she ask to see one piece? "show me the blush sweater", "can i see the polka dot
+    // dress", "a picture of the ruffle skirt". Returns the piece, or null.
+    var SEE_WORDS = /(^|[^a-z])(show|see|look at|open|pull up|bring up|picture|pic|photo|image|view)(?![a-z])/i;
+    function pieceAsked(words) {
+      var named = piecesNamed(words);
+      return named.length === 1 && SEE_WORDS.test(String(words)) ? named[0] : null;
+    }
+
     // How a piece's photo is tinted to show a color (the photos are of one color each).
     function colorFilter(product, colorId) {
       var colorObj = COLORWAYS.find(function(c) { return c.id === colorId; });
@@ -2876,7 +3073,7 @@
       var maxC = Math.max(r, g, b), minC = Math.min(r, g, b);
       var saturation = maxC === 0 ? 0 : (maxC - minC) / maxC;
       if (saturation < 0.1) {
-        // Near-white or neutral — desaturate and brighten
+        // Near-white or neutral: desaturate and brighten
         return 'saturate(0.15) brightness(1.3)';
       }
       if (colorObj.id === 'midnight') {
@@ -2898,8 +3095,8 @@
     }
 
     // A piece as it shows in the chat: its photo, its price, a color, a size, "add to cart".
-    function ChatPiece({ product, onAdd, onView }) {
-      const [color, setColor] = useState(product.colorways[0]);
+    function ChatPiece({ product, startColor, onAdd, onView }) {
+      const [color, setColor] = useState(startColor || product.colorways[0]);
       const [size, setSize] = useState(null);
       const [added, setAdded] = useState(0);
 
@@ -2932,17 +3129,32 @@
             el('button', { className: 'tryon-link', onClick: function() { onView(product); } }, 'view'))));
     }
 
-    // The chat with her guide. It stays with her from page to page until she goes back to
-    // the crew or picks another guide. `onShowOutfit` is the page's answer to the agent's
-    // show_outfit button.
-    function GuideChat({ member, onAddToCart, onView, onShowOutfit }) {
+    // A phone or a tablet plays the guide through a speaker beside its microphone. On an
+    // iPhone a guide heard her own voice that way and answered it as if the shopper had
+    // spoken (10 October 2026), though the library asks the browser to cancel echo. So on a
+    // touch screen the page holds the microphone shut while the guide talks. "shh" turns the
+    // guide's sound off for the rest of what she is saying, and gives the microphone back.
+    function holdsMic() {
+      return !!(window.matchMedia && window.matchMedia('(pointer: coarse)').matches);
+    }
+    var MIC_BACK_AFTER = 300;     // ms after the guide stops: time for the last of her voice to leave the room
+    var PEEK_WORDS_FOR = 9000;    // ms a line from the guide stays above the folded bar
+    var PEEK_PIECES_FOR = 20000;  // and a line that names pieces
+    var GUIDE_ADDS = 8;           // things a guide may put in her cart in one talk
+
+    // The chat with her guide. It stays with her on every page until she picks another guide
+    // or closes it. `acts` is the page's side of the agent's buttons, and `acts.where()` says
+    // where she is.
+    function GuideChat({ member, onAddToCart, onView, acts, onClose }) {
       const [items, setItems] = useState([]);       // the thread: what was said, and pieces
       const [status, setStatus] = useState('idle'); // idle | starting | live
       const [written, setWritten] = useState(false); // the conversation that is up is in writing
       const [mode, setMode] = useState('listening'); // in a voice call: who has the floor
       const [muted, setMuted] = useState(false);
+      const [hushed, setHushed] = useState(false);   // she tapped "shh": the guide makes no sound until she has stopped
       const [draft, setDraft] = useState('');
       const [open, setOpen] = useState(false);       // narrow screens: the sheet is up
+      const [peek, setPeek] = useState(null);        // narrow screens, chat folded: the guide's last line, and the pieces in it
       const [trouble, setTrouble] = useState('');
       var talkRef = React.useRef(null);
       var statusRef = React.useRef('idle');
@@ -2951,8 +3163,14 @@
       var threadRef = React.useRef(null);
       var inputRef = React.useRef(null);
       var typedRef = React.useRef(null);
-      var showOutfitRef = React.useRef(onShowOutfit);
-      showOutfitRef.current = onShowOutfit;
+      var actsRef = React.useRef(acts);
+      actsRef.current = acts;
+      var modeRef = React.useRef('listening');
+      var mutedRef = React.useRef(false);
+      var hushedRef = React.useRef(false);
+      var addsRef = React.useRef(0);
+      var micTimer = React.useRef(0);
+      var peekTimer = React.useRef(0);
       var name = member.name.toLowerCase();
 
       var setState = function(next) { statusRef.current = next; setStatus(next); };
@@ -2963,13 +3181,38 @@
         setItems(itemsRef.current);
       };
 
-      // A piece she named gets a card, unless its card is already among the last few things.
-      var showNamed = function(words) {
+      // Pieces get a card in the thread, unless their card is already among the last few things.
+      var card = function(pieces, more) {
         var recent = itemsRef.current.slice(-6);
-        var fresh = piecesNamed(words).filter(function(p) {
+        var fresh = pieces.filter(function(p) {
           return !recent.some(function(it) { return it.kind === 'pieces' && it.pieces.indexOf(p) !== -1; });
         });
-        if (fresh.length) put({ kind: 'pieces', pieces: fresh });
+        if (fresh.length) put(Object.assign({ kind: 'pieces', pieces: fresh }, more || {}));
+      };
+
+      // A line from the guide, for the folded bar on a narrow screen. It goes after a while.
+      var showPeek = function(words, pieces) {
+        clearTimeout(peekTimer.current);
+        var next = { n: ++countRef.current, text: words, pieces: (pieces || []).slice(0, 3) };
+        setPeek(next);
+        peekTimer.current = setTimeout(function() {
+          setPeek(function(now) { return now === next ? null : now; });
+        }, next.pieces.length ? PEEK_PIECES_FOR : PEEK_WORDS_FOR);
+      };
+
+      var hidePeek = function() {
+        clearTimeout(peekTimer.current);
+        setPeek(null);
+      };
+
+      // She asked to see one piece. The page shows it at once, and tells the guide it has.
+      var herAsk = function(words) {
+        var p = pieceAsked(words);
+        if (!p) return;
+        var out = actsRef.current.showPiece({ piece: pieceKey(p) });
+        if (!out.piece) return;
+        card([out.piece]);
+        if (talkRef.current) talkRef.current.tell('She asked to see ' + p.name + '. The page answered her itself: ' + out.say + ' Do not describe the piece to her. She is looking at it.');
       };
 
       // What was said before, for a conversation that starts after an earlier one this visit.
@@ -2984,19 +3227,26 @@
       var start = function(inWriting, firstWords) {
         if (statusRef.current !== 'idle') return;
         var before = recap();
+        var hold = !inWriting && holdsMic();
         setState('starting');
         setWritten(!!inWriting);
         setMode('listening');
         setMuted(false);
+        setHushed(false);
         setTrouble('');
         setOpen(true);
+        modeRef.current = 'listening';
+        mutedRef.current = false;
+        hushedRef.current = false;
+        addsRef.current = 0;
         if (firstWords) { put({ kind: 'say', who: 'me', text: firstWords }); typedRef.current = { text: firstWords, at: Date.now() }; }
         var talk;
         var mine = function() { return talkRef.current === talk; };
+        var gone = 'She has left your page. Nothing was done.';
         talk = openCrewTalk(member, inWriting, {
           show_outfit: function(params) {
             if (!mine() || talk.over) return 'She has left your page. Nothing was shown.';
-            var answer = showOutfitRef.current(params, member);
+            var answer = actsRef.current.showOutfit(params, member);
             var asked = readOutfit(params);
             if (asked.pieces.length) {
               var shown = asked.pieces.slice().reverse();
@@ -3005,6 +3255,32 @@
               if (!same) put({ kind: 'pieces', pieces: shown, pick: true, note: asked.note });
             }
             return answer;
+          },
+          show_piece: function(params) {
+            if (!mine() || talk.over) return gone;
+            var out = actsRef.current.showPiece(params);
+            if (out.piece) {
+              var colors = {};
+              if (out.color) colors[out.piece.id] = out.color;
+              card([out.piece], { colors: colors });
+            }
+            return out.say;
+          },
+          add_to_cart: function(params) {
+            if (!mine() || talk.over) return gone;
+            if (addsRef.current >= GUIDE_ADDS) return 'Nothing was added: that is enough for one talk. She can add more herself, from a card in the chat or from the piece.';
+            var out = actsRef.current.addToCart(params);
+            if (out.added) {
+              addsRef.current += 1;
+              var line = name + ' put ' + out.added.product.name.toLowerCase() + ' in your cart: size ' + out.added.size + ', ' + colorName(out.added.color) + '.';
+              put({ kind: 'aside', text: line });
+              showPeek(line, []);
+            }
+            return out.say;
+          },
+          go_to: function(params) {
+            if (!mine() || talk.over) return gone;
+            return actsRef.current.goTo(params);
           }
         }, {
           onSay: function(who, words) {
@@ -3015,22 +3291,55 @@
               if (typed && Date.now() - typed.at < 20000 && typed.text.toLowerCase() === words.toLowerCase()) { typedRef.current = null; return; }
             }
             put({ kind: 'say', who: who, text: words });
-            if (who === 'crew') showNamed(words);
+            if (who === 'crew') {
+              // something new from the guide, after she stopped or the shopper spoke: it is heard
+              if (talk.silent && (modeRef.current === 'listening' || talk.sheSpoke)) unhush(talk);
+              var named = piecesNamed(words);
+              card(named);
+              showPeek(words, named);
+            } else {
+              talk.sheSpoke = true;
+              herAsk(words);
+            }
           },
-          onMode: function(m) { if (mine()) setMode(m === 'speaking' ? 'speaking' : 'listening'); },
+          onMode: function(m) {
+            if (!mine()) return;
+            var speaking = m === 'speaking';
+            modeRef.current = speaking ? 'speaking' : 'listening';
+            setMode(modeRef.current);
+            if (speaking) {
+              // a safety net: sound that was shushed and never came back is back once she has been quiet a while
+              if (talk.silent && !hushedRef.current && Date.now() - talk.quietAt > 1200) unhush(talk);
+            } else {
+              talk.quietAt = Date.now();
+              if (hushedRef.current) { hushedRef.current = false; setHushed(false); }
+            }
+            if (!hold) return;
+            clearTimeout(micTimer.current);
+            if (speaking) {
+              if (!hushedRef.current) talk.mute(true);
+            } else {
+              micTimer.current = setTimeout(function() { if (mine() && !talk.over) talk.mute(mutedRef.current); }, MIC_BACK_AFTER);
+            }
+          },
           onOver: function(why) {
             if (!mine()) return;
             talkRef.current = null;
+            clearTimeout(micTimer.current);
+            hushedRef.current = false;
+            setHushed(false);
             setState('idle');
             if (why === 'hung-up') put({ kind: 'aside', text: name + ' ended the ' + (inWriting ? 'chat' : 'call') + '.' });
             else if (why === 'dropped') put({ kind: 'aside', text: 'the ' + (inWriting ? 'chat' : 'call') + ' dropped. start again when you like.' });
           }
         });
+        talk.hold = hold;
         talkRef.current = talk;
+        if (firstWords) herAsk(firstWords);
         talk.ready.then(function() {
           if (!mine() || talk.over) return;
           setState('live');
-          if (before) talk.tell(before);
+          talk.tell(actsRef.current.where() + (before ? ' ' + before : ''));
           if (firstWords) { typedRef.current = { text: firstWords, at: Date.now() }; talk.say(firstWords); }
         }, function(err) {
           if (!mine()) return;
@@ -3047,7 +3356,10 @@
         var talk = talkRef.current;
         if (!talk) return;
         talkRef.current = null;
+        clearTimeout(micTimer.current);
         talk.end();
+        hushedRef.current = false;
+        setHushed(false);
         setState('idle');
         if (!quiet) put({ kind: 'aside', text: 'you ended the ' + (written ? 'chat' : 'call') + '.' });
       };
@@ -3060,21 +3372,53 @@
         if (statusRef.current === 'live' && talkRef.current) {
           put({ kind: 'say', who: 'me', text: words });
           typedRef.current = { text: words, at: Date.now() };
+          talkRef.current.sheSpoke = true;
           talkRef.current.say(words);
+          herAsk(words);
         } else {
           start(true, words);
         }
       };
 
       var toggleMute = function() {
-        var next = !muted;
+        var next = !mutedRef.current;
+        mutedRef.current = next;
         setMuted(next);
-        if (talkRef.current) talkRef.current.mute(next);
+        var talk = talkRef.current;
+        // while the page holds her microphone for the guide, it stays shut either way
+        if (talk && !(talk.hold && modeRef.current === 'speaking' && !hushedRef.current)) talk.mute(next);
+      };
+
+      // "shh": the guide's sound goes off for the rest of what she is saying. It comes back
+      // with the next thing she says (the library plays out what is left of this one, unheard).
+      // With no sound there is no echo, so her microphone is hers again and she can say what
+      // she wants.
+      var unhush = function(talk) {
+        talk.silent = false;
+        talk.hush(false);
+      };
+
+      var hush = function() {
+        var talk = talkRef.current;
+        if (!talk || hushedRef.current || modeRef.current !== 'speaking') return;
+        hushedRef.current = true;
+        setHushed(true);
+        talk.silent = true;
+        talk.sheSpoke = false;
+        talk.hush(true);
+        clearTimeout(micTimer.current);
+        if (talk.hold) talk.mute(mutedRef.current);
+        talk.tell('She tapped "shh" while you were talking: she wants quiet. She did not hear the rest of what you said. Say nothing more until she speaks to you, and then keep it to one short sentence.');
       };
 
       var add = function(product, color, size) {
         onAddToCart(product, color, size);
         tellCrew('She added ' + product.name + ' to her cart from the chat: size ' + String(size).toUpperCase() + ', in ' + colorName(color) + '.');
+      };
+
+      var toggle = function() {
+        if (!open) hidePeek();
+        setOpen(!open);
       };
 
       // The rest of the page reaches the conversation through the desk. Leaving ends it.
@@ -3084,6 +3428,9 @@
         crewDesk.talk = function() { setOpen(true); start(false); };
         return function() {
           crewDesk.tell = crewDesk.fold = crewDesk.talk = function() {};
+          clearTimeout(micTimer.current);
+          clearTimeout(peekTimer.current);
+          document.body.classList.remove('guide-peek-on');
           var talk = talkRef.current;
           talkRef.current = null;
           statusRef.current = 'gone';
@@ -3097,22 +3444,47 @@
         if (t) t.scrollTop = t.scrollHeight;
       }, [items.length, status, open]);
 
+      // While a line shows above the folded bar, a window leaves more room at its foot.
+      var peeking = !!peek && !open;
+      useEffect(function() {
+        document.body.classList.toggle('guide-peek-on', peeking);
+      }, [peeking]);
+
       var live = status === 'live';
+      var voice = live && !written;
+      var talking = voice && mode === 'speaking' && !hushed;
       var state = status === 'starting' ? 'connecting…'
         : !live ? 'your guide. talk or type.'
         : written ? 'chatting with you'
+        : hushed ? 'quiet now. go ahead.'
         : mode === 'speaking' ? 'talking' : muted ? 'your mic is off' : 'listening';
 
       var face = el(CrewAvatar, { member: member, className: 'guide-face' });
       var who = el('div', { className: 'guide-who' },
         el('div', { className: 'guide-name' }, name),
         el('div', { className: 'guide-state', role: 'status' }, live && el('span', { className: 'guide-dot' }), state));
+      var close = function(extra) {
+        return el('button', { type: 'button', className: 'guide-close' + (extra || ''), 'aria-label': 'close the chat with ' + name, onClick: onClose }, '×');
+      };
 
       return el('div', { className: 'guide' + (open ? ' open' : '') + (live ? ' live' : ''), role: 'complementary', 'aria-label': 'your guide, ' + name, style: { '--guide-accent': member.accent, '--guide-tint': tint(member.accent, 0.78) } },
-        el('button', { className: 'guide-bar', 'aria-expanded': open, onClick: function() { setOpen(!open); } },
-          face, who, el('span', { className: 'guide-chevron', 'aria-hidden': 'true' }, open ? '↓' : '↑')),
+        peeking && el('div', { className: 'guide-peek' },
+          el('div', { className: 'guide-peek-main' },
+            el('button', { type: 'button', className: 'guide-peek-words', onClick: toggle }, peek.text),
+            peek.pieces.length > 0 && el('div', { className: 'guide-peek-pieces' }, peek.pieces.map(function(p) {
+              return el('button', { key: p.id, type: 'button', className: 'guide-peek-piece', 'data-piece': pieceKey(p), 'aria-label': 'view ' + p.name.toLowerCase(), onClick: function() { onView(p); } },
+                el('img', { src: p.imageUrl, alt: '' }), p.name.toLowerCase().replace(/^the\s+/, ''));
+            }))),
+          el('button', { type: 'button', className: 'guide-close guide-peek-close', 'aria-label': 'hide this', onClick: hidePeek }, '×')),
+        el('div', { className: 'guide-top' },
+          el('button', { type: 'button', className: 'guide-bar', 'aria-expanded': open, onClick: toggle },
+            face, who, el('span', { className: 'guide-chevron', 'aria-hidden': 'true' }, open ? '↓' : '↑')),
+          el('div', { className: 'guide-acts' },
+            talking && el('button', { type: 'button', className: 'guide-small guide-bar-live guide-shh', onClick: hush }, 'shh'),
+            voice && el('button', { type: 'button', className: 'guide-small guide-bar-live guide-end', onClick: function() { stop(); } }, 'end'),
+            close())),
         el('div', { className: 'guide-body' },
-          el('div', { className: 'guide-head' }, face, who),
+          el('div', { className: 'guide-head' }, face, who, close()),
           el('div', { className: 'guide-thread', ref: threadRef },
             items.length === 0 && el('div', { className: 'guide-hello' },
               el('div', { className: 'guide-hello-line' }, "hi, i'm " + name + '.'),
@@ -3127,10 +3499,11 @@
               return el('div', { key: it.id, className: 'guide-pick' },
                 it.pick && el('div', { className: 'guide-pick-by' }, name + "'s pick"),
                 it.pick && it.note && el('div', { className: 'guide-pick-note' }, it.note),
-                it.pieces.map(function(p) { return el(ChatPiece, { key: p.id, product: p, onAdd: add, onView: onView }); }));
+                it.pieces.map(function(p) { return el(ChatPiece, { key: p.id, product: p, startColor: it.colors && it.colors[p.id], onAdd: add, onView: onView }); }));
             })),
-          live && !written && el('div', { className: 'guide-live' },
-            el('span', { className: 'guide-live-words' }, el('span', { className: 'guide-dot' }), mode === 'speaking' ? name + ' is talking' : muted ? 'your mic is off' : name + ' is listening'),
+          voice && el('div', { className: 'guide-live' },
+            el('span', { className: 'guide-live-words' }, el('span', { className: 'guide-dot' }), hushed ? name + ' is quiet. go ahead.' : mode === 'speaking' ? name + ' is talking' : muted ? 'your mic is off' : name + ' is listening'),
+            talking && el('button', { className: 'guide-small guide-shh', onClick: hush }, 'shh'),
             el('button', { className: 'guide-small', 'aria-pressed': muted, onClick: toggleMute }, muted ? 'unmute' : 'mute'),
             el('button', { className: 'guide-small', onClick: function() { stop(); } }, 'end call')),
           live && written && el('div', { className: 'guide-live' },
@@ -3212,8 +3585,12 @@
             el(TryOn, { pieces: pieces, photo: tryPhoto, setPhoto: setTryPhoto, look: look, onLook: handleLook, startOpen: true, autoGo: outfit.auto ? outfit.n : 0, onDone: handleDone, lookRef: outfit.look }))));
     }
 
-    function ProductDetail({ product, onClose, onAddToCart, tryPhoto, setTryPhoto }) {
-      const [selectedColor, setSelectedColor] = useState(product.colorways[0]);
+    // The window of one piece. `ask` is this opening of it: the piece, and the color it opens
+    // in. The app reads two things back from it: `ask.look`, how her try-on here stands (see
+    // TryOn), and `ask.seen`, the color and the size she has chosen.
+    function ProductDetail({ ask, onClose, onAddToCart, tryPhoto, setTryPhoto }) {
+      var product = ask.product;
+      const [selectedColor, setSelectedColor] = useState(ask.color || product.colorways[0]);
       const [selectedSize, setSelectedSize] = useState(null);
       const [added, setAdded] = useState(false);
       const [look, setLook] = useState(null);
@@ -3221,6 +3598,15 @@
       const [lookCount, setLookCount] = useState(0);
       var contentRef = React.useRef(null);
       var paneRef = React.useRef(null);
+      ask.seen.color = selectedColor;
+      ask.seen.size = selectedSize;
+
+      // Her guide asked for another color of the piece that is already open.
+      useEffect(function() {
+        if (!ask.colorN || !ask.color) return;
+        setSelectedColor(ask.color);
+        setShowLook(false);
+      }, [ask.colorN]);
 
       var handleLook = function(image) {
         setLook(image);
@@ -3261,7 +3647,7 @@
       var colorName = currentColorObj ? currentColorObj.name : '';
 
       return (
-        React.createElement('div', {className: "modal-overlay", onClick: handleOverlayClick}, React.createElement('div', {className: "modal-content", ref: contentRef}, React.createElement('button', {className: "modal-close", onClick: onClose, 'aria-label': "close"}, "×"), React.createElement('div', {ref: paneRef, className: "modal-pane"}, (look && showLook) ? (React.createElement('img', {key: "look", src: look, alt: 'you in ' + product.name.toLowerCase(), className: "modal-image tryon-look"})) : (React.createElement('img', {key: "product", src: product.imageUrl, alt: product.name, className: "modal-image", style: { filter: getImageFilter(), transition: 'filter 0.4s ease' }})), look && (React.createElement('div', {className: "tryon-view"}, React.createElement('button', {className: 'tryon-view-btn' + (showLook ? ' active' : ''), 'aria-pressed': showLook, onClick: function() { setShowLook(true); }}, "my look"), React.createElement('button', {className: 'tryon-view-btn' + (!showLook ? ' active' : ''), 'aria-pressed': !showLook, onClick: function() { setShowLook(false); }}, "product photo")))), React.createElement('div', {className: "modal-details"}, React.createElement('div', null, React.createElement('div', {className: "modal-product-name"}, product.name), React.createElement('div', {className: "modal-product-price"}, "$", product.price)), React.createElement('div', {className: "modal-product-desc"}, product.description), product.tryOn && React.createElement(TryOn, {pieces: [product], photo: tryPhoto, setPhoto: setTryPhoto, look: look, onLook: handleLook}), React.createElement('div', null, React.createElement('div', {className: "label"}, "color: ", colorName.toLowerCase()), React.createElement('div', {style: { display: 'flex', gap: '0.75rem', flexWrap: 'wrap', alignItems: 'center' }}, product.colorways.map(cw => {
+        React.createElement('div', {className: "modal-overlay", onClick: handleOverlayClick}, React.createElement('div', {className: "modal-content", ref: contentRef, 'data-piece': pieceKey(product)}, React.createElement('button', {className: "modal-close", onClick: onClose, 'aria-label': "close"}, "×"), React.createElement('div', {ref: paneRef, className: "modal-pane"}, (look && showLook) ? (React.createElement('img', {key: "look", src: look, alt: 'you in ' + product.name.toLowerCase(), className: "modal-image tryon-look"})) : (React.createElement('img', {key: "product", src: product.imageUrl, alt: product.name, className: "modal-image", style: { filter: getImageFilter(), transition: 'filter 0.4s ease' }})), look && (React.createElement('div', {className: "tryon-view"}, React.createElement('button', {className: 'tryon-view-btn' + (showLook ? ' active' : ''), 'aria-pressed': showLook, onClick: function() { setShowLook(true); }}, "my look"), React.createElement('button', {className: 'tryon-view-btn' + (!showLook ? ' active' : ''), 'aria-pressed': !showLook, onClick: function() { setShowLook(false); }}, "product photo")))), React.createElement('div', {className: "modal-details"}, React.createElement('div', null, React.createElement('div', {className: "modal-product-name"}, product.name), React.createElement('div', {className: "modal-product-price"}, "$", product.price)), React.createElement('div', {className: "modal-product-desc"}, product.description), product.tryOn && React.createElement(TryOn, {pieces: [product], photo: tryPhoto, setPhoto: setTryPhoto, look: look, onLook: handleLook, lookRef: ask.look}), React.createElement('div', null, React.createElement('div', {className: "label"}, "color: ", colorName.toLowerCase()), React.createElement('div', {style: { display: 'flex', gap: '0.75rem', flexWrap: 'wrap', alignItems: 'center' }}, product.colorways.map(cw => {
                     const color = COLORWAYS.find(c => c.id === cw);
                     if (!color) return null;
                     var isSelected = selectedColor === cw;
@@ -3283,19 +3669,39 @@
       );
     }
 
-    function CharacterSelect({ onSelectCrewMember, navigateTo }) {
-      return el('div', { className: 'char-select' },
-        el('h1', { className: 'char-select-brand' }, el(Wordmark, null)),
-        el('div', { className: 'tagline char-select-tagline' }, 'dress bold.'),
-        el('div', { className: 'char-select-subtitle' }, 'choose your guide'),
-        el('div', { className: 'char-select-grid' }, CREW_MEMBERS.map(function(member, idx) {
-          return el('div', { key: member.name, className: 'char-card', style: { '--zone-accent': member.accent }, onClick: function() { onSelectCrewMember(idx); } },
-            el(CrewAvatar, { member: member, className: 'char-card-avatar' }),
-            el('div', { className: 'char-card-name' }, member.name),
-            el('div', { className: 'char-card-role' }, member.role),
-            el('button', { className: 'char-card-enter' }, 'enter zone'));
-        })),
-        el('div', { className: 'char-select-skip', onClick: function() { navigateTo('shop'); } }, 'or skip to the shop →'));
+    // Home: the two sisters. The name of the brand is set with them: piper & quinn.
+    function HomePage({ onSelectCrewMember, navigateTo }) {
+      var sisters = [];
+      CREW_MEMBERS.forEach(function(member, idx) {
+        if (member.team) return;
+        if (sisters.length) sisters.push(el('span', { key: 'amp' + idx, className: 'home-amp', 'aria-hidden': 'true' }, '&'));
+        sisters.push(el('button', { key: member.name, type: 'button', className: 'home-sister', style: { '--zone-accent': member.accent }, onClick: function() { onSelectCrewMember(idx); } },
+          el(CrewAvatar, { member: member, className: 'home-face' }),
+          el('span', { className: 'home-name' }, member.name),
+          el('span', { className: 'home-role' }, member.role),
+          el('span', { className: 'home-go' }, 'shop with ' + member.name.toLowerCase())));
+      });
+      return el('div', { className: 'home fade-in' },
+        el('h1', { className: 'sr-only' }, 'piper & quinn'),
+        el('div', { className: 'home-pair' }, sisters),
+        el('p', { className: 'tagline home-tagline' }, 'fashion by sisters. dress bold.'),
+        el('button', { type: 'button', className: 'home-skip', onClick: function() { navigateTo('shop'); } }, 'or skip to the shop'));
+    }
+
+    // The team: Kate, Birdie and Otto. Back-up for when she wants a second opinion.
+    function TeamPage({ onSelectCrewMember }) {
+      return el('div', { className: 'main-content fade-in' },
+        el('h1', { className: 'page-title' }, 'the team'),
+        el('p', { className: 'team-lede' }, 'piper and quinn design it. kate, birdie and otto help you find it.'),
+        el('div', { className: 'team-grid' }, CREW_MEMBERS.map(function(member, idx) {
+          if (!member.team) return null;
+          return el('button', { key: member.name, type: 'button', className: 'team-card', style: { '--zone-accent': member.accent }, onClick: function() { onSelectCrewMember(idx); } },
+            el(CrewAvatar, { member: member, className: 'team-face' }),
+            el('span', { className: 'team-name' }, member.name),
+            el('span', { className: 'team-role' }, member.role),
+            el('span', { className: 'team-helps' }, member.helps),
+            el('span', { className: 'team-go' }, 'ask ' + member.name.toLowerCase()));
+        })));
     }
 
     function ShopPage({ setCurrentPage, onSelectProduct }) {
@@ -3404,15 +3810,16 @@
               el('div', { className: 'btn-note', role: 'status' }, asked ? "checkout isn't open yet. this site is a preview." : '')))));
     }
 
-    function CrewZone({ memberIdx, onSelectProduct, onBack, onSwitchZone }) {
+    // A crew member's own page. `isGuide`: this member is with her as her guide.
+    function CrewZone({ memberIdx, onSelectProduct, onSwitchZone, navigateTo, isGuide, onGuide }) {
       var member = CREW_MEMBERS[memberIdx];
+      var name = member.name.toLowerCase();
 
       var zoneProducts = member.productIds.map(function(id) {
         return PRODUCTS.find(function(p) { return p.id === id; });
       }).filter(Boolean);
 
       return el('div', { className: 'zone-page', style: { '--zone-accent': member.accent } },
-        el('div', { className: 'zone-back', onClick: onBack }, '← back to crew'),
         el('div', { className: 'zone-hero', style: { background: 'linear-gradient(180deg, ' + tint(member.accent, 0.7) + ' 0%, ' + tint(member.accent, 0.9) + ' 100%)' } },
           el('div', { className: 'zone-hero-content' },
             el(CrewAvatar, { member: member, className: 'zone-hero-avatar' }),
@@ -3420,11 +3827,14 @@
             el('div', { className: 'zone-hero-role' }, member.role),
             el('div', { className: 'zone-hero-tagline' }, member.zoneTagline))),
         el('div', { className: 'zone-talk', style: { background: member.accent } },
-          el('span', null, member.name, ' is your guide now.'),
-          el('button', { className: 'zone-talk-btn', onClick: function() { crewDesk.talk(); } }, el(MicIcon, null), 'talk to ' + member.name.toLowerCase())),
+          isGuide
+            ? el(React.Fragment, null,
+                el('span', null, member.name, ' is your guide now.'),
+                el('button', { className: 'zone-talk-btn', onClick: function() { crewDesk.talk(); } }, el(MicIcon, null), 'talk to ' + name))
+            : el('button', { className: 'zone-talk-btn', onClick: onGuide }, 'shop with ' + name)),
         el('div', { className: 'zone-section' },
           el('p', { className: 'zone-desc' }, member.zoneDesc),
-          el('h2', { className: 'zone-section-title' }, member.name.toLowerCase() + "'s picks"),
+          el('h2', { className: 'zone-section-title' }, name + "'s picks"),
           el('div', { className: 'zone-products' }, zoneProducts.map(function(product) {
             return el('div', { key: product.id, className: 'product-card', onClick: function() { onSelectProduct(product); } },
               el('div', { className: 'product-card-image-wrapper' },
@@ -3434,10 +3844,12 @@
                 el('div', { className: 'product-price' }, '$' + product.price)));
           }))),
         el('div', { className: 'zone-other' }, el('div', { className: 'zone-other-label' }, 'visit another zone')),
-        el('div', { className: 'zone-nav' }, CREW_MEMBERS.map(function(m, idx) {
-          if (idx === memberIdx) return null;
-          return el('button', { key: m.name, className: 'zone-nav-chip', style: { '--chip-accent': m.accent }, onClick: function() { onSwitchZone(idx); } }, m.name.toLowerCase() + "'s zone");
-        })));
+        el('div', { className: 'zone-nav' },
+          CREW_MEMBERS.map(function(m, idx) {
+            if (idx === memberIdx || m.team) return null;
+            return el('button', { key: m.name, className: 'zone-nav-chip', style: { '--chip-accent': m.accent }, onClick: function() { onSwitchZone(idx); } }, m.name.toLowerCase() + "'s zone");
+          }),
+          el('button', { className: 'zone-nav-chip', onClick: function() { navigateTo('team'); } }, 'the team')));
     }
 
     function Footer({ navigateTo }) {
@@ -3451,15 +3863,16 @@
             el('div', { className: 'footer-brand' }, el(Wordmark, null)),
             el('div', { className: 'tagline footer-tagline' }, 'dress bold.'),
             el('div', { className: 'footer-place' }, 'fashion by sisters. san francisco, california.')),
-          el('div', { className: 'footer-links' }, link('home', 'the crew'), link('shop', 'shop'), link('studio', 'studio'), link('cart', 'cart'))),
+          el('div', { className: 'footer-links' }, link('home', 'home'), link('shop', 'shop'), link('studio', 'studio'), link('team', 'team'), link('cart', 'cart'))),
         el('div', { className: 'footer-legal' }, '© 2026 piper & quinn'));
     }
 
     function App() {
-      const [currentPage, setCurrentPage] = useState('home');
+      const [currentPage, setCurrentPage] = useState('home');   // home | zone | shop | studio | team | cart
       const [cart, setCart] = useState([]);
-      const [selectedProduct, setSelectedProduct] = useState(null);
-      const [activeZoneIdx, setActiveZoneIdx] = useState(null);
+      const [piece, setPiece] = useState(null);                 // the piece window that is open (see ProductDetail)
+      const [activeZoneIdx, setActiveZoneIdx] = useState(null); // whose page she is on, on the zone page
+      const [guideIdx, setGuideIdx] = useState(null);           // her guide: with her on every page until she picks another or closes the chat
       const [tryPhoto, setTryPhoto] = useState(null);
       const [outfit, setOutfit] = useState(null);
       var tryPhotoRef = React.useRef(null);
@@ -3467,14 +3880,155 @@
       var freeLooksRef = React.useRef(0);
       // The outfit that is up, as of the last press or close. Kept here and set as things
       // happen: a second press can arrive before the page has drawn the first. Each outfit
-      // carries how her look in its window stands, in `look` (see TryOn).
+      // carries how her look in its window stands, in `look` (see TryOn). The piece window,
+      // the cart and the page she is on are kept the same way.
       var outfitRef = React.useRef(null);
-      var openPieceRef = React.useRef(null);
-      openPieceRef.current = selectedProduct;
+      var pieceRef = React.useRef(null);
+      var pieceCount = React.useRef(0);
+      var cartRef = React.useRef([]);
+      var pageRef = React.useRef('home');
+      var zoneRef = React.useRef(null);
+      var quietPage = React.useRef(true); // the first page, and a page her guide took her to, need no note
 
       var closeOutfit = function() {
         outfitRef.current = null;
         setOutfit(null);
+      };
+
+      var underWay = function(look) { return !!look && (look.current === 'making' || look.current === 'reading'); };
+
+      // What she is trying on right now, in words: a picture is being made, or she is choosing
+      // her photo. Closing that window would stop it. '' when nothing is under way.
+      var tryingOn = function() {
+        if (pieceRef.current && underWay(pieceRef.current.look)) return pieceRef.current.product.name;
+        if (outfitRef.current && underWay(outfitRef.current.look)) return 'an outfit';
+        return '';
+      };
+
+      var openPiece = function(product, color) {
+        var next = { product: product, color: color || null, colorN: 0, n: ++pieceCount.current, look: { current: 'none' }, seen: { color: color || product.colorways[0], size: null } };
+        pieceRef.current = next;
+        setPiece(next);
+        return next;
+      };
+
+      // Close the piece window. With `n`: only if that opening of it is still the one that is up.
+      var closePiece = function(n) {
+        if (!pieceRef.current || (n != null && pieceRef.current.n !== n)) return false;
+        pieceRef.current = null;
+        setPiece(null);
+        return true;
+      };
+
+      // She opened a piece herself: from the shop, a zone, an outfit, or a card in the chat.
+      var viewPiece = function(product) {
+        if (pieceRef.current && pieceRef.current.product === product) return;
+        openPiece(product);
+        tellCrew('She opened ' + product.name + ' on her screen.');
+      };
+
+      // "view" on a piece in the chat. On a narrow screen the open chat would cover the
+      // piece's window, so the chat folds down to its bar.
+      var viewFromChat = function(product) {
+        viewPiece(product);
+        foldCrewChat();
+      };
+
+      var putCart = function(next) {
+        cartRef.current = next;
+        setCart(next);
+      };
+
+      var handleAddToCart = function(product, colorway, size) {
+        var now = cartRef.current;
+        var existing = now.find(function(item) { return item.product.id === product.id && item.colorway === colorway && item.size === size; });
+        putCart(existing
+          ? now.map(function(item) { return item === existing ? Object.assign({}, item, { qty: item.qty + 1 }) : item; })
+          : now.concat([{ product: product, colorway: colorway, size: size, qty: 1 }]));
+      };
+
+      // Her guide pressed show_piece, or the page is answering her own "show me". Puts the
+      // piece on her screen and says what happened: { say, piece, color }.
+      var handleShowPiece = function(params) {
+        params = params || {};
+        var named = params.piece != null && String(params.piece).trim() !== '';
+        var p = named ? findPiece(params.piece) : null;
+        if (!p) {
+          return { say: (named ? 'No piece is called ' + String(params.piece).slice(0, 40) + '. ' : 'No piece was named. ') + 'The pieces are: ' + PRODUCTS.map(pieceKey).join(', ') + '.' };
+        }
+        var asked = params.color != null && String(params.color).trim() !== '';
+        var color = asked ? findColor(params.color, p) : null;
+        var notIn = asked && !color ? p.name + ' does not come in ' + String(params.color).slice(0, 30) + '. ' : '';
+        var comes = 'It comes in ' + listWords(p.colorways.map(colorName)) + ', in sizes XXS to XL.';
+        var up = pieceRef.current;
+        if (up && up.product === p) {
+          foldCrewChat();
+          if (color && up.seen.color !== color) {
+            var again = Object.assign({}, up, { color: color, colorN: up.colorN + 1 });
+            pieceRef.current = again;
+            setPiece(again);
+            return { say: p.name + ' is on her screen, now in ' + colorName(color) + '. ' + comes, piece: p, color: color };
+          }
+          return { say: notIn + p.name + ' is already on her screen, in ' + colorName(up.seen.color) + '. ' + comes, piece: p, color: color };
+        }
+        // A piece she is trying on is left alone: closing its window would stop the picture.
+        if (up && underWay(up.look)) {
+          return { say: notIn + 'She is in the middle of trying on ' + up.product.name + ', so her screen was left as it is. ' + p.name + ' is in the chat for her to open.', piece: p, color: color };
+        }
+        var opened = openPiece(p, color);
+        foldCrewChat();
+        return { say: notIn + 'On her screen now: ' + p.name + ' ($' + p.price + '), in ' + colorName(opened.seen.color) + '. ' + comes, piece: p, color: color };
+      };
+
+      // Her guide pressed add_to_cart. Adds only with a size: one that was said, or the one she
+      // has picked in the piece's window. Says what happened: { say, added }.
+      var handleGuideAdd = function(params) {
+        params = params || {};
+        var named = params.piece != null && String(params.piece).trim() !== '';
+        var p = named ? findPiece(params.piece) : null;
+        if (!p) {
+          return { say: (named ? 'No piece is called ' + String(params.piece).slice(0, 40) + '. ' : 'No piece was named. ') + 'Nothing was added. The pieces are: ' + PRODUCTS.map(pieceKey).join(', ') + '.' };
+        }
+        var up = pieceRef.current && pieceRef.current.product === p ? pieceRef.current : null;
+        var sizeSaid = params.size != null && String(params.size).trim() !== '';
+        var size = sizeSaid ? findSize(params.size, p) : (up ? up.seen.size : null);
+        if (!size) {
+          return { say: (sizeSaid ? String(params.size).slice(0, 20) + ' is not a size. ' : 'No size was given. ') + 'Nothing was added. Ask her which size: XXS, XS, S, M, L or XL. If she is not sure, she can tap "what\'s my size?" on the piece.' };
+        }
+        var colorSaid = params.color != null && String(params.color).trim() !== '';
+        var color = colorSaid ? findColor(params.color, p) : null;
+        if (colorSaid && !color) {
+          return { say: p.name + ' does not come in ' + String(params.color).slice(0, 30) + '. Nothing was added. It comes in ' + listWords(p.colorways.map(colorName)) + '. Ask her which one.' };
+        }
+        if (!color) color = up ? up.seen.color : p.colorways[0];
+        handleAddToCart(p, color, size);
+        return {
+          say: 'Added to her cart: ' + p.name + ', size ' + size.toUpperCase() + ', in ' + colorName(color) + ', $' + p.price + '. ' + cartWords(cartRef.current) + ' The shop is a preview, so nothing can be bought yet.',
+          added: { product: p, color: color, size: size },
+        };
+      };
+
+      var navigateTo = function(page) {
+        zoneRef.current = null;
+        pageRef.current = page;
+        setActiveZoneIdx(null);
+        setCurrentPage(page);
+        window.scrollTo(0, 0);
+      };
+
+      // Her guide pressed go_to. Takes her to the page, and says in words what happened.
+      var handleGoTo = function(params) {
+        var said = String((params && params.page) || '').toLowerCase().replace(/[^a-z]/g, '').replace(/^the/, '').replace(/page$/, '');
+        var page = PAGE_WORDS[said] ? said : PAGE_ALSO[said];
+        if (!page) return (said ? 'There is no page called ' + said.slice(0, 20) + '. ' : 'No page was named. ') + 'The pages are: home, shop, studio, team and cart.';
+        var busy = tryingOn();
+        if (busy) return 'She is in the middle of trying on ' + busy + ', so her screen was left as it is. Offer again when her picture is done.';
+        closePiece();
+        closeOutfit();
+        if (pageRef.current !== page) quietPage.current = true;
+        navigateTo(page);
+        foldCrewChat();
+        return 'She is now on ' + PAGE_WORDS[page] + '.' + (page === 'cart' ? ' ' + cartWords(cartRef.current) : '');
       };
 
       // A crew member pressed show_outfit. Show it, and answer her with what happened.
@@ -3491,7 +4045,7 @@
         // look over, and each look costs.
         var up = outfitRef.current;
         var same = up && up.pieces.length === asked.pieces.length && up.pieces.every(function(p, i) { return p.id === asked.pieces[i].id; });
-        var inFront = openPieceRef.current;
+        var inFront = pieceRef.current ? pieceRef.current.product : null;
         if (same && !(auto && up.look.current === 'none' && !inFront)) {
           foldCrewChat();
           var how = up.look.current;
@@ -3504,11 +4058,14 @@
           else there += 'Her photo is in, and the picture of the outfit is not made. ' + (auto ? '' : 'It waits for her own tap. ');
           return asked.problem + there + 'The outfit stays there until she closes it.';
         }
+        // A piece she is trying on is left alone: closing its window would stop the picture.
+        if (inFront && underWay(pieceRef.current.look)) {
+          return asked.problem + 'She is in the middle of trying on ' + inFront.name + ', so her screen was left as it is. Offer the outfit again when her picture is done.';
+        }
         if (auto) freeLooksRef.current += 1;
         var next = { pieces: asked.pieces, note: asked.note, by: member.name, auto: auto, n: Date.now() + Math.random(), look: { current: auto ? 'making' : 'none' } };
         outfitRef.current = next;
-        openPieceRef.current = null;
-        setSelectedProduct(null);
+        closePiece();
         setOutfit(next);
         foldCrewChat();
         var total = shown.reduce(function(sum, p) { return sum + p.price; }, 0);
@@ -3519,44 +4076,26 @@
         return asked.problem + said;
       };
 
-      const handleAddToCart = (product, colorway, size) => {
-        const existingItem = cart.find(
-          item => item.product.id === product.id && item.colorway === colorway && item.size === size
-        );
-
-        if (existingItem) {
-          const newCart = cart.map(item =>
-            item === existingItem ? { ...item, qty: item.qty + 1 } : item
-          );
-          setCart(newCart);
-        } else {
-          setCart([...cart, { product, colorway, size, qty: 1 }]);
-        }
+      // Where she is, in words for her guide, who cannot see the screen.
+      var whereNow = function() {
+        var zone = pageRef.current === 'zone' && zoneRef.current !== null ? CREW_MEMBERS[zoneRef.current] : null;
+        var said = 'She is on ' + (zone ? zone.name + "'s page, with " + zone.name + "'s picks" : PAGE_WORDS[pageRef.current] || 'the site') + '. ';
+        if (pieceRef.current) said += pieceRef.current.product.name + ' is open on her screen. ';
+        else if (outfitRef.current) said += 'An outfit is open on her screen: ' + outfitRef.current.pieces.slice().reverse().map(function(p) { return p.name; }).join(' with ') + '. ';
+        return said + cartWords(cartRef.current);
       };
 
-      var navigateTo = function(page) {
-        if (page === 'home') {
-          setActiveZoneIdx(null);
-        }
-        setCurrentPage(page);
-        window.scrollTo(0, 0);
-      };
-
+      // Going into a crew member's page makes that member her guide.
       var handleSelectCrewMember = function(idx) {
+        zoneRef.current = idx;
+        pageRef.current = 'zone';
         setActiveZoneIdx(idx);
+        setGuideIdx(idx);
         setCurrentPage('zone');
         window.scrollTo(0, 0);
       };
 
-      var handleBackToCrew = function() {
-        setActiveZoneIdx(null);
-        setCurrentPage('home');
-        window.scrollTo(0, 0);
-      };
-
-      var showNavbar = currentPage !== 'home';
-      // Her guide: the crew member whose zone she went into, until she goes back to the crew.
-      var guide = currentPage !== 'home' && activeZoneIdx !== null ? CREW_MEMBERS[activeZoneIdx] : null;
+      var guide = guideIdx !== null ? CREW_MEMBERS[guideIdx] : null;
 
       useEffect(function() {
         document.body.classList.toggle('guide-on', !!guide);
@@ -3566,6 +4105,13 @@
           if (window.crewSound) window.crewSound(false);
         };
       }, [!!guide]);
+
+      // Her guide cannot see the screen: say where she has gone.
+      useEffect(function() {
+        if (quietPage.current) { quietPage.current = false; return; }
+        var zone = currentPage === 'zone' && activeZoneIdx !== null ? CREW_MEMBERS[activeZoneIdx] : null;
+        tellCrew('She went to ' + (zone ? zone.name + "'s page, with " + zone.name + "'s picks" : PAGE_WORDS[currentPage] || 'another page') + '.' + (currentPage === 'cart' ? ' ' + cartWords(cartRef.current) : ''));
+      }, [currentPage, activeZoneIdx]);
 
       // An on-screen keyboard covers the bottom of the screen without telling the page's
       // layout. Note how much, so the chat can sit above it.
@@ -3584,22 +4130,32 @@
         };
       }, []);
 
+      var acts = { showOutfit: handleShowOutfit, showPiece: handleShowPiece, addToCart: handleGuideAdd, goTo: handleGoTo, where: whereNow };
+
       return (
         el('div', null,
-          showNavbar && el(Navbar, { currentPage: currentPage, navigateTo: navigateTo, cartCount: cart.length }),
+          el(Navbar, { currentPage: currentPage, navigateTo: navigateTo, cartCount: cart.length }),
           el('div', { className: 'page-main' },
-            currentPage === 'home' && el(CharacterSelect, { onSelectCrewMember: handleSelectCrewMember, navigateTo: navigateTo }),
-            currentPage === 'zone' && activeZoneIdx !== null && el(CrewZone, { memberIdx: activeZoneIdx, onSelectProduct: setSelectedProduct, onBack: handleBackToCrew, onSwitchZone: function(idx) {
-              setActiveZoneIdx(idx);
-              window.scrollTo(0, 0);
-            } }),
-            currentPage === 'shop' && el(ShopPage, { setCurrentPage: navigateTo, onSelectProduct: setSelectedProduct }),
+            currentPage === 'home' && el(HomePage, { onSelectCrewMember: handleSelectCrewMember, navigateTo: navigateTo }),
+            currentPage === 'zone' && activeZoneIdx !== null && el(CrewZone, { memberIdx: activeZoneIdx, onSelectProduct: viewPiece, onSwitchZone: handleSelectCrewMember, navigateTo: navigateTo, isGuide: guideIdx === activeZoneIdx, onGuide: function() { setGuideIdx(activeZoneIdx); } }),
+            currentPage === 'shop' && el(ShopPage, { setCurrentPage: navigateTo, onSelectProduct: viewPiece }),
             currentPage === 'studio' && el(DesignStudio, null),
-            currentPage === 'cart' && el(CartPage, { cart: cart, setCart: setCart }),
-            currentPage !== 'home' && el(Footer, { navigateTo: navigateTo })),
-          outfit && el(OutfitWindow, { key: outfit.n, outfit: outfit, onClose: closeOutfit, onView: setSelectedProduct, tryPhoto: tryPhoto, setTryPhoto: setTryPhoto, upRef: outfitRef }),
-          selectedProduct && el(ProductDetail, { product: selectedProduct, onClose: () => setSelectedProduct(null), onAddToCart: handleAddToCart, tryPhoto: tryPhoto, setTryPhoto: setTryPhoto }),
-          guide && el(GuideChat, { key: guide.name, member: guide, onAddToCart: handleAddToCart, onView: setSelectedProduct, onShowOutfit: handleShowOutfit }))
+            currentPage === 'team' && el(TeamPage, { onSelectCrewMember: handleSelectCrewMember }),
+            currentPage === 'cart' && el(CartPage, { cart: cart, setCart: putCart }),
+            el(Footer, { navigateTo: navigateTo })),
+          outfit && el(OutfitWindow, { key: outfit.n, outfit: outfit, onClose: closeOutfit, onView: viewPiece, tryPhoto: tryPhoto, setTryPhoto: setTryPhoto, upRef: outfitRef }),
+          piece && el(ProductDetail, {
+            key: piece.n,
+            ask: piece,
+            onClose: function() { if (closePiece(piece.n)) tellCrew('She closed ' + piece.product.name + '.'); },
+            onAddToCart: function(product, colorway, size) {
+              handleAddToCart(product, colorway, size);
+              tellCrew('She added ' + product.name + ' to her cart: size ' + String(size).toUpperCase() + ', in ' + colorName(colorway) + '.');
+            },
+            tryPhoto: tryPhoto,
+            setTryPhoto: setTryPhoto,
+          }),
+          guide && el(GuideChat, { key: guide.name, member: guide, onAddToCart: handleAddToCart, onView: viewFromChat, acts: acts, onClose: function() { setGuideIdx(null); } }))
       );
     }
 
