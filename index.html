@@ -1216,8 +1216,9 @@
 
     /* ===== HOME: THE OPENING =====
        A wall of pictures from edge to edge: Piper, the brand's own photo, Quinn. Each sister
-       is shown full length, and walks up and waves when the page opens. Under the pictures
-       the name of the brand is set with theirs: piper, the ampersand, quinn. */
+       is shown full length, and walks up and waves when the page opens. A small button on her
+       picture lets her say hello, with sound. Under the pictures the name of the brand is set
+       with theirs: piper, the ampersand, quinn. */
     .home {
       --words: 9.75rem;   /* the room kept under the pictures for the names and the ways in */
       --tall: max(17rem, calc(100vh - var(--nav-h) - var(--words)));
@@ -1246,10 +1247,17 @@
       column-gap: 3px;
     }
 
-    .home-sister {
+    /* One sister's column. Her picture and her words are one button: her way in. Over the
+       picture sits a second, small button: to hear her say hello. */
+    .home-col {
       position: relative;
       flex: none;
       width: min(calc(var(--tall) * 31 / 54), calc(50% - 2px));
+    }
+
+    .home-sister {
+      position: relative;
+      width: 100%;
       display: flex;
       flex-direction: column;
       background: none;
@@ -1290,7 +1298,8 @@
     }
 
     .home-still,
-    .home-clip {
+    .home-clip,
+    .home-say {
       position: absolute;
       top: 0;
       left: 0;
@@ -1301,15 +1310,127 @@
 
     /* The clip opens on the still, so it can come in at once. At its end it holds its last
        frame for a moment, then fades back to her. */
-    .home-clip {
+    .home-clip,
+    .home-say {
       opacity: 0;
       transition: opacity 0.6s ease 0.9s;
       pointer-events: none;
     }
 
-    .home-figure.live .home-clip {
+    .home-figure.live .home-clip,
+    .home-figure.saying .home-say {
       opacity: 1;
       transition: opacity 0.15s ease;
+    }
+
+    /* Over her picture: at the top, clear of her face, the button to hear her. At the foot,
+       what she is saying while she says it. The layer itself takes no taps, so a tap on the
+       picture still opens her page. */
+    .home-over {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      aspect-ratio: 31 / 54;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: flex-end;
+      padding: 0.6rem;
+      pointer-events: none;
+    }
+
+    .home-hear {
+      pointer-events: auto;
+      flex: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      width: 2.75rem;
+      height: 2.75rem;
+      padding: 0;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      font: inherit;
+      font-size: 0.88rem;
+      letter-spacing: 0.03em;
+      color: var(--ink);
+      text-transform: lowercase;
+      cursor: pointer;
+      transition: border-color 0.2s ease;
+    }
+
+    .home-hear:hover {
+      border-color: var(--zone-accent, var(--pq-green));
+    }
+
+    .home-hear:focus-visible {
+      outline: 3px solid var(--sky-blue);
+      outline-offset: 2px;
+    }
+
+    /* the mark: a triangle to play, a square to stop */
+    .home-hear-mark {
+      flex: none;
+      width: 0;
+      height: 0;
+      margin-left: 0.15rem;   /* a triangle sits left of where the eye wants it */
+      border-style: solid;
+      border-width: 0.4rem 0 0.4rem 0.66rem;
+      border-color: transparent transparent transparent var(--ink);
+    }
+
+    .home-hear.on .home-hear-mark {
+      width: 0.7rem;
+      height: 0.7rem;
+      margin-left: 0;
+      border: none;
+      background: var(--ink);
+    }
+
+    /* on a narrow stage the button is the mark alone: its words are kept for a screen reader */
+    .home-hear-word {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+
+    @container home (min-width: 520px) {
+      .home-hear {
+        width: auto;
+        padding: 0 1rem 0 0.85rem;
+      }
+
+      .home-hear-mark {
+        margin-left: 0;
+      }
+
+      .home-hear-word {
+        position: static;
+        width: auto;
+        height: auto;
+        overflow: visible;
+        clip-path: none;
+      }
+    }
+
+    .home-said {
+      align-self: flex-start;
+      max-width: 100%;
+      margin: 0;
+      padding: 0.5rem 0.75rem;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 0.9rem;
+      font-size: 0.88rem;
+      line-height: 1.3;
+      color: var(--ink);
+      text-transform: lowercase;
     }
 
     /* Three rows under the pictures, level across the page: the names, the roles, the ways in. */
@@ -1450,12 +1571,12 @@
         flex-wrap: nowrap;
       }
 
-      .home-sister {
+      .home-col {
         order: 1;
         width: var(--w);
       }
 
-      .home-sister + .home-sister {
+      .home-col + .home-col {
         order: 3;
       }
 
@@ -4206,9 +4327,11 @@
     // a pointer comes over her. `wait` is how long after the page opens, in ms: Quinn starts
     // a little after Piper. The photo between them comes in three sizes, and the browser
     // takes the one its screen needs.
+    // still: her picture. clip: her walking up and waving, with no sound. hello: the same walk with
+    // her lips moving and her voice, played only on a tap. says: her words, shown while she says them.
     var HOME_FIGURES = {
-      Piper: { still: 'img/piper-full.jpg', clip: 'img/piper-walk', wait: 600 },
-      Quinn: { still: 'img/quinn-full.jpg', clip: 'img/quinn-walk', wait: 1700 },
+      Piper: { still: 'img/piper-full.jpg', clip: 'img/piper-walk', wait: 600, hello: 'img/piper-hello', says: "hi, i'm piper! come shop with me." },
+      Quinn: { still: 'img/quinn-full.jpg', clip: 'img/quinn-walk', wait: 1700, hello: 'img/quinn-hello', says: "hi, i'm quinn! let's dress bold." },
     };
 
     // No clip for someone who has asked for less motion, or to save data: she gets the still.
@@ -4221,14 +4344,20 @@
     }
 
     // `again` is a count: each time it rises, the clip is asked to play once more.
-    function HomeFigure({ member, again }) {
+    // `saying` is true while her hello plays: the silent clip gives way to it. `sayRef` hands the
+    // page her hello, so that a tap can start it at once. `onSaid` tells the page she has stopped,
+    // and `onStuck` that none of her hello's files could be had.
+    function HomeFigure({ member, again, saying, sayRef, onSaid, onStuck }) {
       var fig = HOME_FIGURES[member.name];
       var clipRef = React.useRef(null);
+      var sayingNow = React.useRef(false);
+      sayingNow.current = saying;
       var [live, setLive] = useState(false);
+      var [shown, setShown] = useState(false);   // her hello has a frame up
       var [moves] = useState(homeMoves);
       var play = function() {
         var v = clipRef.current;
-        if (!v || (!v.paused && !v.ended)) return;   // no clip, or it is playing now
+        if (!v || sayingNow.current || (!v.paused && !v.ended)) return;   // no clip, she is talking, or it is playing now
         try {
           v.muted = true;
           if (v.currentTime > 0) v.currentTime = 0;
@@ -4242,30 +4371,110 @@
         return function() { clearTimeout(t); };
       }, []);
       useEffect(function() { if (moves && again) play(); }, [again]);
-      // data-clip says what is showing: 'off' (no clip here), 'still' or 'playing'
-      return el('span', { className: 'home-figure' + (live ? ' live' : ''), 'data-clip': !moves ? 'off' : live ? 'playing' : 'still' },
+      useEffect(function() {
+        if (!saying) { setShown(false); return; }
+        var v = clipRef.current;
+        if (v && !v.paused) { try { v.pause(); } catch (e) {} }
+      }, [saying]);
+      // data-clip says what is showing of the silent clip: 'off' (no clip here), 'still' or 'playing'.
+      // data-say is 'saying' while her hello plays. Someone who asked for less motion hears her and
+      // keeps the still.
+      return el('span', { className: 'home-figure' + (live ? ' live' : '') + (saying && shown && moves ? ' saying' : ''),
+          'data-clip': !moves ? 'off' : live ? 'playing' : 'still', 'data-say': saying ? 'saying' : 'quiet' },
         el('img', { className: 'home-still', src: fig.still, alt: '' }),
         moves && el('video', { ref: clipRef, className: 'home-clip', muted: true, playsInline: true, preload: 'auto', tabIndex: -1, 'aria-hidden': 'true', disablePictureInPicture: true,
             onPlaying: function() { setLive(true); }, onEnded: function() { setLive(false); }, onPause: function() { setLive(false); } },
           el('source', { src: fig.clip + '.mp4', type: 'video/mp4' }),
-          el('source', { src: fig.clip + '.webm', type: 'video/webm' })));
+          el('source', { src: fig.clip + '.webm', type: 'video/webm' })),
+        fig.hello && el('video', { ref: sayRef, className: 'home-say', playsInline: true, preload: 'none', tabIndex: -1, 'aria-hidden': 'true', disablePictureInPicture: true,
+            onPlaying: function() { setShown(true); }, onEnded: onSaid, onPause: onSaid },
+          el('source', { src: fig.hello + '.mp4', type: 'video/mp4' }),
+          // when the last file fails too, the browser waits for ever and tells nobody but this
+          el('source', { src: fig.hello + '.webm', type: 'video/webm', onError: onStuck })));
     }
 
     function HomePage({ onSelectCrewMember, navigateTo }) {
       var [again, setAgain] = useState({});
+      var [talking, setTalking] = useState(null);   // the sister who is saying hello now, by name
+      var [trouble, setTrouble] = useState(null);   // the sister whose hello would not play
+      var hellos = React.useRef({});                // each sister's hello: the <video> itself
+      var talkingNow = React.useRef(null);
+      talkingNow.current = talking;
+      var hushed = React.useRef({});                // a hello the page itself stopped: that is no trouble
+      var slowClock = React.useRef(null);
+      var quiet = function(name) { setTalking(function(now) { return now === name ? null : now; }); };
+      var hush = function(name) {
+        var v = hellos.current[name];
+        if (!v) return;
+        hushed.current[name] = true;
+        try { v.pause(); } catch (e) {}
+      };
+      // Her hello would not play: stop waiting for it, and say so.
+      var fail = function(name) {
+        hush(name);
+        quiet(name);
+        setTrouble(name);
+      };
+      // The tap itself starts her hello: a browser lets sound start from a tap, and not later.
+      var hear = function(name) {
+        var v = hellos.current[name];
+        if (!v) return;
+        if (talking === name) { hush(name); quiet(name); return; }   // a second tap stops her
+        if (talking) hush(talking);                                   // one voice at a time
+        setTrouble(null);
+        setTalking(name);
+        hushed.current[name] = false;
+        clearTimeout(slowClock.current);
+        slowClock.current = setTimeout(function() {                   // twelve seconds and not a frame: give up
+          var slow = hellos.current[name];
+          if (talkingNow.current === name && slow && slow.currentTime === 0) fail(name);
+        }, 12000);
+        try {
+          v.muted = false;
+          if (v.networkState === 3) v.load();                         // every file failed last time: ask again
+          if (v.currentTime > 0) v.currentTime = 0;
+          var p = v.play();
+          if (p && p.catch) p.catch(function() { if (hushed.current[name]) hushed.current[name] = false; else fail(name); });
+        } catch (e) { fail(name); }
+      };
+      useEffect(function() {
+        if (!trouble) return;
+        var t = setTimeout(function() { setTrouble(null); }, 3200);
+        return function() { clearTimeout(t); };
+      }, [trouble]);
+      // leaving the page stops her
+      useEffect(function() {
+        return function() {
+          clearTimeout(slowClock.current);
+          Object.keys(hellos.current).forEach(hush);
+        };
+      }, []);
       var sisters = [];
       CREW_MEMBERS.forEach(function(member, idx) {
         if (member.team) return;
         var first = !sisters.length;
-        sisters.push(el('button', { key: member.name, type: 'button', className: 'home-sister', style: { '--zone-accent': member.accent },
-            onClick: function() { onSelectCrewMember(idx); },
-            onMouseEnter: function() { setAgain(function(was) { var now = Object.assign({}, was); now[member.name] = (was[member.name] || 0) + 1; return now; }); } },
-          el(HomeFigure, { member: member, again: again[member.name] || 0 }),
-          el('span', { className: 'home-words' },
-            el('span', { className: 'home-name' }, member.name),
-            el('span', { className: 'home-role' }, member.role),
-            el('span', { className: 'home-go' }, 'shop with ' + member.name.toLowerCase()),
-            first && el('span', { className: 'home-amp home-amp-seam', 'aria-hidden': 'true' }, '&'))));
+        var fig = HOME_FIGURES[member.name];
+        var low = member.name.toLowerCase();
+        var on = talking === member.name;
+        sisters.push(el('div', { key: member.name, className: 'home-col', style: { '--zone-accent': member.accent } },
+          el('button', { type: 'button', className: 'home-sister',
+              onClick: function() { onSelectCrewMember(idx); },
+              onMouseEnter: function() { setAgain(function(was) { var now = Object.assign({}, was); now[member.name] = (was[member.name] || 0) + 1; return now; }); } },
+            el(HomeFigure, { member: member, again: again[member.name] || 0, saying: on,
+              sayRef: function(node) { hellos.current[member.name] = node; }, onSaid: function() { quiet(member.name); },
+              onStuck: function() { if (talkingNow.current === member.name) fail(member.name); } }),
+            el('span', { className: 'home-words' },
+              el('span', { className: 'home-name' }, member.name),
+              el('span', { className: 'home-role' }, member.role),
+              el('span', { className: 'home-go' }, 'shop with ' + low),
+              first && el('span', { className: 'home-amp home-amp-seam', 'aria-hidden': 'true' }, '&'))),
+          fig.hello && el('div', { className: 'home-over' },
+            el('button', { type: 'button', className: 'home-hear' + (on ? ' on' : ''), 'aria-label': on ? 'stop ' + low : 'hear ' + low + ' say hello',
+                onClick: function() { hear(member.name); } },
+              el('span', { className: 'home-hear-mark', 'aria-hidden': 'true' }),
+              el('span', { className: 'home-hear-word' }, on ? 'stop' : 'hear ' + low)),
+            on ? el('p', { className: 'home-said' }, fig.says)
+              : trouble === member.name ? el('p', { className: 'home-said', role: 'status' }, "that didn't play. tap to try again.") : null)));
       });
       return el('div', { className: 'home fade-in' },
         el('h1', { className: 'sr-only' }, 'piper & quinn'),
