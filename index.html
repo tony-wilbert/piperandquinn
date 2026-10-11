@@ -2002,6 +2002,179 @@
       color: #fff;
     }
 
+    /* ===== HER PHOTO, AND EVERY PIECE ON HER =====
+       She adds her photo once. It is kept on her own device, and a look is made for every
+       piece. The shop shows each piece on her. Her picture in the top bar opens "my photo":
+       where she changes it or takes it away. */
+    .navbar-me {
+      flex: none;
+      align-self: center;
+      width: 30px;
+      height: 30px;
+      margin: -5px 0;
+      padding: 0;
+      border: 2px solid var(--pq-green);
+      border-radius: 50%;
+      overflow: hidden;
+      background: var(--orbit-white);
+      cursor: pointer;
+    }
+
+    .navbar-me img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top;
+    }
+
+    /* A phone's top bar has no room beside its four links. There her photo is reached from
+       the shop, and from any piece. */
+    @media (max-width: 480px) {
+      .navbar-me {
+        display: none;
+      }
+    }
+
+    .me-band {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 0.9rem 1.1rem;
+      background: var(--orbit-white);
+      border-radius: var(--radius);
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.75rem 1rem;
+      font-size: 0.9rem;
+      line-height: 1.45;
+      text-align: left;
+    }
+
+    .me-band-thumb {
+      flex: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+      object-position: top;
+      background: #eee;
+    }
+
+    .me-band-words {
+      flex: 1 1 14rem;
+      min-width: 0;
+    }
+
+    .me-band-words.bad,
+    .me-sheet-says.bad {
+      color: var(--error);
+    }
+
+    .me-band-fine {
+      display: block;
+      margin-top: 0.2rem;
+      font-size: 0.76rem;
+      color: var(--ink-soft);
+    }
+
+    .me-band-acts {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem 1rem;
+    }
+
+    .me-band .tryon-bar {
+      flex: 1 0 100%;
+      margin-top: 0;
+    }
+
+    .me-switch {
+      display: inline-flex;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+    /* A card that shows the piece on her: keep her head in the picture. */
+    .product-image.product-look {
+      object-position: top;
+    }
+
+    .card-wait {
+      position: absolute;
+      left: 0.6rem;
+      top: 0.6rem;
+      padding: 0.3rem 0.7rem;
+      background: rgba(255, 255, 255, 0.94);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      font-size: 0.74rem;
+      letter-spacing: 0.03em;
+      color: var(--ink);
+    }
+
+    .me-sheet {
+      position: relative;
+      width: 100%;
+      max-width: 420px;
+      max-height: 92vh;
+      overflow-y: auto;
+      background: #fff;
+      border-radius: var(--radius-lg);
+      box-shadow: 0 25px 50px rgba(42, 42, 42, 0.22);
+      padding: 2rem 1.75rem 1.75rem;
+    }
+
+    .me-sheet-title {
+      margin: 0 0 1.1rem;
+      font-size: 1.5rem;
+      font-weight: 300;
+      letter-spacing: 0.02em;
+    }
+
+    .me-sheet-row {
+      display: flex;
+      gap: 1.1rem;
+      align-items: flex-start;
+    }
+
+    .me-sheet-photo {
+      flex: none;
+      width: 96px;
+      height: 144px;
+      object-fit: cover;
+      object-position: top;
+      border-radius: 10px;
+      background: #eee;
+    }
+
+    .me-sheet-says {
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    .me-sheet-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0 1.1rem;
+      margin-top: 0.5rem;
+    }
+
+    .me-sheet .me-add {
+      margin-top: 0.9rem;
+    }
+
+    .me-sheet-fine {
+      margin-top: 1.25rem;
+      font-size: 0.78rem;
+      color: var(--ink-soft);
+      line-height: 1.5;
+    }
+
     /* ===== THE OUTFIT A CREW MEMBER SHOWS ===== */
     .outfit-by {
       font-size: 0.78rem;
@@ -2832,7 +3005,8 @@
           : el('div', { className: 'crew-initial', style: { background: tint(member.accent, 0.55) } }, member.name.charAt(0)));
     }
 
-    function Navbar({ currentPage, navigateTo, cartCount }) {
+    // `photo`: her photo, once she has added one. It shows in the bar and opens "my photo".
+    function Navbar({ currentPage, navigateTo, cartCount, photo, onMe }) {
       var link = function(page, words) {
         return el('button', { type: 'button', className: 'navbar-link' + (currentPage === page ? ' active' : ''), onClick: function() { navigateTo(page); } }, words);
       };
@@ -2840,7 +3014,8 @@
         el('div', { className: 'color-rule' }),
         el('div', { className: 'navbar-content' },
           el('button', { type: 'button', className: 'navbar-brand', 'aria-label': 'piper & quinn: home', onClick: function() { navigateTo('home'); } }, el(Wordmark, null)),
-          el('div', { className: 'navbar-links' }, link('shop', 'shop'), link('studio', 'studio'), link('team', 'team'), link('cart', 'cart (' + cartCount + ')'))));
+          el('div', { className: 'navbar-links' }, link('shop', 'shop'), link('studio', 'studio'), link('team', 'team'), link('cart', 'cart (' + cartCount + ')'),
+            photo && el('button', { type: 'button', className: 'navbar-me', 'aria-label': 'my photo', onClick: onMe }, el('img', { src: photo, alt: '' })))));
     }
 
     // Size chart: height (inches) -> size
@@ -3001,7 +3176,8 @@
     // ===== TRY-ON =====
     // The shopper picks a photo, the page shrinks it and sends it to /api/tryon (a Netlify
     // function that holds the FASHN key), then asks /api/tryon-status until the look is ready.
-    // The photo lives in the page's memory only: nothing is saved in the browser.
+    // Her photo and her looks are kept on her own device (see MY PHOTO, below). The site
+    // keeps neither.
     var TRYON_START = '/api/tryon';
     var TRYON_STATUS = '/api/tryon-status';
     var TRYON_ASK_EVERY = 2000;
@@ -3065,11 +3241,13 @@
           if (data && data.message) {
             err = new Error(data.message);
             err.retry = !!data.retry;
+            err.code = String(data.code || '');
           } else if (res.status === 429) {
             err = new Error("that's a lot of looks at once. wait a minute and try again.");
             err.retry = true;
           } else if (res.status === 404) {
             err = new Error("try-on isn't switched on for this site yet.");
+            err.code = 'not_on';
           } else {
             err = new Error('try-on had a problem (' + res.status + '). try again.');
             err.retry = res.status >= 500;
@@ -3135,19 +3313,210 @@
       return step(0, photo);
     }
 
+    // ===== MY PHOTO =====
+    // She adds her photo once. The page keeps it on her own device, with every look made
+    // from it, so it is there on every piece and on her next visit. The site keeps nothing:
+    // her photo goes to /api/tryon each time a look is made, and a picture comes back.
+    //
+    // meStore is the device's side of it (IndexedDB). Every call answers; none throws.
+    // What is kept: 'photo' -> { id, image, auto, at } and 'look:<piece id>' -> { photo, image }.
+    var meStore = (function() {
+      var db = null, shut = false;
+      var open = function() {
+        if (db || shut) return Promise.resolve(db);
+        return new Promise(function(resolve) {
+          var done = function(got) { db = got || null; shut = !got; resolve(db); };
+          try {
+            var req = window.indexedDB.open('pq-me', 1);
+            req.onupgradeneeded = function() { req.result.createObjectStore('kept'); };
+            req.onsuccess = function() { done(req.result); };
+            req.onerror = function() { done(null); };
+            req.onblocked = function() { done(null); };
+          } catch (e) { done(null); }
+        });
+      };
+      // One piece of work in the store. `what` does it, and may give back a function that
+      // reads the answer once the work is done. Answers null when the device will not have it.
+      var work = function(mode, what) {
+        return open().then(function(d) {
+          if (!d) return null;
+          return new Promise(function(resolve) {
+            try {
+              var t = d.transaction('kept', mode);
+              var got = what(t.objectStore('kept'));
+              t.oncomplete = function() { resolve(got ? got() : true); };
+              t.onerror = function() { resolve(null); };
+              t.onabort = function() { resolve(null); };
+            } catch (e) { resolve(null); }
+          });
+        });
+      };
+      return {
+        // Everything kept, as { key: value }. null: this device keeps nothing.
+        all: function() {
+          return work('readonly', function(s) {
+            var keys = s.getAllKeys(), values = s.getAll();
+            return function() {
+              var kept = {};
+              keys.result.forEach(function(k, i) { kept[k] = values.result[i]; });
+              return kept;
+            };
+          });
+        },
+        put: function(key, value) { return work('readwrite', function(s) { s.put(value, key); }); },
+        clear: function() { return work('readwrite', function(s) { s.clear(); }); },
+      };
+    })();
+
+    // A look is made for every piece on its own for the first photos of a day on one
+    // device. Each look costs. After that a new photo is still kept, and she tries a piece
+    // on with a tap. One device never has more than LOOKS_OWN_A_DAY looks made on their own in
+    // a day, whatever else happens: past that, every look waits for her tap. A look that could
+    // not be made costs nothing, and is not counted.
+    var LOOKS_PHOTOS_A_DAY = 3;
+    var LOOKS_OWN_A_DAY = 30;
+    var LOOKS_AT_ONCE = 2;           // looks being made at the same time
+    var LOOKS_RETRY_AFTER = 20000;   // ms before a look that met passing trouble is tried again
+    var LOOKS_TRIES = 3;             // times the page tries a look on its own before it waits for her
+    // Trouble with the photo itself, or with try-on as a whole. No other piece would fare
+    // better, so the looks stop there and she is told.
+    var LOOKS_PHOTO_TROUBLE = { no_pose: 1, photo_unreadable: 1, photo_refused: 1, photo_too_big: 1, not_a_photo: 1, no_photo: 1 };
+    var LOOKS_DOWN = { out_of_credit: 1, key_rejected: 1, not_set_up: 1, wrong_site: 1, not_on: 1 };
+    var looksCounted = { day: '', n: 0, looks: 0 };   // the count, when the browser will not keep it
+
+    // What this device has had made on its own today: n photos, and so many looks.
+    function looksToday() {
+      var d = new Date();
+      var day = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
+      var kept = null;
+      try { kept = JSON.parse(window.localStorage.getItem('pq-auto') || 'null'); } catch (e) { kept = null; }
+      var now = kept && kept.day === day ? kept : looksCounted.day === day ? looksCounted : null;
+      return { day: day, n: now ? (now.n | 0) : 0, looks: now ? (now.looks | 0) : 0 };
+    }
+    function looksCount(photos, looks) {
+      var now = looksToday();
+      looksCounted = { day: now.day, n: now.n + photos, looks: Math.max(0, now.looks + looks) };
+      try { window.localStorage.setItem('pq-auto', JSON.stringify(looksCounted)); } catch (e) {}
+    }
+
+    // May the looks for a new photo be made on their own? Counts the photo if so.
+    function looksOnTheirOwn() {
+      var now = looksToday();
+      if (now.n >= LOOKS_PHOTOS_A_DAY || now.looks >= LOOKS_OWN_A_DAY) return false;
+      looksCount(1, 0);
+      return true;
+    }
+
+    // May one more look be started on its own? Counts it if so.
+    function lookOnItsOwn() {
+      if (looksToday().looks >= LOOKS_OWN_A_DAY) return false;
+      looksCount(0, 1);
+      return true;
+    }
+
+    // Where her photo goes and where it is kept, in words. `kept` false: this device will
+    // not keep it.
+    function meNote(kept) {
+      return kept === false
+        ? "your photo goes to fashn, our try-on partner, to make each picture. we don't keep it, and it's gone when you close this page."
+        : "your photo goes to fashn, our try-on partner, to make each picture. we don't keep it. it's saved on this device, and you can remove it any time.";
+    }
+
+    // How her looks stand, in a line: for the shop and for "my photo".
+    function meWords(me) {
+      var pieces = PRODUCTS.filter(function(p) { return p.tryOn; });
+      var made = pieces.filter(function(p) { var e = me.looks[p.id]; return !!(e && e.image); }).length;
+      var going = pieces.some(function(p) { var e = me.looks[p.id]; return !!e && (e.state === 'making' || e.state === 'waiting'); });
+      // her looks are made on their own, and one could not be made
+      var missed = me.auto && pieces.some(function(p) { var e = me.looks[p.id]; return !!e && e.state === 'failed' && !e.image; });
+      var words;
+      if (me.halted) words = me.halted.words;
+      else if (going) words = 'putting every piece on you. ' + made + ' of ' + pieces.length + ' ready.';
+      else if (made === pieces.length) words = 'every piece is on you.';
+      else if (missed) words = made ? made + ' of ' + pieces.length + " pieces are on you. the rest didn't come through." : "your looks didn't come through.";
+      else if (made) words = made + ' of ' + pieces.length + ' pieces are on you. open another to try it on.';
+      else words = 'your photo is in. open a piece to try it on.';
+      return {
+        words: words, made: made, going: going && !me.halted, bad: !!me.halted,
+        // "try again" puts every piece that has no look back in line
+        again: me.auto && !going && (me.halted ? me.halted.kind === 'down' : missed),
+      };
+    }
+
+    // In the shop: the way to see every piece on her, and how that is going.
+    function MeBand({ me, meDo }) {
+      if (!me.ready) return null;
+      if (!me.photo) {
+        return el('div', { className: 'me-band' },
+          el('div', { className: 'me-band-words' + (me.trouble ? ' bad' : ''), role: 'status' },
+            me.trouble || 'see every piece on you. add a full-length photo of you, facing the camera.',
+            !me.trouble && el('span', { className: 'me-band-fine' }, meNote(me.kept))),
+          el('div', { className: 'me-band-acts' },
+            el('button', { type: 'button', className: 'btn-quiet me-add', disabled: me.reading, onClick: meDo.pick }, me.reading ? 'opening your photo…' : 'add my photo')));
+      }
+      var how = meWords(me);
+      return el('div', { className: 'me-band' },
+        el('img', { className: 'me-band-thumb', src: me.photo, alt: 'your photo' }),
+        el('div', { className: 'me-band-words' + (me.trouble || how.bad ? ' bad' : ''), role: 'status' }, me.trouble || how.words),
+        el('div', { className: 'me-band-acts' },
+          me.halted && me.halted.kind === 'photo' && el('button', { type: 'button', className: 'btn-quiet me-add', disabled: me.reading, onClick: meDo.pick }, me.reading ? 'opening your photo…' : 'choose another photo'),
+          how.again && el('button', { type: 'button', className: 'btn-quiet me-again', onClick: meDo.resume }, 'try again'),
+          how.made > 0 && el('div', { className: 'me-switch', role: 'group', 'aria-label': 'what the shop shows' },
+            el('button', { type: 'button', className: 'tryon-view-btn' + (me.show ? ' active' : ''), 'aria-pressed': me.show, onClick: function() { meDo.show(true); } }, 'on me'),
+            el('button', { type: 'button', className: 'tryon-view-btn' + (!me.show ? ' active' : ''), 'aria-pressed': !me.show, onClick: function() { meDo.show(false); } }, 'the pieces')),
+          el('button', { type: 'button', className: 'tryon-link me-open', onClick: meDo.open }, 'my photo')),
+        how.going && el('div', { className: 'tryon-bar' }));
+    }
+
+    // "my photo": what is kept, where, and the two things she can do with it.
+    function MePanel({ me, meDo, onClose }) {
+      const [removed, setRemoved] = useState(false);
+      useEffect(function() {
+        var onKey = function(e) { if (e.key === 'Escape') onClose(); };
+        document.addEventListener('keydown', onKey);
+        return function() { document.removeEventListener('keydown', onKey); };
+      }, []);
+      var how = meWords(me);
+      return el('div', { className: 'modal-overlay', onClick: function(e) { if (e.target === e.currentTarget) onClose(); } },
+        el('div', { className: 'me-sheet', role: 'dialog', 'aria-label': 'my photo' },
+          el('button', { className: 'modal-close', onClick: onClose, 'aria-label': 'close' }, '×'),
+          el('h2', { className: 'me-sheet-title' }, 'my photo'),
+          me.photo ? (
+            el('div', { className: 'me-sheet-row' },
+              el('img', { className: 'me-sheet-photo', src: me.photo, alt: 'your photo' }),
+              el('div', null,
+                el('div', { className: 'me-sheet-says' + (me.trouble || how.bad ? ' bad' : ''), role: 'status' }, me.trouble || how.words),
+                el('div', { className: 'me-sheet-links' },
+                  el('button', { type: 'button', className: 'tryon-link', disabled: me.reading, onClick: meDo.pick }, me.reading ? 'opening your photo…' : 'change photo'),
+                  el('button', { type: 'button', className: 'tryon-link', disabled: me.reading, onClick: function() { meDo.removePhoto(); setRemoved(true); } }, 'remove photo'))))
+          ) : (
+            el('div', null,
+              el('div', { className: 'me-sheet-says' + (me.trouble ? ' bad' : ''), role: 'status' },
+                me.trouble || (removed ? 'your photo and your looks are gone from this device.' : 'no photo yet. add one to see every piece on you.')),
+              el('button', { type: 'button', className: 'btn-quiet me-add', disabled: me.reading, onClick: meDo.pick }, me.reading ? 'opening your photo…' : 'add my photo'))
+          ),
+          el('div', { className: 'me-sheet-fine' }, meNote(me.kept))));
+    }
+
     // The try-on panel. `pieces` is one product, or two for an outfit (in the order they go on).
-    // `autoGo` is a number that changes each time a look should start on its own.
-    // `lookRef`, in the outfit window only, is where the app reads how her look stands:
-    // none | reading (she is choosing a photo, or it is being read) | making | made.
-    function TryOn({ pieces, photo, setPhoto, look, onLook, startOpen, autoGo, onDone, lookRef }) {
+    // Her photo and her looks are the app's: `me` is how they stand, `meDo` changes them, and
+    // `lookKey` says which look this panel is for. `autoGo` is a number that changes each
+    // time a look should start on its own. `lookRef` is where the app reads how her look
+    // here stands: none | reading (she is choosing a photo, or it is being read) | making | made.
+    function TryOn({ pieces, lookKey, me, meDo, startOpen, autoGo, onDone, lookRef }) {
       const [open, setOpen] = useState(!!startOpen);
-      const [phase, setPhase] = useState('idle'); // idle | opening | working | error
-      const [message, setMessage] = useState('');
+      const [reading, setReading] = useState(false);
+      const [fileTrouble, setFileTrouble] = useState('');
       const [nudge, setNudge] = useState(0);
       var fileRef = React.useRef(null);
       var panelRef = React.useRef(null);
       var runRef = React.useRef(0);
       var two = pieces.length > 1;
+      var photo = me.photo;
+      var entry = me.looks[lookKey] || null;
+      var look = (entry && entry.image) || null;
+      var making = !!entry && (entry.state === 'making' || entry.state === 'waiting');
+      var failed = !!entry && entry.state === 'failed';
       // Set as things happen, not as the page draws: a press can arrive before the next draw.
       var mark = function(state) { if (lookRef) lookRef.current = state; };
 
@@ -3161,12 +3530,35 @@
         p.scrollIntoView({ block: 'nearest', behavior: calm ? 'auto' : 'smooth' });
       }, [nudge]);
 
-      // Leaving the window stops any look still being made.
+      // Leaving the window: a photo still being read is let go. A look still being made is
+      // the app's, and is not stopped from here.
       useEffect(function() {
         return function() { runRef.current = -1; };
       }, []);
 
-      var busy = phase === 'opening' || phase === 'working';
+      // How her look stands, for the app, as the page draws it.
+      useEffect(function() {
+        if (reading) return;
+        mark(making ? 'making' : look ? 'made' : 'none');
+      }, [making, !!look, reading]);
+
+      // A look that could not be made: bring the reason into view.
+      var wasFailed = React.useRef(failed);
+      useEffect(function() {
+        if (failed && !wasFailed.current) showPanel();
+        wasFailed.current = failed;
+      }, [failed]);
+
+      // Her looks are being made on their own, and this one has not had its turn: it goes next.
+      useEffect(function() {
+        if (entry && entry.state === 'waiting') {
+          mark('making');
+          meDo.want(lookKey);
+        }
+      }, []);
+
+      var busy = reading || making;
+      var phase = reading ? 'opening' : making ? 'working' : (fileTrouble || failed) ? 'error' : 'idle';
 
       var pick = function() {
         if (busy || !fileRef.current) return;
@@ -3191,20 +3583,20 @@
         if (!file) { mark(look ? 'made' : 'none'); return; }
         if (busy) return;
         var my = ++runRef.current;
-        setPhase('opening');
-        setMessage('');
+        setReading(true);
+        setFileTrouble('');
         mark('reading');
         fitPhoto(file).then(function(dataUrl) {
           if (runRef.current !== my) return;
-          onLook(null);
-          setPhoto(dataUrl);
-          setPhase('idle');
-          mark('none');
+          setReading(false);
+          // a new photo: every look made from the old one goes. This piece's is started at
+          // once if her looks are made on their own.
+          mark(meDo.setPhoto(dataUrl, lookKey) ? 'making' : 'none');
           showPanel();
         }, function(err) {
           if (runRef.current !== my) return;
-          setPhase('error');
-          setMessage(err.message);
+          setReading(false);
+          setFileTrouble(err.message);
           mark(look ? 'made' : 'none');
           showPanel();
         });
@@ -3213,36 +3605,23 @@
       var remove = function() {
         if (busy) return;
         runRef.current += 1;
-        onLook(null);
-        setPhoto(null);
-        setPhase('idle');
-        setMessage('');
+        setFileTrouble('');
+        meDo.removePhoto();
         mark('none');
       };
 
       var go = function() {
         if (!photo || busy) return;
-        var my = ++runRef.current;
-        var alive = function() { return runRef.current === my; };
-        setPhase('working');
-        setMessage('');
+        setFileTrouble('');
         mark('making');
         showPanel();
-        tryonLook(pieces, photo, alive).then(function(image) {
-          if (!alive()) return;
-          setPhase('idle');
-          mark('made');
-          onLook(image);
-          if (onDone) onDone(true, '');
-        }, function(err) {
-          if (!alive()) return;
-          var words = err.message || 'try-on had a problem. try again.';
-          setPhase('error');
-          setMessage(words);
-          mark(look ? 'made' : 'none');
-          showPanel();
-          if (onDone) onDone(false, words);
-        });
+        var done = meDo.make(lookKey, pieces, false);
+        if (onDone) {
+          done.then(function(r) {
+            if (r.gone || runRef.current === -1) return;
+            onDone(r.ok, r.ok ? '' : r.words);
+          });
+        }
       };
 
       // A crew member showed this outfit and her photo is already in: start without a tap.
@@ -3262,7 +3641,7 @@
 
       var status = '';
       if (phase === 'working') status = two ? 'this takes about half a minute.' : 'this takes about 15 seconds.';
-      else if (phase === 'error') status = message;
+      else if (phase === 'error') status = fileTrouble || entry.words;
       else if (look) status = two ? "here's your look, in the colors we photographed." : "here's your look, in the color we photographed.";
 
       var goLabel = 'see it on me';
@@ -3293,7 +3672,7 @@
         phase === 'working' && el('div', { className: 'tryon-bar' }),
         el('div', { className: 'tryon-status' + (phase === 'error' ? ' tryon-error' : ''), role: 'status', 'aria-live': 'polite' }, status),
         look && !busy && el('a', { className: 'tryon-link', href: look, download: saveName, style: { display: 'inline-block' } }, 'save picture'),
-        el('div', { className: 'tryon-note' }, "your photo goes to fashn, our try-on partner, to make the picture. we don't keep it."));
+        el('div', { className: 'tryon-note' }, meNote(me.kept)));
     }
 
     // ===== THE CREW AS GUIDES =====
@@ -4095,20 +4474,33 @@
     }
 
     // `outfit.look` is how her look in this window stands (see TryOn). `upRef` holds the outfit
-    // that is up now: once it is another one, this window has been replaced.
-    function OutfitWindow({ outfit, onClose, onView, tryPhoto, setTryPhoto, upRef }) {
-      const [look, setLook] = useState(null);
+    // that is up now: once it is another one, this window has been replaced. The look of an
+    // outfit is this window's own: it is made when the outfit is shown, and goes with the
+    // window. Only a piece's own look is kept.
+    function OutfitWindow({ outfit, onClose, onView, me, meDo, upRef }) {
+      var lookKey = 'outfit:' + outfit.n;
+      var entry = me.looks[lookKey] || null;
+      var look = (entry && entry.image) || null;
+      var lookN = look ? (entry.n || 0) : -1;   // which look is showing: it changes with each one made
       const [showLook, setShowLook] = useState(false);
       const [lookCount, setLookCount] = useState(0);
       var contentRef = React.useRef(null);
       var paneRef = React.useRef(null);
       var pieces = outfit.pieces;
 
-      var handleLook = function(image) {
-        setLook(image);
-        setShowLook(!!image);
-        if (image) setLookCount(function(n) { return n + 1; });
-      };
+      // A look has come: show it. Or her photo has changed, and the look went with it.
+      var lookSeen = React.useRef(-1);
+      useEffect(function() {
+        if (lookN === lookSeen.current) return;
+        lookSeen.current = lookN;
+        setShowLook(lookN >= 0);
+        if (lookN >= 0) setLookCount(function(n) { return n + 1; });
+      }, [lookN]);
+
+      // The window closes: its look goes with it, and one still being made is let go.
+      useEffect(function() {
+        return function() { meDo.drop(lookKey); };
+      }, []);
 
       useEffect(function() {
         var c = contentRef.current, p = paneRef.current;
@@ -4158,19 +4550,26 @@
                   el('button', { className: 'tryon-link', onClick: function() { onView(p); } }, 'view'));
               }),
               pieces.length > 1 && el('div', { className: 'outfit-total' }, el('span', null, 'together'), el('span', null, '$' + total))),
-            el(TryOn, { pieces: pieces, photo: tryPhoto, setPhoto: setTryPhoto, look: look, onLook: handleLook, startOpen: true, autoGo: outfit.auto ? outfit.n : 0, onDone: handleDone, lookRef: outfit.look }))));
+            el(TryOn, { pieces: pieces, lookKey: lookKey, me: me, meDo: meDo, startOpen: true, autoGo: outfit.auto ? outfit.n : 0, onDone: handleDone, lookRef: outfit.look }))));
     }
 
     // The window of one piece. `ask` is this opening of it: the piece, and the color it opens
     // in. The app reads two things back from it: `ask.look`, how her try-on here stands (see
     // TryOn), and `ask.seen`, the color and the size she has chosen.
-    function ProductDetail({ ask, onClose, onAddToCart, tryPhoto, setTryPhoto }) {
+    //
+    // Her look in the piece is the app's, kept with her photo: a piece she has tried on opens
+    // on her, and a look that is made while the window is shut is there when it opens again.
+    function ProductDetail({ ask, onClose, onAddToCart, me, meDo }) {
       var product = ask.product;
+      var lookKey = String(product.id);
+      var entry = me.looks[lookKey] || null;
+      var look = (entry && entry.image) || null;
+      var lookN = look ? (entry.n || 0) : -1;   // which look is showing: it changes with each one made
       const [selectedColor, setSelectedColor] = useState(ask.color || product.colorways[0]);
       const [selectedSize, setSelectedSize] = useState(null);
       const [added, setAdded] = useState(false);
-      const [look, setLook] = useState(null);
-      const [showLook, setShowLook] = useState(false);
+      // It opens on her look if she has one, unless her guide asked for a color.
+      const [showLook, setShowLook] = useState(!!look && !ask.color);
       const [lookCount, setLookCount] = useState(0);
       // What the picture side shows when it is not her look: the piece on its own in the color
       // she has picked, or the product photo. If the piece's own picture cannot be loaded, the
@@ -4190,11 +4589,14 @@
         setShot('color');
       }, [ask.colorN]);
 
-      var handleLook = function(image) {
-        setLook(image);
-        setShowLook(!!image);
-        if (image) setLookCount(function(n) { return n + 1; });
-      };
+      // A look has come: show it. Or her photo has changed, and the look went with it.
+      var lookSeen = React.useRef(lookN);
+      useEffect(function() {
+        if (lookN === lookSeen.current) return;
+        lookSeen.current = lookN;
+        setShowLook(lookN >= 0);
+        if (lookN >= 0) setLookCount(function(n) { return n + 1; });
+      }, [lookN]);
 
       // When a look arrives, bring the picture into view (on a phone it sits above the panel).
       useEffect(function() {
@@ -4226,7 +4628,7 @@
       var onPhoto = shot === 'photo' || shotState === 'failed';
 
       return (
-        React.createElement('div', {className: "modal-overlay", onClick: handleOverlayClick}, React.createElement('div', {className: "modal-content", ref: contentRef, 'data-piece': pieceKey(product)}, React.createElement('button', {className: "modal-close", onClick: onClose, 'aria-label': "close"}, "×"), React.createElement('div', {ref: paneRef, className: "modal-pane"}, (look && showLook) ? (React.createElement('img', {key: "look", src: look, alt: 'you in ' + product.name.toLowerCase(), className: "modal-image tryon-look"})) : onPhoto ? (React.createElement('img', {key: "product", src: product.imageUrl, alt: product.name, className: "modal-image"})) : (React.createElement(PieceShot, {key: "shot", product: product, color: selectedColor, size: 1000, className: "modal-image piece-shot", label: product.name.toLowerCase() + ' in ' + colorName.toLowerCase(), onState: setShotState})), (look || shotState !== 'failed') && (React.createElement('div', {className: "tryon-view"}, look && React.createElement('button', {className: 'tryon-view-btn' + (showLook ? ' active' : ''), 'aria-pressed': showLook, onClick: function() { setShowLook(true); }}, "my look"), shotState !== 'failed' && React.createElement('button', {className: 'tryon-view-btn' + (!showLook && !onPhoto ? ' active' : ''), 'aria-pressed': !showLook && !onPhoto, onClick: function() { setShot('color'); setShowLook(false); }}, "in " + colorName.toLowerCase()), React.createElement('button', {className: 'tryon-view-btn' + (!showLook && onPhoto ? ' active' : ''), 'aria-pressed': !showLook && onPhoto, onClick: function() { setShot('photo'); setShowLook(false); }}, "photo")))), React.createElement('div', {className: "modal-details"}, React.createElement('div', null, React.createElement('div', {className: "modal-product-name"}, product.name), React.createElement('div', {className: "modal-product-price"}, "$", product.price)), React.createElement('div', {className: "modal-product-desc"}, product.description), product.tryOn && React.createElement(TryOn, {pieces: [product], photo: tryPhoto, setPhoto: setTryPhoto, look: look, onLook: handleLook, lookRef: ask.look}), React.createElement('div', null, React.createElement('div', {className: "label"}, "color: ", colorName.toLowerCase()), React.createElement('div', {style: { display: 'flex', gap: '0.75rem', flexWrap: 'wrap', alignItems: 'center' }}, product.colorways.map(cw => {
+        React.createElement('div', {className: "modal-overlay", onClick: handleOverlayClick}, React.createElement('div', {className: "modal-content", ref: contentRef, 'data-piece': pieceKey(product)}, React.createElement('button', {className: "modal-close", onClick: onClose, 'aria-label': "close"}, "×"), React.createElement('div', {ref: paneRef, className: "modal-pane"}, (look && showLook) ? (React.createElement('img', {key: "look", src: look, alt: 'you in ' + product.name.toLowerCase(), className: "modal-image tryon-look"})) : onPhoto ? (React.createElement('img', {key: "product", src: product.imageUrl, alt: product.name, className: "modal-image"})) : (React.createElement(PieceShot, {key: "shot", product: product, color: selectedColor, size: 1000, className: "modal-image piece-shot", label: product.name.toLowerCase() + ' in ' + colorName.toLowerCase(), onState: setShotState})), (look || shotState !== 'failed') && (React.createElement('div', {className: "tryon-view"}, look && React.createElement('button', {className: 'tryon-view-btn' + (showLook ? ' active' : ''), 'aria-pressed': showLook, onClick: function() { setShowLook(true); }}, "my look"), shotState !== 'failed' && React.createElement('button', {className: 'tryon-view-btn' + (!showLook && !onPhoto ? ' active' : ''), 'aria-pressed': !showLook && !onPhoto, onClick: function() { setShot('color'); setShowLook(false); }}, "in " + colorName.toLowerCase()), React.createElement('button', {className: 'tryon-view-btn' + (!showLook && onPhoto ? ' active' : ''), 'aria-pressed': !showLook && onPhoto, onClick: function() { setShot('photo'); setShowLook(false); }}, "photo")))), React.createElement('div', {className: "modal-details"}, React.createElement('div', null, React.createElement('div', {className: "modal-product-name"}, product.name), React.createElement('div', {className: "modal-product-price"}, "$", product.price)), React.createElement('div', {className: "modal-product-desc"}, product.description), product.tryOn && React.createElement(TryOn, {pieces: [product], lookKey: lookKey, me: me, meDo: meDo, startOpen: !!me.photo && (me.auto || !!entry), lookRef: ask.look}), React.createElement('div', null, React.createElement('div', {className: "label"}, "color: ", colorName.toLowerCase()), React.createElement('div', {style: { display: 'flex', gap: '0.75rem', flexWrap: 'wrap', alignItems: 'center' }}, product.colorways.map(cw => {
                     const color = COLORWAYS.find(c => c.id === cw);
                     if (!color) return null;
                     var isSelected = selectedColor === cw;
@@ -4437,7 +4839,24 @@
         el('div', { className: 'team-grid' }, cards(false)));
     }
 
-    function ShopPage({ setCurrentPage, onSelectProduct }) {
+    // A piece's card, in the shop and on a crew member's page. Once her look in the piece
+    // is made, the card shows the piece on her.
+    function ProductCard({ product, me, onOpen }) {
+      var entry = me.looks[product.id] || null;
+      var mine = me.show && entry && entry.image ? entry.image : null;
+      var coming = me.show && !!entry && entry.state === 'making' && !entry.image;
+      return el('div', { className: 'product-card', 'data-look': entry ? entry.state : 'none', 'data-mine': mine ? 'yes' : 'no', onClick: function() { onOpen(product); } },
+        el('div', { className: 'product-card-image-wrapper' },
+          mine
+            ? el('img', { key: 'look', src: mine, alt: 'you in ' + product.name.toLowerCase(), className: 'product-image product-look' })
+            : el('img', { key: 'photo', src: product.imageUrl, alt: product.name, className: 'product-image' }),
+          coming && el('span', { className: 'card-wait' }, 'putting it on you…')),
+        el('div', { className: 'product-info' },
+          el('div', { className: 'product-name' }, product.name),
+          el('div', { className: 'product-price' }, '$' + product.price)));
+    }
+
+    function ShopPage({ setCurrentPage, onSelectProduct, me, meDo }) {
       const [activeCategory, setActiveCategory] = useState('all');
       useEffect(studioWarm, []);
       const categories = ['all', 'dresses', 'tops', 'bottoms'];
@@ -4449,12 +4868,8 @@
       return (
         React.createElement('div', {className: "main-content fade-in"}, React.createElement('h1', {className: "page-title"}, "the collection"), React.createElement('div', {className: "category-nav"}, categories.map(cat => (
               React.createElement('div', {key: cat, className: `filter-link ${activeCategory === cat ? 'active' : ''}`, onClick: () => setActiveCategory(cat)}, cat === 'all' ? 'all items' : cat)
-            ))), React.createElement('div', {style: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(240px, 100%), 1fr))', gap: '2rem', margin: '3rem 0' }}, filteredProducts.map((product) => (
-              React.createElement('div', {key: product.id, className: "product-card", onClick: () => onSelectProduct(product)}, React.createElement('div', {className: "product-card-image-wrapper"}, product.imageUrl ? (
-                    React.createElement('img', {src: product.imageUrl, alt: product.name, className: "product-image"})
-                  ) : (
-                    React.createElement('div', {style: { width: '100%', height: '100%', background: COLORWAYS.find(c => c.id === product.colorways[0])?.hex || '#F8F6F1' }})
-                  )), React.createElement('div', {className: "product-info"}, React.createElement('div', {className: "product-name"}, product.name), React.createElement('div', {className: "product-price"}, "$", product.price)))
+            ))), React.createElement(MeBand, {me: me, meDo: meDo}), React.createElement('div', {style: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(240px, 100%), 1fr))', gap: '2rem', margin: '3rem 0' }}, filteredProducts.map((product) => (
+              React.createElement(ProductCard, {key: product.id, product: product, me: me, onOpen: onSelectProduct})
             ))))
       );
     }
@@ -5150,7 +5565,7 @@
     }
 
     // A crew member's own page. `isGuide`: this member is with her as her guide.
-    function CrewZone({ memberIdx, onSelectProduct, onSwitchZone, navigateTo, isGuide, onGuide }) {
+    function CrewZone({ memberIdx, onSelectProduct, onSwitchZone, navigateTo, isGuide, onGuide, me }) {
       var member = CREW_MEMBERS[memberIdx];
       var name = member.name.toLowerCase();
 
@@ -5176,12 +5591,7 @@
           el('p', { className: 'zone-desc' }, member.zoneDesc),
           el('h2', { className: 'zone-section-title' }, name + "'s picks"),
           el('div', { className: 'zone-products' }, zoneProducts.map(function(product) {
-            return el('div', { key: product.id, className: 'product-card', onClick: function() { onSelectProduct(product); } },
-              el('div', { className: 'product-card-image-wrapper' },
-                el('img', { src: product.imageUrl, alt: product.name, className: 'product-image' })),
-              el('div', { className: 'product-info' },
-                el('div', { className: 'product-name' }, product.name),
-                el('div', { className: 'product-price' }, '$' + product.price)));
+            return el(ProductCard, { key: product.id, product: product, me: me, onOpen: onSelectProduct });
           }))),
         el('div', { className: 'zone-other' }, el('div', { className: 'zone-other-label' }, 'visit another zone')),
         el('div', { className: 'zone-nav' },
@@ -5218,12 +5628,262 @@
       const [piece, setPiece] = useState(null);                 // the piece window that is open (see ProductDetail)
       const [activeZoneIdx, setActiveZoneIdx] = useState(first.zone); // whose page she is on, on the zone page
       const [guideIdx, setGuideIdx] = useState(first.zone);     // her guide: with her on every page until she picks another or closes the chat
-      const [tryPhoto, setTryPhoto] = useState(null);
       const [outfit, setOutfit] = useState(null);
       const [design, setDesign] = useState(STUDIO_START);        // what she has made in the studio: it stays as she goes from page to page
-      var tryPhotoRef = React.useRef(null);
-      tryPhotoRef.current = tryPhoto;
       var freeLooksRef = React.useRef(0);
+
+      // ---- her photo, and her looks (see MY PHOTO, above) ----
+      // `me` is all of it, and meRef holds the same, set as things happen:
+      //   ready    the device's store has been read
+      //   photo    her photo, as a data URI. id says which photo: her looks belong to it
+      //   kept     true: it is on this device. false: this device keeps nothing. null: not known
+      //   auto     a look is made for every piece on its own
+      //   looks    key -> { state: waiting | making | made | failed, image, words, n }
+      //            A piece's key is its id. An outfit window has a key of its own.
+      //   halted   { words, kind: photo | down } when the looks stopped for a cause that
+      //            holds for every piece
+      //   reading  a photo chosen in the shop or in "my photo" is being read
+      //   trouble  why that photo could not be used
+      //   show     the shop shows the pieces on her
+      var meRef = React.useRef(null);
+      if (meRef.current === null) meRef.current = { ready: false, photo: null, id: null, kept: null, auto: false, looks: {}, halted: null, reading: false, trouble: '', show: true };
+      const [me, drawMe] = useState(meRef.current);
+      const [meOpen, setMeOpen] = useState(false);
+      var meOpenRef = React.useRef(false);
+      var meRuns = React.useRef({});     // looks being made now: key -> { promise }
+      var meEpoch = React.useRef(0);     // goes up when her photo changes: what was under way is let go
+      var meTries = React.useRef({});    // times the page has tried each look on its own
+      var meFront = React.useRef(null);  // the piece whose look is made next, ahead of the shop's order
+      var meTimer = React.useRef(null);
+      var meFile = React.useRef(null);
+
+      var setMe = function(change) {
+        meRef.current = Object.assign({}, meRef.current, change);
+        drawMe(meRef.current);
+      };
+      var setLook = function(key, change) {
+        var looks = Object.assign({}, meRef.current.looks);
+        if (change === null) delete looks[key];
+        else looks[key] = Object.assign({}, looks[key], change);
+        setMe({ looks: looks });
+      };
+      var openMe = function(on) {
+        meOpenRef.current = !!on;
+        setMeOpen(!!on);
+        // a photo that could not be read was said in "my photo": it is not said again
+        if (!on && meRef.current.trouble && !meRef.current.reading) setMe({ trouble: '' });
+      };
+      var pieceOf = function(key) {
+        return PRODUCTS.find(function(p) { return p.tryOn && String(p.id) === String(key); }) || null;
+      };
+      var piecesGoing = function() {
+        return Object.keys(meRuns.current).filter(function(k) { return !!pieceOf(k); }).length;
+      };
+
+      // This device has started all the looks it may on its own today. The ones still
+      // waiting go back to not made, and from here every look waits for her tap, on her
+      // next visit too.
+      var endOwnLooks = function() {
+        var m = meRef.current;
+        var looks = {};
+        Object.keys(m.looks).forEach(function(k) {
+          if (m.looks[k].state !== 'waiting') looks[k] = m.looks[k];
+        });
+        clearTimeout(meTimer.current);
+        setMe({ looks: looks, auto: false });
+        if (m.kept) meStore.put('photo', { id: m.id, image: m.photo, auto: false, at: Date.now() });
+      };
+
+      // The looks stop: every one still waiting goes back to not made. She starts one
+      // herself, or picks another photo.
+      var haltLooks = function(words, kind) {
+        var looks = {};
+        Object.keys(meRef.current.looks).forEach(function(k) {
+          if (meRef.current.looks[k].state !== 'waiting') looks[k] = meRef.current.looks[k];
+        });
+        clearTimeout(meTimer.current);
+        setMe({ looks: looks, halted: { words: words, kind: kind } });
+      };
+
+      // Make the look for `key`. `own`: the page started it, not a tap of hers. Answers
+      // { ok: true, image } or { ok: false, words }. A look already being made is joined,
+      // not made twice. A look for a piece is kept on her device.
+      var makeLook = function(key, pieces, own) {
+        var m = meRef.current;
+        if (!m.photo) return Promise.resolve({ ok: false, words: 'add a photo first.' });
+        if (meRuns.current[key]) return meRuns.current[key].promise;
+        var epoch = meEpoch.current, photoId = m.id;
+        var run = { promise: null };
+        var alive = function() { return meEpoch.current === epoch && meRuns.current[key] === run; };
+        var kept = pieces.length === 1 && !!pieceOf(key);
+        meTries.current[key] = own ? (meTries.current[key] || 0) + 1 : LOOKS_TRIES;   // her own tap: one try, and she sees how it went
+        setLook(key, { state: 'making', words: '', after: 0 });
+        meRuns.current[key] = run;
+        run.promise = tryonLook(pieces, m.photo, alive).then(function(image) {
+          if (!alive()) return { ok: false, gone: true };
+          delete meRuns.current[key];
+          setLook(key, { state: 'made', image: image, words: '', n: ((meRef.current.looks[key] || {}).n || 0) + 1 });
+          if (kept) meStore.put('look:' + key, { photo: photoId, image: image });
+          pumpLooks();
+          return { ok: true, image: image };
+        }, function(err) {
+          if (!alive()) return { ok: false, gone: true };
+          delete meRuns.current[key];
+          if (own) looksCount(0, -1);   // it was counted as it started, and it was not made
+          var words = (err && err.message) || 'try-on had a problem. try again.';
+          var code = (err && err.code) || '';
+          var onTheirOwn = kept && meRef.current.auto && !meRef.current.halted;
+          if (onTheirOwn && own && err && err.retry && meTries.current[key] < LOOKS_TRIES) {
+            // passing trouble: it goes back in line, and is tried again in a while
+            setLook(key, { state: 'waiting', words: '', after: Date.now() + LOOKS_RETRY_AFTER });
+            clearTimeout(meTimer.current);
+            meTimer.current = setTimeout(pumpLooks, LOOKS_RETRY_AFTER + 50);
+          } else {
+            setLook(key, { state: 'failed', words: words });
+            if (onTheirOwn && (LOOKS_PHOTO_TROUBLE[code] || LOOKS_DOWN[code])) haltLooks(words, LOOKS_PHOTO_TROUBLE[code] ? 'photo' : 'down');
+          }
+          pumpLooks();
+          return { ok: false, words: words };
+        });
+        return run.promise;
+      };
+
+      // Start the looks that are waiting, a few at a time: the piece she has open first,
+      // then in the shop's order.
+      var pumpLooks = function() {
+        var m = meRef.current;
+        if (!m.photo || !m.auto || m.halted) return;
+        var now = Date.now();
+        var waiting = PRODUCTS.filter(function(p) {
+          var e = m.looks[p.id];
+          return p.tryOn && e && e.state === 'waiting' && !(e.after > now);
+        });
+        var front = meFront.current;
+        if (front) waiting.sort(function(a, b) { return (String(b.id) === front ? 1 : 0) - (String(a.id) === front ? 1 : 0); });
+        var going = piecesGoing();
+        while (going < LOOKS_AT_ONCE && waiting.length) {
+          if (!lookOnItsOwn()) { endOwnLooks(); return; }
+          var next = waiting.shift();
+          going += 1;
+          makeLook(String(next.id), [next], true);
+        }
+      };
+
+      // A new photo. Every look made from the old one goes. If her looks are made on their
+      // own for this photo, every piece is put in line, with `firstKey` at the head. Says
+      // whether that one was started.
+      var setPhoto = function(image, firstKey) {
+        meEpoch.current += 1;
+        meRuns.current = {};
+        meTries.current = {};
+        clearTimeout(meTimer.current);
+        var id = Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+        var auto = looksOnTheirOwn();
+        var looks = {};
+        if (auto) PRODUCTS.forEach(function(p) { if (p.tryOn) looks[p.id] = { state: 'waiting' }; });
+        meFront.current = firstKey != null && looks[firstKey] ? String(firstKey) : null;
+        setMe({ photo: image, id: id, kept: null, auto: auto, looks: looks, halted: null, reading: false, trouble: '', show: true });
+        meStore.clear().then(function() {
+          return meStore.put('photo', { id: id, image: image, auto: auto, at: Date.now() });
+        }).then(function(ok) {
+          if (meRef.current.id === id) setMe({ kept: !!ok });
+        });
+        pumpLooks();
+        return !!meFront.current;
+      };
+
+      var removePhoto = function() {
+        meEpoch.current += 1;
+        meRuns.current = {};
+        meTries.current = {};
+        meFront.current = null;
+        clearTimeout(meTimer.current);
+        setMe({ photo: null, id: null, auto: false, looks: {}, halted: null, reading: false, trouble: '' });
+        meStore.clear();
+      };
+
+      // An outfit window has closed: its look goes with it, and one still being made is let go.
+      var dropLook = function(key) {
+        delete meRuns.current[key];
+        if (meRef.current.looks[key]) setLook(key, null);
+      };
+
+      // She opened a piece whose look is waiting its turn: it goes next, and at once if
+      // there is room for one more.
+      var wantLook = function(key) {
+        var e = meRef.current.looks[key];
+        var piece = pieceOf(key);
+        if (!piece || !e || e.state !== 'waiting' || meRef.current.halted) return;
+        meFront.current = String(key);
+        if (piecesGoing() > LOOKS_AT_ONCE) return;
+        if (lookOnItsOwn()) makeLook(String(key), [piece], true);
+        else endOwnLooks();
+      };
+
+      // "try again" in the shop: put every piece that has no look back in line.
+      var resumeLooks = function() {
+        var m = meRef.current;
+        if (!m.photo || !m.auto) return;
+        var looks = Object.assign({}, m.looks);
+        PRODUCTS.forEach(function(p) {
+          var e = looks[p.id];
+          if (p.tryOn && !(e && (e.image || e.state === 'making'))) looks[p.id] = Object.assign({}, e, { state: 'waiting', words: '', after: 0 });
+        });
+        meTries.current = {};
+        setMe({ looks: looks, halted: null });
+        pumpLooks();
+      };
+
+      // A photo chosen in the shop or in "my photo".
+      var pickPhoto = function() {
+        if (meFile.current && !meRef.current.reading) meFile.current.click();
+      };
+      var onPhotoFile = function(e) {
+        var file = e.target.files && e.target.files[0];
+        e.target.value = '';
+        if (!file) return;
+        var epoch = meEpoch.current;
+        setMe({ reading: true, trouble: '' });
+        fitPhoto(file).then(function(image) {
+          if (meEpoch.current !== epoch) return;
+          setPhoto(image, null);
+        }, function(err) {
+          if (meEpoch.current !== epoch) return;
+          setMe({ reading: false, trouble: err.message });
+        });
+      };
+
+      var meDo = {
+        make: makeLook, want: wantLook, drop: dropLook, setPhoto: setPhoto, removePhoto: removePhoto,
+        pick: pickPhoto, resume: resumeLooks,
+        show: function(on) { setMe({ show: !!on }); },
+        open: function() { openMe(true); },
+      };
+
+      // As the site opens: what this device has kept. Her photo comes back, with the looks
+      // made from it. With her looks made on their own, a piece that has none is put in line.
+      useEffect(function() {
+        var epoch = meEpoch.current;
+        meStore.all().then(function(kept) {
+          if (meEpoch.current !== epoch) return;   // she has added a photo in the meantime
+          var isPicture = function(v) { return typeof v === 'string' && v.indexOf('data:image/') === 0; };
+          var photo = kept && kept.photo && isPicture(kept.photo.image) ? kept.photo : null;
+          if (!photo) {
+            setMe({ ready: true, kept: kept ? null : false });
+            return;
+          }
+          var looks = {};
+          PRODUCTS.forEach(function(p) {
+            if (!p.tryOn) return;
+            var one = kept['look:' + p.id];
+            if (one && one.photo === photo.id && isPicture(one.image)) looks[p.id] = { state: 'made', image: one.image, words: '', n: 0 };
+            else if (photo.auto) looks[p.id] = { state: 'waiting' };
+          });
+          setMe({ ready: true, photo: photo.image, id: String(photo.id), kept: true, auto: !!photo.auto, looks: looks });
+          pumpLooks();
+        });
+        return function() { clearTimeout(meTimer.current); };
+      }, []);
       // The outfit that is up, as of the last press or close. Kept here and set as things
       // happen: a second press can arrive before the page has drawn the first. Each outfit
       // carries how her look in its window stands, in `look` (see TryOn). The piece window,
@@ -5443,7 +6103,7 @@
         if (!asked.pieces.length) return asked.problem;
         var shown = asked.pieces.slice().reverse();
         var two = shown.length > 1;
-        var hasPhoto = !!tryPhotoRef.current;
+        var hasPhoto = !!meRef.current.photo;
         var auto = hasPhoto && freeLooksRef.current < STYLIST_FREE_LOOKS;
         // A press for the outfit that is already up shows it again only when that puts it on
         // her: her photo is in, no picture is made or on its way, and she has no piece open
@@ -5524,6 +6184,11 @@
             noteRoute(pageRef.current, zoneRef.current);
             return;
           }
+          if (meOpenRef.current) {
+            openMe(false);
+            noteRoute(pageRef.current, zoneRef.current);
+            return;
+          }
           if (pieceRef.current || outfitRef.current) {
             if (pieceRef.current) tellCrew('She closed ' + pieceRef.current.product.name + '.');
             closePiece();
@@ -5579,16 +6244,17 @@
 
       return (
         el('div', null,
-          el(Navbar, { currentPage: currentPage, navigateTo: navigateTo, cartCount: cart.length }),
+          el(Navbar, { currentPage: currentPage, navigateTo: navigateTo, cartCount: cart.length, photo: me.photo, onMe: function() { openMe(true); } }),
+          el('input', { ref: meFile, type: 'file', accept: 'image/*', onChange: onPhotoFile, className: 'tryon-file me-file', tabIndex: -1, 'aria-hidden': 'true' }),
           el('div', { className: 'page-main' },
             currentPage === 'home' && el(HomePage, { onSelectCrewMember: handleSelectCrewMember, navigateTo: navigateTo }),
-            currentPage === 'zone' && activeZoneIdx !== null && el(CrewZone, { memberIdx: activeZoneIdx, onSelectProduct: viewPiece, onSwitchZone: handleSelectCrewMember, navigateTo: navigateTo, isGuide: guideIdx === activeZoneIdx, onGuide: function() { setGuideIdx(activeZoneIdx); } }),
-            currentPage === 'shop' && el(ShopPage, { setCurrentPage: navigateTo, onSelectProduct: viewPiece }),
+            currentPage === 'zone' && activeZoneIdx !== null && el(CrewZone, { memberIdx: activeZoneIdx, onSelectProduct: viewPiece, onSwitchZone: handleSelectCrewMember, navigateTo: navigateTo, isGuide: guideIdx === activeZoneIdx, onGuide: function() { setGuideIdx(activeZoneIdx); }, me: me }),
+            currentPage === 'shop' && el(ShopPage, { setCurrentPage: navigateTo, onSelectProduct: viewPiece, me: me, meDo: meDo }),
             currentPage === 'studio' && el(DesignStudio, { design: design, setDesign: putDesign, onSeeReal: viewPiece }),
             currentPage === 'team' && el(TeamPage, { onSelectCrewMember: handleSelectCrewMember }),
             currentPage === 'cart' && el(CartPage, { cart: cart, setCart: putCart }),
             el(Footer, { navigateTo: navigateTo })),
-          outfit && el(OutfitWindow, { key: outfit.n, outfit: outfit, onClose: closeOutfit, onView: viewPiece, tryPhoto: tryPhoto, setTryPhoto: setTryPhoto, upRef: outfitRef }),
+          outfit && el(OutfitWindow, { key: outfit.n, outfit: outfit, onClose: closeOutfit, onView: viewPiece, me: me, meDo: meDo, upRef: outfitRef }),
           piece && el(ProductDetail, {
             key: piece.n,
             ask: piece,
@@ -5597,9 +6263,10 @@
               handleAddToCart(product, colorway, size);
               tellCrew('She added ' + product.name + ' to her cart: size ' + String(size).toUpperCase() + ', in ' + colorName(colorway) + '.');
             },
-            tryPhoto: tryPhoto,
-            setTryPhoto: setTryPhoto,
+            me: me,
+            meDo: meDo,
           }),
+          meOpen && el(MePanel, { me: me, meDo: meDo, onClose: function() { openMe(false); } }),
           guide && el(GuideChat, { key: guide.name, member: guide, onAddToCart: handleAddToCart, onView: viewFromChat, acts: acts, onClose: function() { setGuideIdx(null); } }))
       );
     }
