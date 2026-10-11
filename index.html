@@ -3,48 +3,81 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Piper & Quinn — Fashion by Sisters</title>
-  <meta name="description" content="Fashion by sisters.">
+  <title>piper &amp; quinn: fashion by sisters</title>
+  <meta name="description" content="fashion by sisters. dress bold.">
   <meta property="og:type" content="website">
-  <meta property="og:site_name" content="Piper &amp; Quinn">
-  <meta property="og:title" content="Piper &amp; Quinn: Fashion by Sisters">
-  <meta property="og:description" content="Fashion by sisters.">
+  <meta property="og:site_name" content="piper &amp; quinn">
+  <meta property="og:title" content="piper &amp; quinn: fashion by sisters">
+  <meta property="og:description" content="dress bold.">
   <meta property="og:url" content="https://staging--piperandquin.netlify.app/">
   <meta property="og:image" content="https://staging--piperandquin.netlify.app/img/share.jpg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="Three outfits from Piper &amp; Quinn, with the name across the bottom.">
+  <meta property="og:image:alt" content="three outfits from piper &amp; quinn, with the name across the bottom.">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" type="image/png" href="img/favicon.png">
   <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&display=swap" rel="stylesheet" />
   <script>
-    // Safari on a Mac can play a crew member's voice with no sound. The voice widget gets
-    // sound ready only on an iPhone or iPad, which it tells by touch, and it looks once, as
-    // it loads. crewSound(true) has Safari on a Mac take that same step. crewSound(false)
-    // undoes it. It stays on until the widget has loaded, then is on only while a crew zone
-    // is open. ElevenLabs was sent a fix (github.com/elevenlabs/packages/pull/1025). It is
-    // not in 0.19.0. When a version has it, take this script out and move the version on.
+    // Safari on a Mac can play a crew member's voice with no sound. The voice library gets
+    // sound ready only on an iPhone or iPad, which it tells by touch. It looks as it loads,
+    // and again at each tap. crewSound(true) has Safari on a Mac take that same step.
+    // crewSound(false) undoes it. The step is on until the library has loaded, then only
+    // while a crew member is with her as her guide. ElevenLabs was sent a fix
+    // (github.com/elevenlabs/packages/pull/1025). It is not in 1.27.0. When a version has
+    // it, take this script out and move the library on.
     (function () {
       var macSafari = false;
       try { macSafari = navigator.vendor === 'Apple Computer, Inc.' && !('ontouchend' in document); } catch (e) {}
-      var loaded = function () { return !!(window.customElements && customElements.get('elevenlabs-convai')); };
-      window.crewSound = function (on) {
-        if (!macSafari || (!on && !loaded())) return;
+      var loaded = false, guide = false;
+      var set = function (on) {
+        if (!macSafari) return;
         try { if (on) document.ontouchend = null; else delete document.ontouchend; } catch (e) {}
       };
-      window.crewSound(true);
-      if (window.customElements) customElements.whenDefined('elevenlabs-convai').then(function () {
-        if (!document.querySelector('elevenlabs-convai')) window.crewSound(false);
-      });
+      window.crewSound = function (on) { guide = !!on; set(guide || !loaded); };
+      window.crewVoiceLoaded = function () { loaded = true; set(guide); };
+      set(true);
     })();
   </script>
-  <!-- One fixed version of the widget: the one this page is checked against. -->
-  <script src="https://unpkg.com/@elevenlabs/convai-widget-embed@0.19.0/dist/index.js" async type="text/javascript"></script>
+  <!-- The crew's voices: ElevenLabs' client library, one fixed version, kept with the site
+       (see vendor/README.md). The page is checked against this file. -->
+  <script src="vendor/elevenlabs-client-1.27.0.js" async onload="crewVoiceLoaded()"></script>
   <style>
+    /* ===== THE BRAND =====
+       From the piper & quinn brand style guide, version 1.0 (october 2026).
+       Colors are the guide's hex values. Type is Jost: light for headlines, regular for body.
+       All copy is lowercase. The wordmark is green with a sky-blue ampersand. */
+    :root {
+      --pq-green: #6DC067;
+      --sky-blue: #ACD9F4;
+      --green-grass: #B1D355;
+      --orange-tee: #FBB040;
+      --coral: #E8685A;
+      --midnight: #1B2A4A;
+      --hot-pink: #E84B8A;
+      --lavender: #C4A7D7;
+      --ocean: #2B7A9E;
+      --sunshine: #F7D559;
+      --orbit-white: #F8F6F1;
+      --city-khaki: #C8B898;
+      --wild-black: #2A2A2A;
+      --beluga: #808080;
+
+      --ink: var(--wild-black);
+      --ink-soft: #5e5e5e;               /* wild black, lightened: small words that must be read */
+      --line: rgba(42, 42, 42, 0.1);     /* wild black, as a hairline */
+      --line-soft: rgba(42, 42, 42, 0.06);
+      --green-press: #5fb259;            /* p&q green, a step darker: a pressed or hovered button */
+      --error: #b3261e;
+      --radius: 12px;
+      --radius-lg: 16px;
+      --shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+      --shadow-up: 0 12px 32px rgba(42, 42, 42, 0.12);
+    }
+
     * {
       font-family: 'Jost', 'system-ui', 'sans-serif';
     }
@@ -52,249 +85,176 @@
     body {
       margin: 0;
       padding: 0;
-      background: white;
-      color: #1a1a1a;
+      background: #fff;
+      color: var(--ink);
+      font-weight: 400;
+      text-transform: lowercase;
+      -webkit-font-smoothing: antialiased;
     }
 
-    .hero-section {
-      width: 100vw;
-      height: 70vh;
-      background-image: url('img/active-hd.jpg');
-      background-size: cover;
-      background-position: center;
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    /* What she types shows as she typed it. */
+    input, textarea, select {
+      text-transform: none;
     }
 
-    .hero-overlay {
-      position: absolute;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.2);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      color: white;
+    :focus-visible {
+      outline: 3px solid var(--sky-blue);
+      outline-offset: 2px;
     }
 
-    .hero-text {
+    /* The wordmark: lowercase jost light, green, the ampersand in sky blue. */
+    .wordmark {
       font-weight: 300;
-      font-size: 3rem;
-      text-align: center;
-      letter-spacing: 2px;
-      line-height: 1.2;
-      margin-bottom: 2rem;
+      letter-spacing: 0.02em;
+      text-transform: lowercase;
+      color: var(--pq-green);
+      white-space: nowrap;
     }
 
+    .wordmark .amp {
+      color: var(--sky-blue);
+    }
+
+    /* The tagline: p&q green, jost light italic, lowercase. */
     .tagline {
-      font-size: 1rem;
       font-weight: 300;
-      letter-spacing: 1px;
-      margin-bottom: 2rem;
-    }
-
-    .cta-button {
-      background: white;
-      color: black;
-      padding: 12px 32px;
-      font-size: 0.875rem;
-      font-weight: 400;
-      letter-spacing: 1px;
+      font-style: italic;
+      color: var(--pq-green);
       text-transform: lowercase;
+    }
+
+    /* The guide's rule: green, sky blue, grass, orange. */
+    .color-rule {
+      height: 3px;
+      background: linear-gradient(90deg, var(--pq-green), var(--sky-blue), var(--green-grass), var(--orange-tee));
+    }
+
+    /* Buttons. The main one is p&q green with wild-black words. */
+    .btn-primary,
+    .add-to-cart-btn,
+    .tryon-go {
+      display: inline-block;
+      padding: 13px 30px;
+      background: var(--pq-green);
+      color: var(--ink);
+      border: none;
+      border-radius: 999px;
       cursor: pointer;
-      transition: opacity 0.3s ease;
-      border: 1px solid white;
+      font-family: 'Jost', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      text-transform: lowercase;
+      transition: background 0.2s ease, transform 0.2s ease;
     }
 
-    .cta-button:hover {
-      opacity: 0.8;
+    .btn-primary:not(:disabled):hover,
+    .add-to-cart-btn:not(:disabled):hover,
+    .tryon-go:not(:disabled):hover {
+      background: var(--green-press);
     }
 
-    .image-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      grid-template-rows: repeat(3, 250px);
-      gap: 1px;
-      background: white;
-      padding: 0;
-      margin: 4rem 0;
+    .btn-primary:disabled,
+    .add-to-cart-btn:disabled,
+    .tryon-go:disabled {
+      background: #e6e3dc;
+      color: #8a8a8a;
+      cursor: not-allowed;
     }
 
-    .grid-item {
-      background-size: cover;
-      background-position: center;
-      overflow: hidden;
+    .btn-note {
+      margin-top: 0.75rem;
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+      min-height: 1.3em;
     }
 
-    .grid-item:nth-child(1) {
-      grid-column: span 2;
-      grid-row: span 2;
+    .page-title {
+      font-size: 2.2rem;
+      font-weight: 300;
+      text-align: center;
+      margin: 3rem 0;
+      letter-spacing: 0.02em;
+      color: var(--ink);
     }
 
-    .grid-item:nth-child(2) {
-      grid-column: span 1;
-      grid-row: span 2;
+    .studio-heading {
+      font-size: 1.1rem;
+      font-weight: 400;
+      color: var(--pq-green);
+      text-transform: lowercase;
+      letter-spacing: 0.02em;
+      margin-bottom: 1.5rem;
     }
 
-    .grid-item:nth-child(3) {
-      grid-column: span 1;
-    }
-
-    .grid-item:nth-child(4) {
-      grid-column: span 2;
-    }
-
-    .grid-item:nth-child(5) {
-      grid-column: span 1;
-      grid-row: span 2;
-    }
-
-    .sisters-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 0;
-    }
-
-    .sisters-grid img {
-      width: 100%;
-      height: 700px;
-      object-fit: cover;
-      object-position: top;
-    }
-
-    @media (max-width: 768px) {
-      .hero-section {
-        height: 85vh;
-      }
-
-      .hero-text {
-        font-size: 2rem !important;
-      }
-
-      .sisters-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .sisters-grid img {
-        height: 500px;
-      }
-
-      .sisters-grid .sister-caption div:first-child {
-        font-size: 0.7rem;
-      }
-
-      .sisters-grid .sister-caption div:last-child {
-        font-size: 1.2rem;
-      }
-
-      .category-nav {
-        gap: 1.5rem;
-      }
-
-      .cart-item {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 1rem;
-      }
-
-      .quantity-control {
-        width: 100%;
-        justify-content: flex-start;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .hero-text {
-        font-size: 1.5rem !important;
-      }
-
-      .navbar-content {
-        padding: 0.75rem 1rem;
-      }
-
-      .navbar-brand {
-        font-size: 0.95rem;
-        letter-spacing: 1px;
-      }
-
-      .navbar-links {
-        gap: 0.75rem;
-        font-size: 0.7rem;
-      }
-
-      .sisters-grid img {
-        height: 350px;
-      }
-
-      .category-nav {
-        gap: 1rem;
-        font-size: 0.8rem;
-      }
-
-      .main-content {
-        padding: 0 1rem;
-      }
-
-      .footer-content {
-        grid-template-columns: repeat(2, 1fr);
-      }
-
-      .color-swatch {
-        width: 48px;
-        height: 48px;
-      }
-
-      .pattern-thumb {
-        width: 64px;
-        height: 64px;
-      }
-
-      .garment-preview {
-        width: 150px !important;
-        height: 225px !important;
-      }
-
-      .studio-grid {
-        grid-template-columns: 1fr !important;
-        gap: 2rem !important;
-      }
-    }
-
-    .story-section {
-      max-width: 700px;
-      margin: 6rem auto;
-      padding: 0 2rem;
+    .studio-caption {
+      font-size: 0.9rem;
+      color: var(--ink-soft);
       text-align: center;
     }
 
-    .story-title {
-      font-size: 2rem;
-      font-weight: 300;
-      letter-spacing: 1px;
-      margin-bottom: 2rem;
-      text-transform: lowercase;
+    .cart-empty {
+      text-align: center;
+      padding: 3rem;
     }
 
-    .story-text {
+    .cart-empty p:first-child {
+      font-size: 1.1rem;
+      font-weight: 300;
+      margin-bottom: 0.5rem;
+    }
+
+    .cart-empty p:last-child {
+      font-size: 0.9rem;
+      color: var(--ink-soft);
+    }
+
+    .cart-totals {
+      max-width: 700px;
+      margin: 2rem auto;
+      padding: 2rem 0.5rem;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .cart-totals > div {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 1rem;
       font-size: 1rem;
-      font-weight: 400;
-      line-height: 1.8;
-      color: #333;
+    }
+
+    .cart-totals > div.soft {
+      font-size: 0.875rem;
+      color: var(--ink-soft);
+    }
+
+    .cart-totals > div.sum {
+      font-size: 1.15rem;
+      font-weight: 500;
+      margin-bottom: 0;
+    }
+
+    .label {
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      text-transform: lowercase;
+      margin-bottom: 0.75rem;
     }
 
     .product-card {
       position: relative;
       overflow: hidden;
-      background: #f5f5f0;
+      background: #fff;
+      border-radius: var(--radius);
       cursor: pointer;
     }
 
     .product-card-image-wrapper {
       aspect-ratio: 3/4;
       overflow: hidden;
-      background: #f5f5f0;
+      background: var(--orbit-white);
+      border-radius: var(--radius);
     }
 
     .product-image {
@@ -302,11 +262,11 @@
       height: 100%;
       object-fit: cover;
       object-position: top 20%;
-      transition: opacity 0.3s ease;
+      transition: transform 0.5s ease;
     }
 
     .product-card:hover .product-image {
-      opacity: 0.85;
+      transform: scale(1.03);
     }
 
     .product-info {
@@ -315,35 +275,40 @@
     }
 
     .product-name {
-      font-size: 0.9rem;
-      font-weight: 500;
-      margin-bottom: 0.25rem;
+      font-size: 0.95rem;
+      font-weight: 400;
+      margin-bottom: 0.2rem;
       text-transform: lowercase;
-      letter-spacing: 0.3px;
+      letter-spacing: 0.02em;
     }
 
     .product-price {
       font-size: 0.85rem;
       font-weight: 400;
-      color: #666;
+      color: var(--ink-soft);
     }
 
     .filter-link {
       text-transform: lowercase;
-      font-size: 0.875rem;
+      font-size: 0.9rem;
       font-weight: 400;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.04em;
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: border-color 0.2s ease;
       padding-bottom: 4px;
+      border-bottom: 2px solid transparent;
     }
 
     .filter-link.active {
-      border-bottom: 1px solid black;
+      border-bottom-color: var(--pq-green);
     }
 
     .filter-link:hover {
-      opacity: 0.6;
+      border-bottom-color: var(--sky-blue);
+    }
+
+    .filter-link.active:hover {
+      border-bottom-color: var(--pq-green);
     }
 
     .color-swatch {
@@ -352,30 +317,28 @@
       border-radius: 50%;
       cursor: pointer;
       transition: transform 0.2s ease, box-shadow 0.2s ease;
-      border: 2px solid transparent;
+      border: 1px solid var(--line);
     }
 
     .color-swatch:hover {
-      transform: scale(1.1);
+      transform: scale(1.08);
     }
 
     .color-swatch.selected {
-      border-color: black;
+      box-shadow: 0 0 0 3px #fff, 0 0 0 5px var(--ink);
     }
 
     .pattern-thumb {
       width: 80px;
       height: 80px;
       cursor: pointer;
-      opacity: 0.6;
-      transition: opacity 0.2s ease;
-      border: 2px solid transparent;
+      border-radius: var(--radius);
+      border: 1px solid var(--line);
+      transition: box-shadow 0.2s ease;
     }
 
-    .pattern-thumb:hover,
     .pattern-thumb.selected {
-      opacity: 1;
-      border-color: black;
+      box-shadow: 0 0 0 3px #fff, 0 0 0 5px var(--ink);
     }
 
     .garment-preview {
@@ -410,8 +373,8 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 1.5rem;
-      border-bottom: 1px solid #e8e8e3;
+      padding: 1.5rem 0.5rem;
+      border-bottom: 1px solid var(--line);
     }
 
     .cart-item-details {
@@ -419,13 +382,14 @@
     }
 
     .cart-item-name {
-      font-weight: 500;
-      margin-bottom: 0.5rem;
+      font-weight: 400;
+      font-size: 1.05rem;
+      margin-bottom: 0.4rem;
     }
 
     .cart-item-meta {
       font-size: 0.875rem;
-      color: #666;
+      color: var(--ink-soft);
     }
 
     .quantity-control {
@@ -435,41 +399,40 @@
     }
 
     .qty-button {
-      width: 32px;
-      height: 32px;
-      border: 1px solid #ccc;
-      background: white;
+      width: 34px;
+      height: 34px;
+      border: 1px solid var(--line);
+      border-radius: 50%;
+      background: #fff;
       cursor: pointer;
-      font-weight: 500;
-      transition: all 0.2s ease;
+      font-weight: 400;
+      transition: border-color 0.2s ease, background 0.2s ease;
     }
 
     .qty-button:hover {
-      background: #f5f5f0;
+      background: var(--orbit-white);
+      border-color: var(--ink);
     }
 
     .navbar {
       position: sticky;
       top: 0;
       z-index: 50;
-      background: white;
-      border-bottom: 1px solid #efefeb;
+      background: rgba(255, 255, 255, 0.96);
+      border-bottom: 1px solid var(--line);
     }
 
     .navbar-content {
       max-width: 1400px;
       margin: 0 auto;
-      padding: 1.5rem 2rem;
+      padding: 1.1rem 2rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
     }
 
     .navbar-brand {
-      font-size: 1.25rem;
-      font-weight: 300;
-      letter-spacing: 2px;
-      text-transform: lowercase;
+      font-size: 1.5rem;
       cursor: pointer;
     }
 
@@ -478,51 +441,89 @@
       gap: 2rem;
       text-transform: lowercase;
       font-weight: 400;
-      font-size: 0.875rem;
-      letter-spacing: 0.5px;
+      font-size: 0.9rem;
+      letter-spacing: 0.04em;
     }
 
     .navbar-link {
       cursor: pointer;
-      transition: opacity 0.3s ease;
+      padding-bottom: 2px;
+      border-bottom: 2px solid transparent;
+      transition: border-color 0.2s ease;
     }
 
     .navbar-link:hover {
-      opacity: 0.6;
+      border-bottom-color: var(--sky-blue);
+    }
+
+    .navbar-link.active {
+      border-bottom-color: var(--pq-green);
     }
 
     .footer {
-      background: #1a1a1a;
-      color: white;
-      padding: 4rem 2rem;
+      background: var(--orbit-white);
+      color: var(--ink);
       margin-top: 6rem;
     }
 
     .footer-content {
       max-width: 1400px;
       margin: 0 auto;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 3rem;
+      padding: 3.5rem 2rem 3rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 2rem;
     }
 
-    .footer-section h3 {
-      font-size: 0.875rem;
-      font-weight: 600;
-      letter-spacing: 1px;
-      text-transform: lowercase;
-      margin-bottom: 1rem;
+    .footer-brand {
+      font-size: 2rem;
+    }
+
+    .footer-tagline {
+      font-size: 1.15rem;
+      margin-top: 0.15rem;
+    }
+
+    .footer-place {
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+      margin-top: 0.9rem;
+    }
+
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem 1.75rem;
+      font-size: 0.9rem;
+      letter-spacing: 0.04em;
     }
 
     .footer-link {
-      font-size: 0.875rem;
-      line-height: 1.8;
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      padding: 0 0 2px;
+      font: inherit;
+      color: inherit;
+      letter-spacing: inherit;
+      text-transform: lowercase;
       cursor: pointer;
-      transition: opacity 0.3s ease;
+      transition: border-color 0.2s ease;
     }
 
     .footer-link:hover {
-      opacity: 0.7;
+      border-bottom-color: var(--sky-blue);
+    }
+
+    .footer-legal {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 1.25rem 2rem 2rem;
+      border-top: 1px solid var(--line);
+      font-size: 0.78rem;
+      color: var(--ink-soft);
     }
 
     .main-content {
@@ -534,7 +535,7 @@
     .modal-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.5);
+      background: rgba(42, 42, 42, 0.45);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -543,7 +544,7 @@
     }
 
     .modal-content {
-      background: white;
+      background: #fff;
       max-width: 960px;
       width: 100%;
       max-height: 92vh;
@@ -551,16 +552,20 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       position: relative;
-      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 25px 50px rgba(42, 42, 42, 0.22);
     }
 
     .modal-close {
       position: absolute;
-      top: 1rem;
-      right: 1rem;
-      background: none;
-      border: none;
-      font-size: 1.5rem;
+      top: 0.9rem;
+      right: 0.9rem;
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid var(--line);
+      border-radius: 50%;
+      font-size: 1.3rem;
+      font-weight: 300;
+      line-height: 1;
       cursor: pointer;
       z-index: 10;
       width: 36px;
@@ -568,6 +573,18 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      color: var(--ink);
+      transition: border-color 0.2s ease;
+    }
+
+    .modal-close:hover {
+      border-color: var(--ink);
+    }
+
+    .modal-pane {
+      overflow: hidden;
+      background: var(--orbit-white);
+      position: relative;
     }
 
     .modal-image {
@@ -576,7 +593,7 @@
       object-fit: contain;
       object-position: center;
       min-height: 400px;
-      background: #f5f3f0;
+      background: var(--orbit-white);
     }
 
     .modal-details {
@@ -587,121 +604,110 @@
     }
 
     .modal-product-name {
-      font-size: 1.5rem;
-      font-weight: 400;
+      font-size: 1.7rem;
+      font-weight: 300;
       text-transform: lowercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.02em;
     }
 
     .modal-product-price {
       font-size: 1.1rem;
-      color: #666;
+      color: var(--ink-soft);
     }
 
     .modal-product-desc {
-      font-size: 0.9rem;
-      color: #555;
+      font-size: 0.95rem;
+      color: var(--ink-soft);
       line-height: 1.6;
     }
 
     .size-option {
-      padding: 8px 16px;
-      border: 1px solid #ddd;
-      background: white;
+      min-width: 46px;
+      padding: 8px 14px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #fff;
       cursor: pointer;
       font-size: 0.8rem;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
-      transition: all 0.2s ease;
+      letter-spacing: 0.05em;
+      transition: border-color 0.2s ease, background 0.2s ease;
     }
 
     .size-option:hover {
-      border-color: #999;
+      border-color: var(--ink);
     }
 
     .size-option.selected {
-      background: black;
-      color: white;
-      border-color: black;
+      background: var(--ink);
+      color: #fff;
+      border-color: var(--ink);
     }
 
     .add-to-cart-btn {
-      padding: 14px 32px;
-      background: black;
-      color: white;
-      border: none;
-      cursor: pointer;
-      font-size: 0.875rem;
-      font-weight: 500;
-      letter-spacing: 1px;
-      text-transform: lowercase;
-      transition: opacity 0.2s ease;
       margin-top: auto;
-    }
-
-    .add-to-cart-btn:disabled {
-      background: #ccc;
-      cursor: not-allowed;
-    }
-
-    .add-to-cart-btn:not(:disabled):hover {
-      opacity: 0.8;
+      padding: 15px 32px;
     }
 
     .size-calc-toggle {
-      font-size: 0.8rem;
-      color: #666;
+      font-size: 0.85rem;
+      color: var(--ink);
       cursor: pointer;
       text-decoration: underline;
-      text-underline-offset: 2px;
-      transition: color 0.2s ease;
+      text-decoration-color: var(--sky-blue);
+      text-decoration-thickness: 2px;
+      text-underline-offset: 4px;
       display: inline-block;
-      margin-top: 0.25rem;
+      margin-top: 0.6rem;
     }
 
     .size-calc-toggle:hover {
-      color: #333;
+      text-decoration-color: var(--pq-green);
     }
 
     .size-calc-panel {
-      background: #fafaf8;
-      border: 1px solid #e8e8e3;
+      background: var(--orbit-white);
+      border-radius: var(--radius);
       padding: 1.25rem;
       margin-top: 0.75rem;
     }
 
     .size-calc-label {
-      font-size: 0.75rem;
+      font-size: 0.78rem;
       font-weight: 500;
       text-transform: lowercase;
-      letter-spacing: 0.5px;
-      color: #555;
+      letter-spacing: 0.04em;
+      color: var(--ink-soft);
       margin-bottom: 0.4rem;
     }
 
     .size-calc-input {
       width: 100%;
-      padding: 8px 10px;
-      border: 1px solid #ddd;
-      font-size: 0.85rem;
+      padding: 9px 12px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      font-size: 0.9rem;
       font-family: 'Jost', sans-serif;
-      background: white;
+      background: #fff;
       outline: none;
       transition: border-color 0.2s ease;
     }
 
     .size-calc-input:focus {
-      border-color: #999;
+      border-color: var(--sky-blue);
+      box-shadow: 0 0 0 3px rgba(172, 217, 244, 0.45);
     }
 
     .size-calc-result {
       margin-top: 1rem;
       padding: 0.75rem 1rem;
-      background: black;
-      color: white;
-      font-size: 0.85rem;
+      background: #fff;
+      border: 1px solid var(--pq-green);
+      border-radius: 10px;
+      color: var(--ink);
+      font-size: 0.9rem;
       text-align: center;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.02em;
     }
 
     .size-calc-row {
@@ -715,25 +721,36 @@
       display: flex;
       gap: 0;
       margin-bottom: 1rem;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      overflow: hidden;
+      background: #fff;
     }
 
     .size-calc-unit-btn {
       flex: 1;
-      padding: 6px 12px;
-      font-size: 0.75rem;
-      border: 1px solid #ddd;
-      background: white;
+      padding: 7px 12px;
+      font-size: 0.78rem;
+      border: none;
+      background: transparent;
       cursor: pointer;
       font-family: 'Jost', sans-serif;
       text-transform: lowercase;
-      letter-spacing: 0.5px;
-      transition: all 0.2s ease;
+      letter-spacing: 0.04em;
+      color: var(--ink-soft);
+      transition: background 0.2s ease, color 0.2s ease;
     }
 
     .size-calc-unit-btn.active {
-      background: black;
-      color: white;
-      border-color: black;
+      background: var(--ink);
+      color: #fff;
+    }
+
+    .size-calc-go {
+      width: 100%;
+      margin-top: 0.25rem;
+      padding: 11px;
+      font-size: 0.85rem;
     }
 
     @media (max-width: 768px) {
@@ -751,187 +768,113 @@
       }
     }
 
-    .crew-section {
-      background: #fafaf5;
-      padding: 5rem 2rem;
-      text-align: center;
-    }
-
-    .crew-title {
-      font-size: 2rem;
-      font-weight: 300;
-      letter-spacing: 1px;
-      text-transform: lowercase;
-      margin-bottom: 0.75rem;
-    }
-
-    .crew-subtitle {
-      font-size: 0.95rem;
-      color: #666;
-      font-weight: 400;
-      margin-bottom: 3rem;
-      letter-spacing: 0.3px;
-    }
-
-    .crew-grid {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 1.5rem;
-      max-width: 900px;
-      margin: 0 auto;
-    }
-
-    .crew-card {
-      background: white;
-      border-radius: 16px;
-      padding: 1.75rem 1rem 1.25rem;
-      cursor: pointer;
-      transition: transform 0.25s ease, box-shadow 0.25s ease;
-      border: 2px solid transparent;
-    }
-
-    .crew-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
-    }
-
-    .crew-card.active {
-      border-color: var(--card-accent, #6DC067);
-      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
-    }
-
-    .crew-avatar {
-      width: 72px;
-      height: 72px;
-      border-radius: 50%;
-      margin: 0 auto 1rem;
-      overflow: hidden;
-      border: 3px solid #f0f0e8;
-    }
-
-    .crew-avatar img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: top;
-    }
-
-    .crew-avatar-initials {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.5rem;
-      font-weight: 600;
-      color: white;
-    }
-
-    .crew-name {
-      font-size: 0.95rem;
-      font-weight: 600;
-      text-transform: lowercase;
-      letter-spacing: 0.3px;
-      margin-bottom: 0.2rem;
-    }
-
-    .crew-role {
-      font-size: 0.7rem;
-      color: #888;
-      text-transform: lowercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 0.75rem;
-      line-height: 1.3;
-    }
-
-    .crew-talk-btn {
-      display: inline-block;
-      font-size: 0.7rem;
-      font-weight: 500;
-      letter-spacing: 0.5px;
-      text-transform: lowercase;
-      padding: 6px 14px;
-      border-radius: 20px;
-      border: none;
-      cursor: pointer;
-      transition: opacity 0.2s ease;
-      font-family: 'Jost', sans-serif;
-    }
-
-    .crew-talk-btn:hover {
-      opacity: 0.85;
-    }
-
-    .crew-chat-hint {
-      margin-top: 2.5rem;
-      font-size: 0.85rem;
-      color: #999;
-      font-weight: 400;
-      letter-spacing: 0.3px;
-    }
-
-    .crew-chat-active {
-      margin-top: 2rem;
-      padding: 1.25rem 2rem;
-      background: white;
-      border-radius: 12px;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.75rem;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-    }
-
-    .crew-chat-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      animation: pulse-dot 1.5s ease-in-out infinite;
-    }
-
     @keyframes pulse-dot {
       0%, 100% { opacity: 1; }
       50% { opacity: 0.4; }
     }
 
+    @media (prefers-reduced-motion: reduce) {
+      .guide-dot {
+        animation: none;
+      }
+    }
+
     @media (max-width: 768px) {
-      .crew-grid {
-        grid-template-columns: repeat(3, 1fr);
+      .category-nav {
+        gap: 1.5rem;
+      }
+
+      .cart-item {
+        flex-direction: column;
+        align-items: flex-start;
         gap: 1rem;
       }
 
-      .crew-avatar {
-        width: 56px;
-        height: 56px;
+      .quantity-control {
+        width: 100%;
+        justify-content: flex-start;
       }
 
-      .crew-name {
-        font-size: 0.85rem;
-      }
-
-      .crew-role {
-        font-size: 0.65rem;
+      .page-title {
+        font-size: 1.9rem;
+        margin: 2.25rem 0;
       }
     }
 
     @media (max-width: 480px) {
-      .crew-grid {
-        grid-template-columns: repeat(2, 1fr);
+      .navbar-content {
+        padding: 0.8rem 1rem;
       }
 
-      .crew-section {
-        padding: 3rem 1rem;
+      .navbar-brand {
+        font-size: 1.25rem;
+      }
+
+      .navbar-links {
+        gap: 0.9rem;
+        font-size: 0.85rem;
+      }
+
+      .category-nav {
+        gap: 1rem;
+        font-size: 0.8rem;
+      }
+
+      .main-content {
+        padding: 0 1rem;
+      }
+
+      .footer-content {
+        padding: 2.5rem 1rem 2rem;
+      }
+
+      .footer-legal {
+        padding: 1rem 1rem 1.5rem;
+      }
+
+      .color-swatch {
+        width: 48px;
+        height: 48px;
+      }
+
+      .pattern-thumb {
+        width: 64px;
+        height: 64px;
+      }
+
+      .garment-preview {
+        width: 150px !important;
+        height: 225px !important;
+      }
+
+      .studio-grid {
+        grid-template-columns: 1fr !important;
+        gap: 2rem !important;
       }
     }
 
-    /* ===== CHARACTER SELECT SCREEN ===== */
+    /* On the narrowest phones the links give way, not the wordmark: the guide's least
+       width for it on a screen is 120px. */
+    @media (max-width: 350px) {
+      .navbar-content {
+        padding: 0.8rem 0.75rem;
+      }
+
+      .navbar-links {
+        gap: 0.6rem;
+        font-size: 0.8rem;
+      }
+    }
+
+    /* ===== HOME: CHOOSE YOUR GUIDE ===== */
     .char-select {
       min-height: 100vh;
-      background: #0a0a0a;
+      background: linear-gradient(135deg, #f0faf0 0%, #e8f4fc 50%, #f5f9e8 100%);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 2rem;
+      padding: 3rem 1.5rem;
       position: relative;
       overflow: hidden;
     }
@@ -939,92 +882,84 @@
     .char-select::before {
       content: '';
       position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: radial-gradient(ellipse at 50% 40%, rgba(109,192,103,0.06) 0%, transparent 60%);
+      top: -20%;
+      right: -10%;
+      width: 500px;
+      height: 500px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(109, 192, 103, 0.08) 0%, transparent 70%);
       pointer-events: none;
     }
 
-    .char-select-label {
-      font-size: 0.8rem;
-      font-weight: 300;
-      letter-spacing: 4px;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.35);
-      margin-bottom: 0.5rem;
+    .char-select::after {
+      content: '';
+      position: absolute;
+      bottom: -15%;
+      left: -5%;
+      width: 400px;
+      height: 400px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(172, 217, 244, 0.1) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .char-select > * {
+      position: relative;
+      z-index: 1;
     }
 
     .char-select-brand {
-      font-size: 2.75rem;
-      font-weight: 300;
-      letter-spacing: 3px;
-      color: white;
-      margin-bottom: 0.5rem;
-      text-transform: lowercase;
+      font-size: 4.25rem;
+      line-height: 1.1;
+    }
+
+    .char-select-tagline {
+      font-size: 1.6rem;
+      margin-top: 0.25rem;
     }
 
     .char-select-subtitle {
-      font-size: 1rem;
-      font-weight: 300;
-      color: rgba(255,255,255,0.35);
-      margin-bottom: 4rem;
-      letter-spacing: 1px;
+      font-size: 0.8rem;
+      font-weight: 400;
+      color: var(--beluga);
+      margin: 3.5rem 0 1.5rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
     }
 
     .char-select-grid {
       display: flex;
-      gap: 1.25rem;
-      max-width: 1100px;
+      flex-wrap: wrap;
+      gap: 1.1rem;
+      max-width: 1040px;
       width: 100%;
       justify-content: center;
     }
 
     .char-card {
-      flex: 1;
-      max-width: 190px;
-      background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(255,255,255,0.07);
-      border-radius: 20px;
-      padding: 2rem 1.25rem 1.5rem;
+      flex: 0 0 184px;
+      background: #fff;
+      border: 1px solid var(--line-soft);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+      padding: 1.75rem 1rem 1.4rem;
       text-align: center;
       cursor: pointer;
-      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .char-card::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(circle at 50% 0%, var(--zone-glow, rgba(109,192,103,0.12)) 0%, transparent 70%);
-      opacity: 0;
-      transition: opacity 0.4s ease;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
 
     .char-card:hover {
-      transform: translateY(-8px) scale(1.03);
-      border-color: var(--zone-accent, rgba(255,255,255,0.2));
-      box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 30px var(--zone-glow, rgba(109,192,103,0.08));
-    }
-
-    .char-card:hover::before {
-      opacity: 1;
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-up);
     }
 
     .char-card-avatar {
-      width: 88px;
-      height: 88px;
+      width: 92px;
+      height: 92px;
       border-radius: 50%;
-      margin: 0 auto 1.25rem;
+      margin: 0 auto 1.1rem;
       overflow: hidden;
-      border: 2px solid rgba(255,255,255,0.12);
-      position: relative;
-      z-index: 1;
-      transition: border-color 0.4s ease;
-    }
-
-    .char-card:hover .char-card-avatar {
-      border-color: var(--zone-accent, rgba(255,255,255,0.3));
+      box-shadow: 0 0 0 3px #fff, 0 0 0 6px var(--zone-accent, var(--pq-green));
     }
 
     .char-card-avatar img {
@@ -1040,72 +975,64 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 2rem;
-      font-weight: 600;
-      color: white;
+      font-size: 2.2rem;
+      font-weight: 300;
+      color: var(--ink);
+      text-transform: lowercase;
     }
 
     .char-card-name {
-      font-size: 1.1rem;
-      font-weight: 500;
-      color: white;
-      letter-spacing: 0.5px;
-      margin-bottom: 0.25rem;
-      position: relative;
-      z-index: 1;
+      font-size: 1.25rem;
+      font-weight: 400;
+      color: var(--ink);
+      letter-spacing: 0.02em;
+      margin-bottom: 0.2rem;
       text-transform: lowercase;
     }
 
     .char-card-role {
-      font-size: 0.65rem;
-      color: rgba(255,255,255,0.4);
+      font-size: 0.78rem;
+      color: var(--beluga);
       text-transform: lowercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 1.25rem;
-      line-height: 1.4;
-      position: relative;
-      z-index: 1;
+      letter-spacing: 0.03em;
+      margin-bottom: 1.1rem;
+      line-height: 1.35;
+      min-height: 2.1em;
     }
 
     .char-card-enter {
-      font-size: 0.65rem;
+      font-size: 0.78rem;
       font-weight: 500;
-      letter-spacing: 1px;
+      letter-spacing: 0.05em;
       text-transform: lowercase;
-      padding: 7px 18px;
-      border-radius: 20px;
-      border: 1px solid rgba(255,255,255,0.12);
-      background: transparent;
-      color: rgba(255,255,255,0.5);
+      padding: 8px 18px;
+      border-radius: 999px;
+      border: none;
+      background: var(--zone-accent, var(--pq-green));
+      color: var(--ink);
       cursor: pointer;
-      transition: all 0.3s ease;
-      position: relative;
-      z-index: 1;
       font-family: 'Jost', sans-serif;
     }
 
-    .char-card:hover .char-card-enter {
-      background: var(--zone-accent, rgba(255,255,255,0.1));
-      color: white;
-      border-color: var(--zone-accent, rgba(255,255,255,0.3));
-    }
-
     .char-select-skip {
-      margin-top: 3rem;
-      font-size: 0.8rem;
-      color: rgba(255,255,255,0.25);
+      margin-top: 2.75rem;
+      font-size: 0.9rem;
+      color: var(--ink);
       cursor: pointer;
-      letter-spacing: 1px;
-      transition: color 0.3s ease;
+      letter-spacing: 0.04em;
+      padding-bottom: 2px;
+      border-bottom: 2px solid var(--sky-blue);
+      transition: border-color 0.2s ease;
     }
 
     .char-select-skip:hover {
-      color: rgba(255,255,255,0.5);
+      border-bottom-color: var(--pq-green);
     }
 
     /* ===== ZONE PAGES ===== */
     .zone-page {
       min-height: 100vh;
+      position: relative;
       animation: fadeInZone 0.6s ease;
     }
 
@@ -1115,8 +1042,8 @@
     }
 
     .zone-hero {
-      height: 50vh;
-      min-height: 380px;
+      min-height: 400px;
+      padding: 4.5rem 1.5rem 3rem;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -1128,16 +1055,17 @@
       position: relative;
       z-index: 1;
       text-align: center;
-      color: white;
+      color: var(--ink);
     }
 
     .zone-hero-avatar {
-      width: 96px;
-      height: 96px;
+      width: 104px;
+      height: 104px;
       border-radius: 50%;
-      margin: 0 auto 1.5rem;
+      margin: 0 auto 1.4rem;
       overflow: hidden;
-      border: 3px solid rgba(255,255,255,0.25);
+      box-shadow: 0 0 0 3px #fff, 0 0 0 6px var(--zone-accent, var(--pq-green));
+      background: #fff;
     }
 
     .zone-hero-avatar img {
@@ -1148,41 +1076,30 @@
     }
 
     .zone-hero-name {
-      font-size: 2.5rem;
+      font-size: 3rem;
       font-weight: 300;
-      letter-spacing: 3px;
-      margin-bottom: 0.4rem;
+      letter-spacing: 0.02em;
+      line-height: 1.1;
+      margin-bottom: 0.5rem;
       text-transform: lowercase;
     }
 
     .zone-hero-role {
-      font-size: 0.8rem;
-      font-weight: 300;
-      letter-spacing: 3px;
+      font-size: 0.78rem;
+      font-weight: 400;
+      letter-spacing: 0.3em;
       text-transform: uppercase;
-      opacity: 0.6;
+      color: var(--ink-soft);
       margin-bottom: 1.25rem;
     }
 
     .zone-hero-tagline {
-      font-size: 1.05rem;
+      font-size: 1.15rem;
       font-weight: 300;
       font-style: italic;
-      opacity: 0.7;
-      max-width: 420px;
+      max-width: 440px;
       margin: 0 auto;
-      line-height: 1.6;
-    }
-
-    .zone-voice-bar {
-      padding: 1rem 2rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.75rem;
-      font-size: 0.8rem;
-      color: rgba(255,255,255,0.85);
-      letter-spacing: 0.5px;
+      line-height: 1.55;
     }
 
     .zone-section {
@@ -1191,10 +1108,20 @@
       margin: 0 auto;
     }
 
-    .zone-section-title {
-      font-size: 1.5rem;
+    .zone-desc {
+      text-align: center;
+      font-size: 1.1rem;
       font-weight: 300;
-      letter-spacing: 1px;
+      color: var(--ink);
+      line-height: 1.8;
+      max-width: 580px;
+      margin: 0 auto 3rem;
+    }
+
+    .zone-section-title {
+      font-size: 1.8rem;
+      font-weight: 300;
+      letter-spacing: 0.02em;
       text-transform: lowercase;
       margin-bottom: 2.5rem;
       text-align: center;
@@ -1207,176 +1134,195 @@
     }
 
     .zone-back {
-      position: fixed;
-      top: 80px;
+      position: absolute;
+      top: 1rem;
       left: 1.5rem;
-      font-size: 0.72rem;
+      font-size: 0.8rem;
       font-weight: 400;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.04em;
       text-transform: lowercase;
-      color: #888;
+      color: var(--ink);
       cursor: pointer;
-      z-index: 100;
-      transition: color 0.3s ease;
-      background: rgba(255,255,255,0.92);
-      padding: 6px 14px;
-      border-radius: 16px;
-      backdrop-filter: blur(8px);
-      border: 1px solid rgba(0,0,0,0.06);
+      z-index: 40;
+      transition: border-color 0.2s ease;
+      background: rgba(255, 255, 255, 0.94);
+      padding: 7px 15px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
     }
 
     .zone-back:hover {
-      color: #333;
+      border-color: var(--ink);
+    }
+
+    .zone-other {
+      padding: 2rem 2rem 0;
+      text-align: center;
+      border-top: 1px solid var(--line);
+    }
+
+    .zone-other-label {
+      font-size: 0.78rem;
+      color: var(--beluga);
+      margin-bottom: 0.75rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
     }
 
     .zone-nav {
       display: flex;
       gap: 0.75rem;
       justify-content: center;
-      padding: 1.5rem 2rem 3rem;
+      padding: 1rem 2rem 3rem;
       flex-wrap: wrap;
     }
 
     .zone-nav-chip {
-      font-size: 0.72rem;
+      font-size: 0.82rem;
       font-weight: 400;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.04em;
       text-transform: lowercase;
       padding: 8px 18px;
-      border-radius: 20px;
-      border: 1px solid #e0e0d8;
-      background: transparent;
-      color: #777;
+      border-radius: 999px;
+      border: 2px solid var(--chip-accent, var(--pq-green));
+      background: #fff;
+      color: var(--ink);
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: background 0.2s ease;
       font-family: 'Jost', sans-serif;
     }
 
     .zone-nav-chip:hover {
-      border-color: var(--chip-accent, #6DC067);
-      color: var(--chip-accent, #6DC067);
-      background: rgba(109,192,103,0.04);
+      background: var(--chip-accent, var(--pq-green));
     }
 
-    @media (max-width: 768px) {
+    @media (max-width: 900px) {
       .char-select-grid {
-        flex-wrap: wrap;
-        gap: 0.75rem;
+        max-width: 560px;
       }
 
       .char-card {
-        max-width: 145px;
-        padding: 1.5rem 1rem 1.25rem;
+        flex-basis: 164px;
+      }
+
+      .char-select-brand {
+        font-size: 3.25rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .zone-hero {
+        min-height: 320px;
+      }
+
+      .zone-hero-name {
+        font-size: 2.3rem;
+      }
+
+      .zone-hero-avatar {
+        width: 84px;
+        height: 84px;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .char-select {
+        padding: 2.5rem 1rem;
+      }
+
+      .char-select-grid {
+        gap: 0.75rem;
+        max-width: 340px;
+      }
+
+      .char-card {
+        flex-basis: calc(50% - 0.375rem);
+        padding: 1.25rem 0.6rem 1.1rem;
       }
 
       .char-card-avatar {
         width: 68px;
         height: 68px;
+        margin-bottom: 0.85rem;
       }
 
-      .char-select-brand {
-        font-size: 2rem;
-      }
-
-      .zone-hero {
-        height: 42vh;
-        min-height: 300px;
-      }
-
-      .zone-hero-name {
-        font-size: 1.8rem;
-      }
-
-      .zone-hero-avatar {
-        width: 76px;
-        height: 76px;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .char-select-grid {
-        gap: 0.5rem;
-      }
-
-      .char-card {
-        max-width: 120px;
-        padding: 1.25rem 0.5rem 1rem;
-      }
-
-      .char-card-avatar {
-        width: 52px;
-        height: 52px;
-        margin-bottom: 0.75rem;
+      .char-card-initials {
+        font-size: 1.7rem;
       }
 
       .char-card-name {
-        font-size: 0.85rem;
+        font-size: 1.05rem;
       }
 
       .char-card-role {
-        font-size: 0.55rem;
-        margin-bottom: 0.75rem;
+        font-size: 0.72rem;
+        margin-bottom: 0.85rem;
       }
 
       .char-card-enter {
-        font-size: 0.55rem;
-        padding: 5px 12px;
+        font-size: 0.72rem;
+        padding: 7px 14px;
       }
 
       .char-select-brand {
-        font-size: 1.5rem;
+        font-size: 2.5rem;
+      }
+
+      .char-select-tagline {
+        font-size: 1.25rem;
       }
 
       .char-select-subtitle {
-        font-size: 0.8rem;
-        margin-bottom: 2.5rem;
+        margin: 2.5rem 0 1.25rem;
       }
 
       .zone-hero {
-        height: 38vh;
-        min-height: 260px;
+        min-height: 280px;
+        padding: 4rem 1rem 2.25rem;
       }
 
       .zone-hero-name {
-        font-size: 1.5rem;
+        font-size: 2rem;
       }
 
       .zone-hero-tagline {
-        font-size: 0.9rem;
-        padding: 0 1rem;
+        font-size: 1rem;
+        padding: 0 0.5rem;
       }
 
       .zone-back {
-        top: 70px;
+        top: 0.75rem;
         left: 0.75rem;
-        font-size: 0.65rem;
+        font-size: 0.75rem;
       }
+
     }
 
     /* ===== TRY-ON ===== */
     .tryon-open {
       width: 100%;
-      padding: 12px 32px;
-      background: white;
-      color: black;
-      border: 1px solid black;
+      padding: 12px 30px;
+      background: #fff;
+      color: var(--ink);
+      border: 2px solid var(--ink);
+      border-radius: 999px;
       cursor: pointer;
       font-family: 'Jost', sans-serif;
-      font-size: 0.875rem;
+      font-size: 0.9rem;
       font-weight: 500;
-      letter-spacing: 1px;
+      letter-spacing: 0.04em;
       text-transform: lowercase;
       transition: background 0.2s ease, color 0.2s ease;
     }
 
     .tryon-open:hover {
-      background: black;
-      color: white;
+      background: var(--ink);
+      color: #fff;
     }
 
     .tryon-panel {
-      background: #fafaf8;
-      border: 1px solid #e8e8e3;
+      background: var(--orbit-white);
+      border-radius: var(--radius);
       padding: 1.25rem;
       position: relative;
     }
@@ -1398,10 +1344,10 @@
     }
 
     .tryon-title {
-      font-size: 0.8rem;
+      font-size: 0.85rem;
       font-weight: 500;
       text-transform: lowercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.05em;
     }
 
     .tryon-link {
@@ -1409,26 +1355,29 @@
       border: none;
       padding: 6px 0;
       font-family: 'Jost', sans-serif;
-      font-size: 0.8rem;
-      color: #666;
+      font-size: 0.85rem;
+      color: var(--ink);
       cursor: pointer;
       text-decoration: underline;
-      text-underline-offset: 2px;
+      text-decoration-color: var(--sky-blue);
+      text-decoration-thickness: 2px;
+      text-underline-offset: 4px;
       text-transform: lowercase;
     }
 
     .tryon-link:hover {
-      color: #333;
+      text-decoration-color: var(--pq-green);
     }
 
     .tryon-link:disabled {
-      color: #bbb;
+      color: #a8a8a8;
+      text-decoration-color: #ddd;
       cursor: default;
     }
 
     .tryon-tip {
-      font-size: 0.8rem;
-      color: #555;
+      font-size: 0.85rem;
+      color: var(--ink-soft);
       line-height: 1.5;
       margin-bottom: 0.9rem;
     }
@@ -1446,6 +1395,7 @@
       object-fit: cover;
       object-position: top;
       background: #eee;
+      border-radius: 8px;
       flex: none;
     }
 
@@ -1457,25 +1407,14 @@
 
     .tryon-go {
       width: 100%;
-      padding: 10px;
-      background: #333;
-      color: white;
-      border: none;
-      cursor: pointer;
-      font-size: 0.8rem;
-      font-family: 'Jost', sans-serif;
-      letter-spacing: 0.5px;
-      text-transform: lowercase;
-    }
-
-    .tryon-go:disabled {
-      background: #999;
-      cursor: default;
+      padding: 11px;
+      font-size: 0.85rem;
     }
 
     .tryon-bar {
-      height: 2px;
-      background: #e8e8e3;
+      height: 3px;
+      background: rgba(42, 42, 42, 0.08);
+      border-radius: 3px;
       overflow: hidden;
       margin-top: 0.75rem;
       position: relative;
@@ -1488,7 +1427,7 @@
       bottom: 0;
       left: -40%;
       width: 40%;
-      background: #333;
+      background: var(--pq-green);
       animation: tryon-slide 1.2s ease-in-out infinite;
     }
 
@@ -1502,13 +1441,13 @@
         animation: none;
         left: 0;
         width: 100%;
-        opacity: 0.35;
+        opacity: 0.5;
       }
     }
 
     .tryon-status {
-      font-size: 0.8rem;
-      color: #333;
+      font-size: 0.85rem;
+      color: var(--ink);
       line-height: 1.5;
     }
 
@@ -1517,12 +1456,12 @@
     }
 
     .tryon-status.tryon-error {
-      color: #a4281f;
+      color: var(--error);
     }
 
     .tryon-note {
-      font-size: 0.72rem;
-      color: #777;
+      font-size: 0.76rem;
+      color: var(--ink-soft);
       line-height: 1.5;
       margin-top: 0.75rem;
     }
@@ -1533,9 +1472,9 @@
       bottom: 0.9rem;
       transform: translateX(-50%);
       display: flex;
-      background: rgba(255, 255, 255, 0.95);
-      border: 1px solid rgba(0, 0, 0, 0.15);
-      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.96);
+      border: 1px solid var(--line);
+      border-radius: 999px;
       overflow: hidden;
       white-space: nowrap;
     }
@@ -1543,32 +1482,33 @@
     .tryon-view-btn {
       background: none;
       border: none;
-      padding: 9px 14px;
+      padding: 9px 15px;
       font-family: 'Jost', sans-serif;
-      font-size: 0.72rem;
-      letter-spacing: 0.5px;
+      font-size: 0.78rem;
+      letter-spacing: 0.04em;
       text-transform: lowercase;
-      color: #555;
+      color: var(--ink-soft);
       cursor: pointer;
     }
 
     .tryon-view-btn.active {
-      background: black;
-      color: white;
+      background: var(--ink);
+      color: #fff;
     }
 
     /* ===== THE OUTFIT A CREW MEMBER SHOWS ===== */
     .outfit-by {
-      font-size: 0.72rem;
-      letter-spacing: 2px;
+      font-size: 0.78rem;
+      letter-spacing: 0.3em;
       text-transform: uppercase;
-      color: #888;
+      color: var(--beluga);
     }
 
     .outfit-note {
-      font-size: 1.05rem;
+      font-size: 1.15rem;
+      font-weight: 300;
       font-style: italic;
-      color: #333;
+      color: var(--ink);
       line-height: 1.5;
       margin-top: 0.5rem;
     }
@@ -1583,19 +1523,19 @@
       align-items: baseline;
       gap: 1rem;
       padding: 0.5rem 0;
-      border-bottom: 1px solid #efefeb;
+      border-bottom: 1px solid var(--line);
     }
 
     .outfit-piece-name {
-      font-size: 1rem;
+      font-size: 1.05rem;
       text-transform: lowercase;
-      letter-spacing: 0.3px;
+      letter-spacing: 0.02em;
     }
 
     .outfit-piece-price {
       margin-left: auto;
       font-size: 0.9rem;
-      color: #666;
+      color: var(--ink-soft);
     }
 
     .outfit-total {
@@ -1635,17 +1575,552 @@
       }
     }
 
-    /* In a crew zone the voice widget's card sits at the bottom right of the screen.
-       Leave room so the last button in a window can be scrolled clear of it. */
-    body.crew-widget-on .modal-details {
-      padding-bottom: 9rem;
-    }
-
     /* On a wide screen the details scroll on their own, so the picture stays in view. */
     @media (min-width: 769px) {
       .modal-details {
         max-height: 92vh;
         overflow-y: auto;
+      }
+    }
+
+    /* ===== YOUR GUIDE: THE CHAT =====
+       A crew member comes along as her guide. On a wide screen the chat is a rail down
+       the right side. On a narrow one it is a bar at the bottom that opens into a sheet. */
+    :root {
+      --guide-w: 384px;
+      --guide-bar: 64px;
+      --nav-h: 76px;
+      --kb: 0px;   /* how much an on-screen keyboard covers, set by the page */
+    }
+
+    .guide {
+      position: fixed;
+      right: 0;
+      bottom: var(--kb);
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      --guide-accent: var(--pq-green);
+      --guide-tint: #e9f6e8;
+    }
+
+    .guide-body {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .guide-head,
+    .guide-bar {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.8rem 1rem;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+    }
+
+    .guide-bar {
+      width: 100%;
+      min-height: var(--guide-bar);
+      background: #fff;
+      border: none;
+      border-bottom: 1px solid transparent;
+      font: inherit;
+      color: inherit;
+      text-transform: lowercase;
+      cursor: pointer;
+    }
+
+    .guide-face {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      overflow: hidden;
+      flex: none;
+      box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--guide-accent);
+      margin: 4px;
+    }
+
+    .guide-face img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top;
+    }
+
+    .guide-face .char-card-initials {
+      font-size: 1.1rem;
+    }
+
+    .guide-who {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .guide-name {
+      font-size: 1.05rem;
+      font-weight: 400;
+      letter-spacing: 0.02em;
+      line-height: 1.2;
+    }
+
+    .guide-state {
+      font-size: 0.8rem;
+      color: var(--ink-soft);
+      line-height: 1.3;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .guide-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--guide-accent);
+      margin-right: 0.4rem;
+      animation: pulse-dot 1.5s ease-in-out infinite;
+    }
+
+    .guide-chevron {
+      flex: none;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      color: var(--ink-soft);
+    }
+
+    .guide-thread {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    /* each thing in the thread keeps its own height: the thread scrolls, it does not squeeze */
+    .guide-thread > * {
+      flex-shrink: 0;
+    }
+
+    .guide-hello {
+      margin: auto 0;
+      text-align: center;
+      padding: 1rem 0.5rem;
+    }
+
+    .guide-hello-line {
+      font-size: 1.25rem;
+      font-weight: 300;
+      line-height: 1.4;
+      margin-bottom: 0.4rem;
+    }
+
+    .guide-hello-sub {
+      font-size: 0.9rem;
+      color: var(--ink-soft);
+      line-height: 1.5;
+      margin-bottom: 1.25rem;
+    }
+
+    .guide-chips {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .guide-chip {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 8px 16px;
+      font: inherit;
+      font-size: 0.88rem;
+      color: var(--ink);
+      text-transform: lowercase;
+      cursor: pointer;
+      transition: border-color 0.2s ease, background 0.2s ease;
+    }
+
+    .guide-chip:hover:not(:disabled) {
+      border-color: var(--guide-accent);
+      background: var(--guide-tint);
+    }
+
+    .guide-chip:disabled {
+      color: #a8a8a8;
+      cursor: default;
+    }
+
+    .guide-say {
+      max-width: 86%;
+      padding: 0.6rem 0.9rem;
+      border-radius: 16px;
+      font-size: 0.95rem;
+      line-height: 1.45;
+      overflow-wrap: anywhere;
+    }
+
+    .guide-say.crew {
+      align-self: flex-start;
+      background: var(--guide-tint);
+      border-bottom-left-radius: 6px;
+    }
+
+    .guide-say.me {
+      align-self: flex-end;
+      background: var(--orbit-white);
+      border-bottom-right-radius: 6px;
+    }
+
+    .guide-aside {
+      align-self: center;
+      font-size: 0.78rem;
+      color: var(--ink-soft);
+      text-align: center;
+      padding: 0.2rem 0.5rem;
+    }
+
+    .guide-pick {
+      align-self: stretch;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      background: #fff;
+      overflow: hidden;
+    }
+
+    .guide-pick-by {
+      padding: 0.6rem 0.9rem 0;
+      font-size: 0.72rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--beluga);
+    }
+
+    .guide-pick-note {
+      padding: 0.15rem 0.9rem 0;
+      font-size: 1rem;
+      font-weight: 300;
+      font-style: italic;
+      line-height: 1.4;
+    }
+
+    .guide-piece {
+      display: flex;
+      gap: 0.8rem;
+      padding: 0.8rem 0.9rem;
+    }
+
+    .guide-piece + .guide-piece {
+      border-top: 1px solid var(--line);
+    }
+
+    .guide-piece-photo {
+      flex: none;
+      width: 84px;
+      height: 112px;
+      padding: 0;
+      border: none;
+      border-radius: 10px;
+      overflow: hidden;
+      background: var(--orbit-white);
+      cursor: pointer;
+    }
+
+    .guide-piece-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top 20%;
+      transition: filter 0.4s ease;
+    }
+
+    .guide-piece-main {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+    }
+
+    .guide-piece-top {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+
+    .guide-piece-name {
+      font-size: 0.98rem;
+      letter-spacing: 0.02em;
+    }
+
+    .guide-piece-price {
+      font-size: 0.9rem;
+      color: var(--ink-soft);
+    }
+
+    .guide-piece-colors {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+    }
+
+    .guide-color {
+      width: 22px;
+      height: 22px;
+      padding: 0;
+      border-radius: 50%;
+      border: 1px solid rgba(42, 42, 42, 0.18);
+      cursor: pointer;
+    }
+
+    .guide-color.selected {
+      box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--ink);
+    }
+
+    .guide-color-name {
+      font-size: 0.78rem;
+      color: var(--ink-soft);
+      margin-left: 0.2rem;
+    }
+
+    .guide-piece-sizes {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+
+    .guide-piece-sizes .size-option {
+      min-width: 32px;
+      padding: 5px 4px;
+      font-size: 0.7rem;
+      letter-spacing: 0.02em;
+    }
+
+    .guide-piece-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.9rem;
+    }
+
+    .guide-add {
+      padding: 8px 16px;
+      font-size: 0.82rem;
+    }
+
+    .guide-live {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.55rem 1rem;
+      background: var(--guide-tint);
+      font-size: 0.88rem;
+    }
+
+    .guide-live-words {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .guide-small {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 5px 13px;
+      font: inherit;
+      font-size: 0.8rem;
+      color: var(--ink);
+      text-transform: lowercase;
+      cursor: pointer;
+    }
+
+    .guide-small:hover {
+      border-color: var(--ink);
+    }
+
+    .guide-compose {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1rem;
+      border-top: 1px solid var(--line);
+    }
+
+    .guide-talk {
+      flex: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 10px 16px;
+      font-size: 0.88rem;
+    }
+
+    .guide-talk svg {
+      width: 16px;
+      height: 16px;
+      flex: none;
+    }
+
+    .guide-input {
+      flex: 1;
+      min-width: 0;
+      padding: 10px 14px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      font-family: 'Jost', sans-serif;
+      font-size: 1rem;   /* 16px: an iPhone zooms the page for anything smaller */
+      background: #fff;
+      outline: none;
+    }
+
+    .guide-input:focus {
+      border-color: var(--sky-blue);
+      box-shadow: 0 0 0 3px rgba(172, 217, 244, 0.45);
+    }
+
+    .guide-send {
+      flex: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: none;
+      background: var(--ink);
+      color: #fff;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    .guide-send:disabled {
+      background: #e6e3dc;
+      color: #8a8a8a;
+      cursor: default;
+    }
+
+    .guide-note {
+      padding: 0 1rem;
+      font-size: 0.8rem;
+      color: var(--error);
+      line-height: 1.4;
+    }
+
+    .guide-note:not(:empty) {
+      padding-bottom: 0.7rem;
+    }
+
+    .guide-fine {
+      padding: 0 1rem 0.7rem;
+      font-size: 0.72rem;
+      color: var(--ink-soft);
+      line-height: 1.4;
+    }
+
+    /* The button in a crew member's zone that starts the talking. */
+    .zone-talk {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem 1rem;
+      padding: 0.9rem 1.5rem;
+      font-size: 0.92rem;
+      color: var(--ink);
+      letter-spacing: 0.03em;
+    }
+
+    .zone-talk-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      background: var(--ink);
+      color: #fff;
+      border: none;
+      border-radius: 999px;
+      padding: 9px 20px;
+      font: inherit;
+      font-weight: 500;
+      text-transform: lowercase;
+      cursor: pointer;
+    }
+
+    .zone-talk-btn svg {
+      width: 15px;
+      height: 15px;
+    }
+
+    /* Wide screens: a rail. It sits under the top bar, and windows open beside it. */
+    @media (min-width: 1100px) {
+      .guide {
+        top: 0;
+        width: var(--guide-w);
+        padding-top: var(--nav-h);
+        border-left: 1px solid var(--line);
+        z-index: 45;
+      }
+
+      .guide-bar {
+        display: none;
+      }
+
+      body.guide-on .page-main {
+        padding-right: var(--guide-w);
+      }
+
+      body.guide-on .modal-overlay {
+        right: var(--guide-w);
+      }
+    }
+
+    /* Narrow screens: a bar at the bottom that opens into a sheet, in front of any window. */
+    @media (max-width: 1099px) {
+      .guide {
+        left: 0;
+        max-height: min(80vh, 700px);
+        max-height: min(80dvh, 700px);
+        border-top: 1px solid var(--line);
+        border-radius: 18px 18px 0 0;
+        box-shadow: 0 -8px 30px rgba(42, 42, 42, 0.14);
+        z-index: 120;
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+      }
+
+      .guide-head {
+        display: none;
+      }
+
+      .guide:not(.open) .guide-body {
+        display: none;
+      }
+
+      .guide.open .guide-bar {
+        border-bottom-color: var(--line);
+      }
+
+      .guide.open {
+        height: min(80vh, 700px);
+        height: min(80dvh, 700px);
+      }
+
+      body.guide-on .page-main {
+        padding-bottom: calc(var(--guide-bar) + 1.25rem);
+      }
+
+      /* leave room so the last button in a window can be scrolled clear of the bar */
+      body.guide-on .modal-details {
+        padding-bottom: 6.5rem;
       }
     }
   </style>
@@ -1662,20 +2137,23 @@
         return;
       }
       const { useState, useEffect } = React;
+      var el = React.createElement;
 
+    // The colors of the brand style guide (3.0 to 3.2), by the guide's hex values. White is a
+    // garment color, not a brand color.
     const COLORWAYS = [
       { id: 'pq-green', name: 'P&Q Green', hex: '#6DC067' },
       { id: 'sky-blue', name: 'Sky Blue', hex: '#ACD9F4' },
-      { id: 'grass', name: 'Grass', hex: '#B1D355' },
+      { id: 'grass', name: 'Green Grass', hex: '#B1D355' },
       { id: 'orange-tee', name: 'Orange Tee', hex: '#FBB040' },
-      { id: 'city-khaki', name: 'City Khaki', hex: '#c4b99a' },
-      { id: 'coral', name: 'Coral', hex: '#E8735A' },
-      { id: 'lavender', name: 'Lavender', hex: '#B4A7D6' },
+      { id: 'city-khaki', name: 'City Khaki', hex: '#C8B898' },
+      { id: 'coral', name: 'Coral', hex: '#E8685A' },
+      { id: 'lavender', name: 'Lavender', hex: '#C4A7D7' },
       { id: 'hot-pink', name: 'Hot Pink', hex: '#E84B8A' },
-      { id: 'sunshine', name: 'Sunshine', hex: '#FFD93D' },
-      { id: 'ocean', name: 'Ocean', hex: '#4A90D9' },
+      { id: 'sunshine', name: 'Sunshine', hex: '#F7D559' },
+      { id: 'ocean', name: 'Ocean', hex: '#2B7A9E' },
       { id: 'white', name: 'White', hex: '#FFFFFF' },
-      { id: 'midnight', name: 'Midnight', hex: '#1A1A2E' },
+      { id: 'midnight', name: 'Midnight', hex: '#1B2A4A' },
     ];
 
     // Hue helper: extract hue (0-360) from hex color
@@ -1704,10 +2182,40 @@
       { id: 7, name: 'The Ruffle Skirt', category: 'bottoms', price: 56, description: 'Tiered ruffles in cream — sweet and effortless', colorways: ['hot-pink', 'lavender', 'coral', 'ocean', 'pq-green'], sizes: ['xxs', 'xs', 's', 'm', 'l', 'xl'], imageUrl: 'img/dot-sweater-skirt.jpg', baseHue: 8, tryOn: true },
     ];
 
+    // ===== THE BRAND'S PARTS =====
+    // The wordmark: always lowercase jost light, green, the ampersand in sky blue
+    // (brand style guide, 2.0).
+    function Wordmark() {
+      return el('span', { className: 'wordmark' }, 'piper ', el('span', { className: 'amp' }, '&'), ' quinn');
+    }
+
+    // A color mixed toward white: 0 is the color itself, 1 is white.
+    function tint(hex, white) {
+      var part = function(i) {
+        var c = parseInt(hex.slice(i, i + 2), 16);
+        return Math.round(c + (255 - c) * white);
+      };
+      return 'rgb(' + part(1) + ', ' + part(3) + ', ' + part(5) + ')';
+    }
+
+    // A crew member's picture. Until there is one: the first letter of the name, on a tint
+    // of the member's color.
+    function CrewAvatar({ member, className }) {
+      return el('div', { className: className },
+        member.img
+          ? el('img', { src: member.img, alt: member.name })
+          : el('div', { className: 'char-card-initials', style: { background: tint(member.accent, 0.55) } }, member.name.charAt(0)));
+    }
+
     function Navbar({ currentPage, navigateTo, cartCount }) {
-      return (
-        React.createElement('div', {className: "navbar"}, React.createElement('div', {className: "navbar-content"}, React.createElement('div', {className: "navbar-brand", onClick: function() { navigateTo('home'); }}, "piper & quinn"), React.createElement('div', {className: "navbar-links"}, React.createElement('div', {className: "navbar-link", onClick: function() { navigateTo('shop'); }}, "shop"), React.createElement('div', {className: "navbar-link", onClick: function() { navigateTo('studio'); }}, "studio"), React.createElement('div', {className: "navbar-link", onClick: function() { navigateTo('cart'); }}, 'cart (' + cartCount + ')'))))
-      );
+      var link = function(page, words) {
+        return el('div', { className: 'navbar-link' + (currentPage === page ? ' active' : ''), onClick: function() { navigateTo(page); } }, words);
+      };
+      return el('div', { className: 'navbar' },
+        el('div', { className: 'color-rule' }),
+        el('div', { className: 'navbar-content' },
+          el('div', { className: 'navbar-brand', onClick: function() { navigateTo('home'); } }, el(Wordmark, null)),
+          el('div', { className: 'navbar-links' }, link('shop', 'shop'), link('studio', 'studio'), link('cart', 'cart (' + cartCount + ')'))));
     }
 
     // Size chart: height (inches) -> size
@@ -1747,12 +2255,15 @@
       ],
     };
 
+    // The crew. Each has a color from the guide's palette: the four core colors, and hot pink
+    // for Quinn. `agentId` is the member's ElevenLabs voice agent. `img` is a square picture of the
+    // head and shoulders (tools/make_crew.py cuts them), or null for the first letter of the name.
     var CREW_MEMBERS = [
-      { name: 'Piper', age: 12, role: 'founder & lead designer', bio: 'the one who started it all', zoneName: "piper's design studio", zoneTagline: '"i design what i want to wear — and what my friends keep stealing"', zoneDesc: "welcome to my studio. this is where every p&q piece starts — a sketch, a color, a feeling. these are my favorites from the collection.", agentId: 'agent_7401m4b3y21deyhbcryt8dstz8q8', img: 'img/polo-girl.jpg', orbColor1: '#6DC067', orbColor2: '#ACD9F4', accent: '#6DC067', zoneBg: 'linear-gradient(135deg, #2d5a27 0%, #1a3a15 50%, #0a1a08 100%)', productIds: [1, 5, 6] },
-      { name: 'Quinn', age: 10, role: 'creative director', bio: 'the creative force', zoneName: "quinn's creative lab", zoneTagline: '"fashion is art you can wear — every outfit tells a story"', zoneDesc: "this is where the magic happens. i mix colors, patterns, and vibes until something feels right. check out what i'm loving right now.", agentId: 'agent_0601m4b3ybjwezd8gwwrv5p51c90', img: 'img/sweatshirt-girl.jpg', orbColor1: '#FF69B4', orbColor2: '#E6B8FF', accent: '#FF69B4', zoneBg: 'linear-gradient(135deg, #5a274a 0%, #3a1530 50%, #1a0818 100%)', productIds: [2, 3, 7] },
-      { name: 'Marley', age: 11, role: 'marketing & social', bio: 'the hype machine', zoneName: "marley's hype room", zoneTagline: '"if it\'s fire, i\'ll let you know. if it\'s not, i\'ll let you know too"', zoneDesc: "what's trending, what's dropping, what everyone's talking about. these are the pieces that are about to blow up.", agentId: 'agent_1001m4b3ymzzf75tmnd0gps61ndn', img: null, initials: 'M', orbColor1: '#FBB040', orbColor2: '#B1D355', accent: '#FBB040', zoneBg: 'linear-gradient(135deg, #5a4a1a 0%, #3a3010 50%, #1a1808 100%)', productIds: [3, 4, 1] },
-      { name: 'Suki', age: 11, role: 'stylist & trend scout', bio: 'the trendsetter', zoneName: "suki's trend lounge", zoneTagline: '"style isn\'t what you wear — it\'s how you wear it"', zoneDesc: "i put the looks together. here are the pieces i'd style for you right now — mix, match, make it yours.", agentId: 'agent_8401m4b3z9asedb9b62hmx17a2na', img: null, initials: 'S', orbColor1: '#ACD9F4', orbColor2: '#B8A9C9', accent: '#ACD9F4', zoneBg: 'linear-gradient(135deg, #1a3a5a 0%, #152a3a 50%, #08141a 100%)', productIds: [2, 6, 7] },
-      { name: 'Jordyn', age: 12, role: 'operations & logistics', bio: 'the one who gets it done', zoneName: "jordyn's hq", zoneTagline: '"every great brand needs someone who actually ships the product"', zoneDesc: "i make sure everything runs smooth — quality, shipping, the stuff nobody sees. these are the pieces i stand behind 100%.", agentId: 'agent_7601m4b3zjhpeanvfk62araq46qd', img: 'img/lime-polo-dress.jpg', orbColor1: '#2C3E50', orbColor2: '#6DC067', accent: '#2C3E50', zoneBg: 'linear-gradient(135deg, #1a2a3a 0%, #0f1a25 50%, #080e14 100%)', productIds: [4, 5, 1] },
+      { name: 'Piper', role: 'founder & lead designer', zoneTagline: '"i design what i want to wear — and what my friends keep stealing"', zoneDesc: "welcome to my studio. this is where every p&q piece starts — a sketch, a color, a feeling. these are my favorites from the collection.", agentId: 'agent_7401m4b3y21deyhbcryt8dstz8q8', img: 'img/crew-piper.jpg', accent: '#6DC067', orbColor1: '#6DC067', orbColor2: '#ACD9F4', productIds: [1, 5, 6] },
+      { name: 'Quinn', role: 'creative director', zoneTagline: '"fashion is art you can wear — every outfit tells a story"', zoneDesc: "this is where the magic happens. i mix colors, patterns, and vibes until something feels right. check out what i'm loving right now.", agentId: 'agent_0601m4b3ybjwezd8gwwrv5p51c90', img: 'img/crew-quinn.jpg', accent: '#E84B8A', orbColor1: '#E84B8A', orbColor2: '#C4A7D7', productIds: [2, 3, 7] },
+      { name: 'Kate', role: 'marketing & social', zoneTagline: '"if it\'s fire, i\'ll let you know. if it\'s not, i\'ll let you know too"', zoneDesc: "what's trending, what's dropping, what everyone's talking about. these are the pieces that are about to blow up.", agentId: 'agent_1001m4b3ymzzf75tmnd0gps61ndn', img: 'img/crew-kate.jpg', accent: '#FBB040', orbColor1: '#FBB040', orbColor2: '#F7D559', productIds: [3, 4, 1] },
+      { name: 'Birdie', role: 'pattern designer', zoneTagline: '"a print should make you smile before you know why"', zoneDesc: "this is where the prints happen. dots, stripes, the color nobody expected. these are the pieces that show them off.", agentId: 'agent_8401m4b3z9asedb9b62hmx17a2na', img: 'img/crew-birdie.jpg', accent: '#ACD9F4', orbColor1: '#ACD9F4', orbColor2: '#C4A7D7', productIds: [3, 7, 4] },
+      { name: 'Otto', role: 'finance & operations', zoneTagline: '"every great brand needs someone who actually ships the product"', zoneDesc: "i make sure everything runs smooth: quality, shipping, the numbers nobody sees. these are the pieces i stand behind 100%.", agentId: 'agent_7601m4b3zjhpeanvfk62araq46qd', img: 'img/crew-otto.jpg', accent: '#B1D355', orbColor1: '#B1D355', orbColor2: '#6DC067', productIds: [4, 5, 1] },
     ];
 
     function SizeCalculator({ category, onSizeSelect }) {
@@ -1853,19 +2364,7 @@
                 React.createElement('div', {className: "size-calc-row"}, React.createElement('div', null, React.createElement('div', {className: "size-calc-label"}, "waist (", unitLabel, ")"), React.createElement('input', {type: "number", className: "size-calc-input", placeholder: unit === 'in' ? 'e.g. 24' : 'e.g. 61', value: waist, onChange: (e) => setWaist(e.target.value)})), React.createElement('div', null))
               ), needsHip && (
                 React.createElement('div', {className: "size-calc-row"}, React.createElement('div', null, React.createElement('div', {className: "size-calc-label"}, "hip (", unitLabel, ")"), React.createElement('input', {type: "number", className: "size-calc-input", placeholder: unit === 'in' ? 'e.g. 30' : 'e.g. 76', value: hip, onChange: (e) => setHip(e.target.value)})), React.createElement('div', null))
-              ), React.createElement('button', {onClick: calculateSize, style: {
-                  width: '100%',
-                  padding: '10px',
-                  background: '#333',
-                  color: 'white',
-                  border: 'none',
-                  cursor: 'pointer',
-                  fontSize: '0.8rem',
-                  fontFamily: "'Jost', sans-serif",
-                  letterSpacing: '0.5px',
-                  textTransform: 'lowercase',
-                  marginTop: '0.25rem'
-                }}, "find my size"), result && (
+              ), React.createElement('button', {className: "btn-primary size-calc-go", onClick: calculateSize}, "find my size"), result && (
                 React.createElement('div', {className: "size-calc-result"}, result.message)
               ))
           ))
@@ -1880,13 +2379,12 @@
     var TRYON_STATUS = '/api/tryon-status';
     var TRYON_ASK_EVERY = 2000;
     var TRYON_GIVE_UP = 90000;
-    var el = React.createElement;
 
     // Shrink a photo to 1536px on its long side and return it as a JPEG data URI.
     function fitPhoto(file) {
       return new Promise(function(resolve, reject) {
         if (!file || (file.type && file.type.indexOf('image/') !== 0)) {
-          reject(new Error("That file isn't a photo. Try a JPG or PNG."));
+          reject(new Error("that file isn't a photo. try a jpg or png."));
           return;
         }
         var src = URL.createObjectURL(file);
@@ -1895,7 +2393,7 @@
           var w = img.naturalWidth, hgt = img.naturalHeight;
           if (Math.min(w, hgt) < 256) {
             URL.revokeObjectURL(src);
-            reject(new Error('That photo is too small. Try a bigger one.'));
+            reject(new Error('that photo is too small. try a bigger one.'));
             return;
           }
           var scale = Math.min(1, 1536 / Math.max(w, hgt));
@@ -1915,14 +2413,14 @@
             if (out.length < 2400000) break;
           }
           if (out.indexOf('data:image/jpeg') !== 0 || out.length >= 2400000) {
-            reject(new Error("We couldn't get that photo ready. Try a different one."));
+            reject(new Error("we couldn't get that photo ready. try a different one."));
             return;
           }
           resolve(out);
         };
         img.onerror = function() {
           URL.revokeObjectURL(src);
-          reject(new Error("We couldn't open that photo. Try a JPG or PNG."));
+          reject(new Error("we couldn't open that photo. try a jpg or png."));
         };
         img.src = src;
       });
@@ -1941,18 +2439,18 @@
             err = new Error(data.message);
             err.retry = !!data.retry;
           } else if (res.status === 429) {
-            err = new Error("That's a lot of looks at once. Wait a minute and try again.");
+            err = new Error("that's a lot of looks at once. wait a minute and try again.");
             err.retry = true;
           } else if (res.status === 404) {
-            err = new Error("Try-on isn't switched on for this site yet.");
+            err = new Error("try-on isn't switched on for this site yet.");
           } else {
-            err = new Error('Try-on had a problem (' + res.status + '). Try again.');
+            err = new Error('try-on had a problem (' + res.status + '). try again.');
             err.retry = res.status >= 500;
           }
           throw err;
         });
       }, function() {
-        var err = new Error("Couldn't reach try-on. Check your connection and try again.");
+        var err = new Error("couldn't reach try-on. check your connection and try again.");
         err.retry = true;
         throw err;
       });
@@ -1965,7 +2463,7 @@
         var ask = function() {
           if (!alive()) return;
           if (Date.now() - started > TRYON_GIVE_UP) {
-            reject(new Error('This is taking too long. Try again.'));
+            reject(new Error('this is taking too long. try again.'));
             return;
           }
           tryonAsk(TRYON_STATUS + '?id=' + encodeURIComponent(id)).then(function(d) {
@@ -1994,7 +2492,7 @@
       var step = function(i, picture) {
         if (i >= pieces.length) return Promise.resolve(picture);
         if (picture.indexOf('data:image/') !== 0) {
-          return Promise.reject(new Error("Try-on couldn't put on the second piece. Try again."));
+          return Promise.reject(new Error("try-on couldn't put on the second piece. try again."));
         }
         var started = Date.now();
         return tryonAsk(TRYON_START, {
@@ -2111,7 +2609,7 @@
           if (onDone) onDone(true, '');
         }, function(err) {
           if (!alive()) return;
-          var words = err.message || 'Try-on had a problem. Try again.';
+          var words = err.message || 'try-on had a problem. try again.';
           setPhase('error');
           setMessage(words);
           mark(look ? 'made' : 'none');
@@ -2132,13 +2630,13 @@
 
       var waistUp = pieces.every(function(p) { return p.category === 'tops'; });
       var tip = waistUp
-        ? 'Use a photo of you facing the camera, from the waist up or full length.'
-        : 'Use a full-length photo of you, facing the camera.';
+        ? 'use a photo of you facing the camera, from the waist up or full length.'
+        : 'use a full-length photo of you, facing the camera.';
 
       var status = '';
-      if (phase === 'working') status = two ? 'This takes about half a minute.' : 'This takes about 15 seconds.';
+      if (phase === 'working') status = two ? 'this takes about half a minute.' : 'this takes about 15 seconds.';
       else if (phase === 'error') status = message;
-      else if (look) status = two ? "Here's your look, in the colors we photographed." : "Here's your look, in the color we photographed.";
+      else if (look) status = two ? "here's your look, in the colors we photographed." : "here's your look, in the color we photographed.";
 
       var goLabel = 'see it on me';
       if (phase === 'working') goLabel = 'making your look…';
@@ -2168,13 +2666,16 @@
         phase === 'working' && el('div', { className: 'tryon-bar' }),
         el('div', { className: 'tryon-status' + (phase === 'error' ? ' tryon-error' : ''), role: 'status', 'aria-live': 'polite' }, status),
         look && !busy && el('a', { className: 'tryon-link', href: look, download: saveName, style: { display: 'inline-block' } }, 'save picture'),
-        el('div', { className: 'tryon-note' }, "Your photo goes to FASHN, our try-on partner, to make the picture. We don't keep it."));
+        el('div', { className: 'tryon-note' }, "your photo goes to fashn, our try-on partner, to make the picture. we don't keep it."));
     }
 
-    // ===== THE CREW AS STYLISTS =====
-    // A crew member is a voice agent in the ElevenLabs widget. The agent has one button on
-    // this page, show_outfit: it names a dress, or a top and a bottom, and the page shows them.
-    // If her photo is in, the page puts the outfit on her.
+    // ===== THE CREW AS GUIDES =====
+    // A crew member is a voice agent at ElevenLabs. The page talks with the agent through
+    // ElevenLabs' client library (vendor/), by voice or in writing, and draws the
+    // conversation itself: what is said, and each piece she talks about, with its own
+    // "add to cart". An agent may also have one button on this page, show_outfit: it names
+    // a dress, or a top and a bottom, and the page shows them. If her photo is in, the page
+    // puts the outfit on her.
     var STYLIST_FREE_LOOKS = 5; // looks a crew member may start without her tap, per visit
     var OUTFIT_ORDER = ['bottoms', 'tops', 'dresses']; // the order pieces go on
 
@@ -2223,40 +2724,425 @@
       return { pieces: pieces, note: note, problem: problem };
     }
 
+    // What the rest of the page may do with the conversation that is up. The chat sets these.
+    var crewDesk = {
+      tell: function() {},   // say something to the crew member without interrupting her
+      fold: function() {},   // on a narrow screen, fold the chat down to its bar
+      talk: function() {},   // open the chat and start talking
+    };
+
     // Tell the crew member something without interrupting her (she cannot see the screen).
     function tellCrew(message) {
-      var w = document.querySelector('elevenlabs-convai');
-      if (!w) return;
-      try {
-        w.dispatchEvent(new CustomEvent('elevenlabs-agent:contextual-update', { detail: { message: message } }));
-      } catch (e) {}
+      crewDesk.tell(message);
     }
 
-    // The widget's chat panel covers most of a phone screen. Fold it down to its small card
-    // so the outfit can be seen. The conversation carries on.
+    // On a narrow screen the open chat covers most of the page. Fold it down to its bar so an
+    // outfit can be seen. The conversation carries on.
     function foldCrewChat() {
-      try {
-        document.dispatchEvent(new CustomEvent('elevenlabs-agent:expand', { detail: { action: 'collapse' } }));
-      } catch (e) {}
+      crewDesk.fold();
     }
 
-    // One throwaway id for this visit, given to the voice widget. Without one the widget works
-    // out a fingerprint of her browser and keeps it in the browser's storage. On a first visit
-    // that also holds a call back for a moment after her tap, long enough to leave the zone
-    // or tap twice, and either way a call came up that the page was never told about.
-    var CREW_VISITOR = (function() {
-      try {
-        if (window.crypto && crypto.randomUUID) return 'visit-' + crypto.randomUUID();
-      } catch (e) {}
-      return 'visit-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 12);
-    })();
+    // The resampler the library loads for an iPhone, an iPad and Safari on a Mac. Kept with
+    // the site, so a call does not hang on a second address.
+    var CREW_RESAMPLER = 'vendor/libsamplerate-2.1.2.worklet.js';
 
-    // End a crew member's call from the page's side. Ending one that has ended does nothing.
+    // End a conversation from the page's side. Ending one that has ended does nothing.
     function endCrewCall(call) {
       try {
         var ending = call.endSession();
         if (ending && ending.catch) ending.catch(function() {});
       } catch (e) {}
+    }
+
+    // Why a conversation could not start, in words for her.
+    function crewTrouble(err, member, written) {
+      var name = err && err.name;
+      if (!written && (name === 'NotAllowedError' || name === 'PermissionDeniedError' || name === 'SecurityError')) {
+        return 'the microphone is off for this site. turn it on in your browser, or type instead.';
+      }
+      if (!written && (name === 'NotFoundError' || name === 'NotReadableError' || name === 'OverconstrainedError')) {
+        return "we couldn't find a microphone. you can type instead.";
+      }
+      return "couldn't reach " + member.name.toLowerCase() + '. check your connection and try again.';
+    }
+
+    // What was said, tidied for reading: a voice may carry stage directions in square brackets
+    // ("[laughs]") and marks meant for a formatter. Neither belongs in a chat bubble.
+    function crewWords(words) {
+      return String(words || '')
+        .replace(/\[[a-z][a-z ,'-]{0,28}\]/gi, ' ')
+        .replace(/\*\*|__|`/g, '')
+        .replace(/\s+/g, ' ')
+        .trim();
+    }
+
+    // Start one conversation with a crew member, by voice or in writing. Returns at once with
+    // { end, say, tell, mute, ready }: `ready` settles when the conversation is up, and `end`
+    // may be called at any time, also before that.
+    // hooks: onSay(who, words), onMode(mode), onOver(why)
+    function openCrewTalk(member, written, tools, hooks) {
+      var talk = { call: null, over: false };
+      var settle = function(why) {
+        if (talk.settled) return;
+        talk.settled = true;
+        hooks.onOver(why);
+      };
+      talk.end = function() {
+        talk.over = true;
+        talk.settled = true; // she ended it herself: nothing to tell her
+        if (talk.call) endCrewCall(talk.call);
+      };
+      talk.say = function(words) {
+        if (talk.call && !talk.over) try { talk.call.sendUserMessage(words); return true; } catch (e) {}
+        return false;
+      };
+      talk.tell = function(words) {
+        if (talk.call && !talk.over) try { talk.call.sendContextualUpdate(words); } catch (e) {}
+      };
+      talk.mute = function(off) {
+        if (talk.call && !talk.over) try { talk.call.setMicMuted(!!off); } catch (e) {}
+      };
+      var lib = window.ElevenLabsClient;
+      if (!lib || !lib.Conversation) {
+        var missing = new Error('the voice library is not here');
+        missing.name = 'NoLibrary';
+        talk.ready = Promise.reject(missing);
+        return talk;
+      }
+      talk.ready = lib.Conversation.startSession({
+        agentId: member.agentId,
+        connectionType: 'websocket',
+        textOnly: !!written,
+        clientTools: tools,
+        libsampleratePath: CREW_RESAMPLER,
+        // The library hands the conversation over a moment before it has finished bringing it
+        // up. If she has gone by then, end it once that moment has passed: a conversation
+        // ended any sooner is marked as up again by the library and left running.
+        onConversationCreated: function(call) {
+          talk.call = call;
+          Promise.resolve().then(function() { if (talk.over) endCrewCall(call); });
+        },
+        onMessage: function(m) {
+          if (talk.over || !m || typeof m.message !== 'string') return;
+          var words = crewWords(m.message);
+          if (!words) return;
+          hooks.onSay(m.role === 'user' || m.source === 'user' ? 'me' : 'crew', words);
+        },
+        onModeChange: function(m) { if (!talk.over && m) hooks.onMode(m.mode); },
+        onDisconnect: function(details) {
+          var why = details && details.reason;
+          talk.over = true;
+          settle(why === 'user' ? 'ended' : why === 'agent' ? 'hung-up' : 'dropped');
+        },
+        onError: function() {},
+      }).then(function(call) {
+        talk.call = call;
+        if (talk.over) endCrewCall(call);
+        return talk;
+      });
+      return talk;
+    }
+
+    // The pieces a line of talk names, in the order they come up. A piece is known by its
+    // name without "the", and by a few other things people call it.
+    var PIECE_ALSO = { 2: ['pink sweater'], 3: ['polka-dot dress', 'dot dress'], 4: ['lime dress', 'polo dress'], 5: ['blue polo'], 6: ['white skirt'], 7: ['ruffled skirt', 'tiered skirt'] };
+    var PIECE_WORDS = PRODUCTS.map(function(p) {
+      var words = [p.name.toLowerCase().replace(/^the\s+/, '')].concat(PIECE_ALSO[p.id] || []);
+      var loose = words.map(function(w) { return w.replace(/[^a-z0-9]+/g, '[^a-z0-9]+'); });
+      return { piece: p, find: new RegExp('(^|[^a-z0-9])(' + loose.join('|') + ')(e?s)?(?![a-z0-9])', 'i') };
+    });
+
+    function piecesNamed(words) {
+      var found = [];
+      PIECE_WORDS.forEach(function(w) {
+        var m = w.find.exec(String(words || ''));
+        if (m) found.push({ piece: w.piece, at: m.index });
+      });
+      found.sort(function(a, b) { return a.at - b.at; });
+      return found.map(function(f) { return f.piece; });
+    }
+
+    // How a piece's photo is tinted to show a color (the photos are of one color each).
+    function colorFilter(product, colorId) {
+      var colorObj = COLORWAYS.find(function(c) { return c.id === colorId; });
+      if (!colorObj) return 'none';
+      var targetHue = hexToHue(colorObj.hex);
+      var baseHue = product.baseHue || 0;
+      var rotation = targetHue - baseHue;
+      // For white/near-white, desaturate instead of rotating
+      var r = parseInt(colorObj.hex.slice(1, 3), 16);
+      var g = parseInt(colorObj.hex.slice(3, 5), 16);
+      var b = parseInt(colorObj.hex.slice(5, 7), 16);
+      var maxC = Math.max(r, g, b), minC = Math.min(r, g, b);
+      var saturation = maxC === 0 ? 0 : (maxC - minC) / maxC;
+      if (saturation < 0.1) {
+        // Near-white or neutral — desaturate and brighten
+        return 'saturate(0.15) brightness(1.3)';
+      }
+      if (colorObj.id === 'midnight') {
+        return 'hue-rotate(' + rotation + 'deg) brightness(0.4) saturate(0.6)';
+      }
+      return 'hue-rotate(' + rotation + 'deg) saturate(1.1)';
+    }
+
+    function colorName(colorId) {
+      var colorObj = COLORWAYS.find(function(c) { return c.id === colorId; });
+      return colorObj ? colorObj.name.toLowerCase() : colorId;
+    }
+
+    function MicIcon() {
+      return el('svg', { viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 2, strokeLinecap: 'round', strokeLinejoin: 'round', 'aria-hidden': 'true' },
+        el('rect', { x: 9, y: 2, width: 6, height: 12, rx: 3 }),
+        el('path', { d: 'M5 11a7 7 0 0 0 14 0' }),
+        el('path', { d: 'M12 18v4' }));
+    }
+
+    // A piece as it shows in the chat: its photo, its price, a color, a size, "add to cart".
+    function ChatPiece({ product, onAdd, onView }) {
+      const [color, setColor] = useState(product.colorways[0]);
+      const [size, setSize] = useState(null);
+      const [added, setAdded] = useState(0);
+
+      var add = function() {
+        if (!size) return;
+        onAdd(product, color, size);
+        setAdded(function(n) { return n + 1; });
+      };
+
+      return el('div', { className: 'guide-piece', 'data-piece': pieceKey(product) },
+        el('button', { className: 'guide-piece-photo', onClick: function() { onView(product); }, 'aria-label': 'view ' + product.name.toLowerCase() },
+          el('img', { src: product.imageUrl, alt: '', style: { filter: colorFilter(product, color) } })),
+        el('div', { className: 'guide-piece-main' },
+          el('div', { className: 'guide-piece-top' },
+            el('span', { className: 'guide-piece-name' }, product.name),
+            el('span', { className: 'guide-piece-price' }, '$' + product.price)),
+          el('div', { className: 'guide-piece-colors', role: 'group', 'aria-label': 'color' },
+            product.colorways.map(function(cw) {
+              var c = COLORWAYS.find(function(x) { return x.id === cw; });
+              if (!c) return null;
+              return el('button', { key: cw, className: 'guide-color' + (color === cw ? ' selected' : ''), style: { backgroundColor: c.hex }, title: c.name.toLowerCase(), 'aria-label': c.name.toLowerCase(), 'aria-pressed': color === cw, onClick: function() { setColor(cw); } });
+            }),
+            el('span', { className: 'guide-color-name' }, colorName(color))),
+          el('div', { className: 'guide-piece-sizes', role: 'group', 'aria-label': 'size' },
+            product.sizes.map(function(sz) {
+              return el('button', { key: sz, className: 'size-option' + (size === sz ? ' selected' : ''), 'aria-pressed': size === sz, onClick: function() { setSize(sz); } }, sz);
+            })),
+          el('div', { className: 'guide-piece-actions' },
+            el('button', { className: 'btn-primary guide-add', disabled: !size, onClick: add }, !size ? 'pick a size' : added ? 'added. add another' : 'add to cart'),
+            el('button', { className: 'tryon-link', onClick: function() { onView(product); } }, 'view'))));
+    }
+
+    // The chat with her guide. It stays with her from page to page until she goes back to
+    // the crew or picks another guide. `onShowOutfit` is the page's answer to the agent's
+    // show_outfit button.
+    function GuideChat({ member, onAddToCart, onView, onShowOutfit }) {
+      const [items, setItems] = useState([]);       // the thread: what was said, and pieces
+      const [status, setStatus] = useState('idle'); // idle | starting | live
+      const [written, setWritten] = useState(false); // the conversation that is up is in writing
+      const [mode, setMode] = useState('listening'); // in a voice call: who has the floor
+      const [muted, setMuted] = useState(false);
+      const [draft, setDraft] = useState('');
+      const [open, setOpen] = useState(false);       // narrow screens: the sheet is up
+      const [trouble, setTrouble] = useState('');
+      var talkRef = React.useRef(null);
+      var statusRef = React.useRef('idle');
+      var itemsRef = React.useRef([]);
+      var countRef = React.useRef(0);
+      var threadRef = React.useRef(null);
+      var inputRef = React.useRef(null);
+      var typedRef = React.useRef(null);
+      var showOutfitRef = React.useRef(onShowOutfit);
+      showOutfitRef.current = onShowOutfit;
+      var name = member.name.toLowerCase();
+
+      var setState = function(next) { statusRef.current = next; setStatus(next); };
+
+      var put = function(item) {
+        item.id = ++countRef.current;
+        itemsRef.current = itemsRef.current.concat([item]);
+        setItems(itemsRef.current);
+      };
+
+      // A piece she named gets a card, unless its card is already among the last few things.
+      var showNamed = function(words) {
+        var recent = itemsRef.current.slice(-6);
+        var fresh = piecesNamed(words).filter(function(p) {
+          return !recent.some(function(it) { return it.kind === 'pieces' && it.pieces.indexOf(p) !== -1; });
+        });
+        if (fresh.length) put({ kind: 'pieces', pieces: fresh });
+      };
+
+      // What was said before, for a conversation that starts after an earlier one this visit.
+      var recap = function() {
+        var said = itemsRef.current.filter(function(it) { return it.kind === 'say'; }).slice(-6);
+        if (!said.length) return '';
+        return 'Earlier in this visit you and she already talked. The last lines were: ' + said.map(function(it) {
+          return (it.who === 'me' ? 'She: ' : 'You: ') + it.text;
+        }).join(' / ') + ' Carry on from there, and do not greet her as if she were new.';
+      };
+
+      var start = function(inWriting, firstWords) {
+        if (statusRef.current !== 'idle') return;
+        var before = recap();
+        setState('starting');
+        setWritten(!!inWriting);
+        setMode('listening');
+        setMuted(false);
+        setTrouble('');
+        setOpen(true);
+        if (firstWords) { put({ kind: 'say', who: 'me', text: firstWords }); typedRef.current = { text: firstWords, at: Date.now() }; }
+        var talk;
+        var mine = function() { return talkRef.current === talk; };
+        talk = openCrewTalk(member, inWriting, {
+          show_outfit: function(params) {
+            if (!mine() || talk.over) return 'She has left your page. Nothing was shown.';
+            var answer = showOutfitRef.current(params, member);
+            var asked = readOutfit(params);
+            if (asked.pieces.length) {
+              var shown = asked.pieces.slice().reverse();
+              var last = itemsRef.current[itemsRef.current.length - 1];
+              var same = last && last.kind === 'pieces' && last.pick && last.pieces.length === shown.length && last.pieces.every(function(p, i) { return p === shown[i]; });
+              if (!same) put({ kind: 'pieces', pieces: shown, pick: true, note: asked.note });
+            }
+            return answer;
+          }
+        }, {
+          onSay: function(who, words) {
+            if (!mine()) return;
+            if (who === 'me') {
+              // a line she typed is already in the thread: an echo of it is not a new line
+              var typed = typedRef.current;
+              if (typed && Date.now() - typed.at < 20000 && typed.text.toLowerCase() === words.toLowerCase()) { typedRef.current = null; return; }
+            }
+            put({ kind: 'say', who: who, text: words });
+            if (who === 'crew') showNamed(words);
+          },
+          onMode: function(m) { if (mine()) setMode(m === 'speaking' ? 'speaking' : 'listening'); },
+          onOver: function(why) {
+            if (!mine()) return;
+            talkRef.current = null;
+            setState('idle');
+            if (why === 'hung-up') put({ kind: 'aside', text: name + ' ended the ' + (inWriting ? 'chat' : 'call') + '.' });
+            else if (why === 'dropped') put({ kind: 'aside', text: 'the ' + (inWriting ? 'chat' : 'call') + ' dropped. start again when you like.' });
+          }
+        });
+        talkRef.current = talk;
+        talk.ready.then(function() {
+          if (!mine() || talk.over) return;
+          setState('live');
+          if (before) talk.tell(before);
+          if (firstWords) { typedRef.current = { text: firstWords, at: Date.now() }; talk.say(firstWords); }
+        }, function(err) {
+          if (!mine()) return;
+          talkRef.current = null;
+          setState('idle');
+          setTrouble(err && err.name === 'NoLibrary'
+            ? name + "'s voice didn't load. check your connection, load the page again and try once more."
+            : crewTrouble(err, member, inWriting));
+        });
+      };
+
+      // End the conversation that is up. `quiet`: another one starts right after, so say nothing.
+      var stop = function(quiet) {
+        var talk = talkRef.current;
+        if (!talk) return;
+        talkRef.current = null;
+        talk.end();
+        setState('idle');
+        if (!quiet) put({ kind: 'aside', text: 'you ended the ' + (written ? 'chat' : 'call') + '.' });
+      };
+
+      var send = function(e) {
+        if (e) e.preventDefault();
+        var words = draft.replace(/\s+/g, ' ').trim().slice(0, 500);
+        if (!words || statusRef.current === 'starting') return;
+        setDraft('');
+        if (statusRef.current === 'live' && talkRef.current) {
+          put({ kind: 'say', who: 'me', text: words });
+          typedRef.current = { text: words, at: Date.now() };
+          talkRef.current.say(words);
+        } else {
+          start(true, words);
+        }
+      };
+
+      var toggleMute = function() {
+        var next = !muted;
+        setMuted(next);
+        if (talkRef.current) talkRef.current.mute(next);
+      };
+
+      var add = function(product, color, size) {
+        onAddToCart(product, color, size);
+        tellCrew('She added ' + product.name + ' to her cart from the chat: size ' + String(size).toUpperCase() + ', in ' + colorName(color) + '.');
+      };
+
+      // The rest of the page reaches the conversation through the desk. Leaving ends it.
+      useEffect(function() {
+        crewDesk.tell = function(words) { if (talkRef.current) talkRef.current.tell(words); };
+        crewDesk.fold = function() { setOpen(false); };
+        crewDesk.talk = function() { setOpen(true); start(false); };
+        return function() {
+          crewDesk.tell = crewDesk.fold = crewDesk.talk = function() {};
+          var talk = talkRef.current;
+          talkRef.current = null;
+          statusRef.current = 'gone';
+          if (talk) talk.end();
+        };
+      }, []);
+
+      // Keep the newest line in view.
+      useEffect(function() {
+        var t = threadRef.current;
+        if (t) t.scrollTop = t.scrollHeight;
+      }, [items.length, status, open]);
+
+      var live = status === 'live';
+      var state = status === 'starting' ? 'connecting…'
+        : !live ? 'your guide. talk or type.'
+        : written ? 'chatting with you'
+        : mode === 'speaking' ? 'talking' : muted ? 'your mic is off' : 'listening';
+
+      var face = el(CrewAvatar, { member: member, className: 'guide-face' });
+      var who = el('div', { className: 'guide-who' },
+        el('div', { className: 'guide-name' }, name),
+        el('div', { className: 'guide-state', role: 'status' }, live && el('span', { className: 'guide-dot' }), state));
+
+      return el('div', { className: 'guide' + (open ? ' open' : '') + (live ? ' live' : ''), role: 'complementary', 'aria-label': 'your guide, ' + name, style: { '--guide-accent': member.accent, '--guide-tint': tint(member.accent, 0.78) } },
+        el('button', { className: 'guide-bar', 'aria-expanded': open, onClick: function() { setOpen(!open); } },
+          face, who, el('span', { className: 'guide-chevron', 'aria-hidden': 'true' }, open ? '↓' : '↑')),
+        el('div', { className: 'guide-body' },
+          el('div', { className: 'guide-head' }, face, who),
+          el('div', { className: 'guide-thread', ref: threadRef },
+            items.length === 0 && el('div', { className: 'guide-hello' },
+              el('div', { className: 'guide-hello-line' }, "hi, i'm " + name + '.'),
+              el('div', { className: 'guide-hello-sub' }, "talk to me or type. i'll show you the pieces as we go."),
+              el('div', { className: 'guide-chips' },
+                ['help me find an outfit', 'show me the polka dot dress', 'what goes with the pleated skirt?'].map(function(words) {
+                  return el('button', { key: words, className: 'guide-chip', disabled: status !== 'idle', onClick: function() { start(true, words); } }, words);
+                }))),
+            items.map(function(it) {
+              if (it.kind === 'say') return el('div', { key: it.id, className: 'guide-say ' + it.who }, it.text);
+              if (it.kind === 'aside') return el('div', { key: it.id, className: 'guide-aside' }, it.text);
+              return el('div', { key: it.id, className: 'guide-pick' },
+                it.pick && el('div', { className: 'guide-pick-by' }, name + "'s pick"),
+                it.pick && it.note && el('div', { className: 'guide-pick-note' }, it.note),
+                it.pieces.map(function(p) { return el(ChatPiece, { key: p.id, product: p, onAdd: add, onView: onView }); }));
+            })),
+          live && !written && el('div', { className: 'guide-live' },
+            el('span', { className: 'guide-live-words' }, el('span', { className: 'guide-dot' }), mode === 'speaking' ? name + ' is talking' : muted ? 'your mic is off' : name + ' is listening'),
+            el('button', { className: 'guide-small', 'aria-pressed': muted, onClick: toggleMute }, muted ? 'unmute' : 'mute'),
+            el('button', { className: 'guide-small', onClick: function() { stop(); } }, 'end call')),
+          live && written && el('div', { className: 'guide-live' },
+            el('span', { className: 'guide-live-words' }, 'chatting in writing'),
+            el('button', { className: 'guide-small', onClick: function() { stop(true); start(false); } }, 'talk instead'),
+            el('button', { className: 'guide-small', onClick: function() { stop(); } }, 'end chat')),
+          el('form', { className: 'guide-compose', onSubmit: send },
+            !live && el('button', { type: 'button', className: 'btn-primary guide-talk', disabled: status !== 'idle', onClick: function() { start(false); } }, el(MicIcon, null), status === 'starting' && !written ? 'connecting…' : 'talk'),
+            el('input', { ref: inputRef, className: 'guide-input', type: 'text', value: draft, maxLength: 500, placeholder: 'type to ' + name, 'aria-label': 'type to ' + name, enterKeyHint: 'send', autoComplete: 'off', onChange: function(e) { setDraft(e.target.value); } }),
+            el('button', { type: 'submit', className: 'guide-send', disabled: !draft.trim() || status === 'starting', 'aria-label': 'send' }, '↑')),
+          el('div', { className: 'guide-note', role: 'alert' }, trouble),
+          el('div', { className: 'guide-fine' }, name + ' is an ai voice. what you say or type goes to elevenlabs, which makes ' + name + "'s side of the talk.")));
     }
 
     // `outfit.look` is how her look in this window stands (see TryOn). `upRef` holds the outfit
@@ -2300,8 +3186,8 @@
 
       return el('div', { className: 'modal-overlay', onClick: function(e) { if (e.target === e.currentTarget) onClose(); } },
         el('div', { className: 'modal-content', ref: contentRef, role: 'dialog', 'aria-label': outfit.by.toLowerCase() + "'s pick" },
-          el('button', { className: 'modal-close', onClick: onClose }, 'x'),
-          el('div', { ref: paneRef, style: { overflow: 'hidden', background: '#f5f3f0', position: 'relative' } },
+          el('button', { className: 'modal-close', onClick: onClose, 'aria-label': 'close' }, '×'),
+          el('div', { ref: paneRef, className: 'modal-pane' },
             (look && showLook)
               ? el('img', { key: 'look', src: look, alt: 'you in ' + names, className: 'modal-image tryon-look' })
               : el('div', { key: 'pieces', className: 'outfit-photos' }, photos.map(function(src) {
@@ -2352,27 +3238,8 @@
         else c.scrollTop = top;
       }, [lookCount]);
 
-      // Calculate hue rotation for color change
       var getImageFilter = function() {
-        var colorObj = COLORWAYS.find(function(c) { return c.id === selectedColor; });
-        if (!colorObj) return 'none';
-        var targetHue = hexToHue(colorObj.hex);
-        var baseHue = product.baseHue || 0;
-        var rotation = targetHue - baseHue;
-        // For white/near-white, desaturate instead of rotating
-        var r = parseInt(colorObj.hex.slice(1, 3), 16);
-        var g = parseInt(colorObj.hex.slice(3, 5), 16);
-        var b = parseInt(colorObj.hex.slice(5, 7), 16);
-        var maxC = Math.max(r, g, b), minC = Math.min(r, g, b);
-        var saturation = maxC === 0 ? 0 : (maxC - minC) / maxC;
-        if (saturation < 0.1) {
-          // Near-white or neutral — desaturate and brighten
-          return 'saturate(0.15) brightness(1.3)';
-        }
-        if (colorObj.id === 'midnight') {
-          return 'hue-rotate(' + rotation + 'deg) brightness(0.4) saturate(0.6)';
-        }
-        return 'hue-rotate(' + rotation + 'deg) saturate(1.1)';
+        return colorFilter(product, selectedColor);
       };
 
       const handleAdd = () => {
@@ -2394,7 +3261,7 @@
       var colorName = currentColorObj ? currentColorObj.name : '';
 
       return (
-        React.createElement('div', {className: "modal-overlay", onClick: handleOverlayClick}, React.createElement('div', {className: "modal-content", ref: contentRef}, React.createElement('button', {className: "modal-close", onClick: onClose}, "x"), React.createElement('div', {ref: paneRef, style: { overflow: 'hidden', background: '#f5f3f0', position: 'relative' }}, (look && showLook) ? (React.createElement('img', {key: "look", src: look, alt: 'you in ' + product.name.toLowerCase(), className: "modal-image tryon-look"})) : (React.createElement('img', {key: "product", src: product.imageUrl, alt: product.name, className: "modal-image", style: { filter: getImageFilter(), transition: 'filter 0.4s ease' }})), look && (React.createElement('div', {className: "tryon-view"}, React.createElement('button', {className: 'tryon-view-btn' + (showLook ? ' active' : ''), 'aria-pressed': showLook, onClick: function() { setShowLook(true); }}, "my look"), React.createElement('button', {className: 'tryon-view-btn' + (!showLook ? ' active' : ''), 'aria-pressed': !showLook, onClick: function() { setShowLook(false); }}, "product photo")))), React.createElement('div', {className: "modal-details"}, React.createElement('div', null, React.createElement('div', {className: "modal-product-name"}, product.name), React.createElement('div', {className: "modal-product-price"}, "$", product.price)), React.createElement('div', {className: "modal-product-desc"}, product.description), product.tryOn && React.createElement(TryOn, {pieces: [product], photo: tryPhoto, setPhoto: setTryPhoto, look: look, onLook: handleLook}), React.createElement('div', null, React.createElement('div', {style: { fontSize: '0.8rem', fontWeight: '500', marginBottom: '0.75rem', textTransform: 'lowercase', letterSpacing: '0.5px' }}, " color — ", colorName.toLowerCase()), React.createElement('div', {style: { display: 'flex', gap: '0.75rem', flexWrap: 'wrap', alignItems: 'center' }}, product.colorways.map(cw => {
+        React.createElement('div', {className: "modal-overlay", onClick: handleOverlayClick}, React.createElement('div', {className: "modal-content", ref: contentRef}, React.createElement('button', {className: "modal-close", onClick: onClose, 'aria-label': "close"}, "×"), React.createElement('div', {ref: paneRef, className: "modal-pane"}, (look && showLook) ? (React.createElement('img', {key: "look", src: look, alt: 'you in ' + product.name.toLowerCase(), className: "modal-image tryon-look"})) : (React.createElement('img', {key: "product", src: product.imageUrl, alt: product.name, className: "modal-image", style: { filter: getImageFilter(), transition: 'filter 0.4s ease' }})), look && (React.createElement('div', {className: "tryon-view"}, React.createElement('button', {className: 'tryon-view-btn' + (showLook ? ' active' : ''), 'aria-pressed': showLook, onClick: function() { setShowLook(true); }}, "my look"), React.createElement('button', {className: 'tryon-view-btn' + (!showLook ? ' active' : ''), 'aria-pressed': !showLook, onClick: function() { setShowLook(false); }}, "product photo")))), React.createElement('div', {className: "modal-details"}, React.createElement('div', null, React.createElement('div', {className: "modal-product-name"}, product.name), React.createElement('div', {className: "modal-product-price"}, "$", product.price)), React.createElement('div', {className: "modal-product-desc"}, product.description), product.tryOn && React.createElement(TryOn, {pieces: [product], photo: tryPhoto, setPhoto: setTryPhoto, look: look, onLook: handleLook}), React.createElement('div', null, React.createElement('div', {className: "label"}, "color: ", colorName.toLowerCase()), React.createElement('div', {style: { display: 'flex', gap: '0.75rem', flexWrap: 'wrap', alignItems: 'center' }}, product.colorways.map(cw => {
                     const color = COLORWAYS.find(c => c.id === cw);
                     if (!color) return null;
                     var isSelected = selectedColor === cw;
@@ -2405,32 +3272,30 @@
                           borderRadius: '50%',
                           backgroundColor: color.hex,
                           cursor: 'pointer',
-                          border: isSelected ? '2px solid black' : '1px solid #d0d0d0',
-                          boxShadow: isSelected ? '0 0 0 2px white, 0 0 0 4px black' : 'none',
+                          border: isSelected ? '2px solid #2A2A2A' : '1px solid rgba(42, 42, 42, 0.18)',
+                          boxShadow: isSelected ? '0 0 0 2px white, 0 0 0 4px #2A2A2A' : 'none',
                           transition: 'all 0.2s ease'
                         }})
                     );
-                  }))), React.createElement('div', null, React.createElement('div', {style: { fontSize: '0.8rem', fontWeight: '500', marginBottom: '0.75rem', textTransform: 'lowercase', letterSpacing: '0.5px' }}, "size"), React.createElement('div', {style: { display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}, product.sizes.map(size => (
+                  }))), React.createElement('div', null, React.createElement('div', {className: "label"}, "size"), React.createElement('div', {style: { display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}, product.sizes.map(size => (
                     React.createElement('button', {key: size, className: 'size-option' + (selectedSize === size ? ' selected' : ''), onClick: () => setSelectedSize(size)}, size)
                   ))), React.createElement(SizeCalculator, {category: product.category, onSizeSelect: (size) => setSelectedSize(size)})), React.createElement('button', {className: "add-to-cart-btn", disabled: !selectedSize, onClick: handleAdd}, added ? 'added!' : selectedSize ? 'add to cart' : 'select a size'))))
       );
     }
 
     function CharacterSelect({ onSelectCrewMember, navigateTo }) {
-      return (
-        React.createElement('div', {className: "char-select"}, React.createElement('div', {className: "char-select-label"}, "welcome to"), React.createElement('div', {className: "char-select-brand"}, "piper & quinn"), React.createElement('div', {className: "char-select-subtitle"}, "choose your guide"), React.createElement('div', {className: "char-select-grid"}, CREW_MEMBERS.map(function(member, idx) {
-              return (
-                React.createElement('div', {key: member.name, className: "char-card", style: {
-                    '--zone-accent': member.accent,
-                    '--zone-glow': member.accent + '25'
-                  }, onClick: function() { onSelectCrewMember(idx); }}, React.createElement('div', {className: "char-card-avatar"}, member.img ? (
-                      React.createElement('img', {src: member.img, alt: member.name})
-                    ) : (
-                      React.createElement('div', {className: "char-card-initials", style: { background: 'linear-gradient(135deg, ' + member.orbColor1 + ', ' + member.orbColor2 + ')' }}, member.initials)
-                    )), React.createElement('div', {className: "char-card-name"}, member.name), React.createElement('div', {className: "char-card-role"}, member.role), React.createElement('button', {className: "char-card-enter"}, "enter zone"))
-              );
-            })), React.createElement('div', {className: "char-select-skip", onClick: function() { navigateTo('shop'); }}, " or skip to the shop → "))
-      );
+      return el('div', { className: 'char-select' },
+        el('h1', { className: 'char-select-brand' }, el(Wordmark, null)),
+        el('div', { className: 'tagline char-select-tagline' }, 'dress bold.'),
+        el('div', { className: 'char-select-subtitle' }, 'choose your guide'),
+        el('div', { className: 'char-select-grid' }, CREW_MEMBERS.map(function(member, idx) {
+          return el('div', { key: member.name, className: 'char-card', style: { '--zone-accent': member.accent }, onClick: function() { onSelectCrewMember(idx); } },
+            el(CrewAvatar, { member: member, className: 'char-card-avatar' }),
+            el('div', { className: 'char-card-name' }, member.name),
+            el('div', { className: 'char-card-role' }, member.role),
+            el('button', { className: 'char-card-enter' }, 'enter zone'));
+        })),
+        el('div', { className: 'char-select-skip', onClick: function() { navigateTo('shop'); } }, 'or skip to the shop →'));
     }
 
     function ShopPage({ setCurrentPage, onSelectProduct }) {
@@ -2442,13 +3307,13 @@
         : PRODUCTS.filter(p => p.category === activeCategory);
 
       return (
-        React.createElement('div', {className: "main-content fade-in"}, React.createElement('h1', {style: { fontSize: '2rem', fontWeight: '300', textAlign: 'center', margin: '3rem 0', letterSpacing: '1px' }}, "the collection"), React.createElement('div', {className: "category-nav"}, categories.map(cat => (
+        React.createElement('div', {className: "main-content fade-in"}, React.createElement('h1', {className: "page-title"}, "the collection"), React.createElement('div', {className: "category-nav"}, categories.map(cat => (
               React.createElement('div', {key: cat, className: `filter-link ${activeCategory === cat ? 'active' : ''}`, onClick: () => setActiveCategory(cat)}, cat === 'all' ? 'all items' : cat)
             ))), React.createElement('div', {style: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(240px, 100%), 1fr))', gap: '2rem', margin: '3rem 0' }}, filteredProducts.map((product) => (
               React.createElement('div', {key: product.id, className: "product-card", onClick: () => onSelectProduct(product)}, React.createElement('div', {className: "product-card-image-wrapper"}, product.imageUrl ? (
                     React.createElement('img', {src: product.imageUrl, alt: product.name, className: "product-image"})
                   ) : (
-                    React.createElement('div', {style: { width: '100%', height: '100%', background: COLORWAYS.find(c => c.id === product.colorways[0])?.hex || '#f5f5f0' }})
+                    React.createElement('div', {style: { width: '100%', height: '100%', background: COLORWAYS.find(c => c.id === product.colorways[0])?.hex || '#F8F6F1' }})
                   )), React.createElement('div', {className: "product-info"}, React.createElement('div', {className: "product-name"}, product.name), React.createElement('div', {className: "product-price"}, "$", product.price)))
             ))))
       );
@@ -2457,6 +3322,7 @@
     function DesignStudio() {
       const [selectedColor, setSelectedColor] = useState('pq-green');
       const [selectedPattern, setSelectedPattern] = useState('solid');
+      const [asked, setAsked] = useState(false);
 
       const patterns = [
         { id: 'solid', name: 'Solid', color: '#6DC067' },
@@ -2468,40 +3334,27 @@
       const currentColor = COLORWAYS.find(c => c.id === selectedColor);
       const currentPattern = patterns.find(p => p.id === selectedPattern);
 
-      return (
-        React.createElement('div', {className: "main-content fade-in"}, React.createElement('h1', {style: { fontSize: '2rem', fontWeight: '300', textAlign: 'center', margin: '3rem 0', letterSpacing: '1px' }}, "design your own"), React.createElement('div', {className: "studio-grid", style: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4rem', maxWidth: '1000px', margin: '3rem auto' }}, React.createElement('div', null, React.createElement('h3', {style: { fontSize: '1rem', fontWeight: '500', marginBottom: '1.5rem', textTransform: 'lowercase', letterSpacing: '0.5px' }}, "choose a color"), React.createElement('div', {style: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1.5rem', marginBottom: '3rem' }}, COLORWAYS.slice(0, 9).map(color => (
-                  React.createElement('div', {key: color.id, className: `color-swatch ${selectedColor === color.id ? 'selected' : ''}`, style: { backgroundColor: color.hex }, onClick: () => setSelectedColor(color.id)})
-                ))), React.createElement('h3', {style: { fontSize: '1rem', fontWeight: '500', marginBottom: '1.5rem', textTransform: 'lowercase', letterSpacing: '0.5px' }}, "select a pattern"), React.createElement('div', {style: { display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1rem' }}, patterns.map(pattern => (
-                  React.createElement('div', {key: pattern.id, className: `pattern-thumb ${selectedPattern === pattern.id ? 'selected' : ''}`, style: {
-                      background: pattern.color || pattern.pattern,
-                      backgroundImage: pattern.pattern
-                    }, onClick: () => setSelectedPattern(pattern.id)})
-                )))), React.createElement('div', {style: { display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}, React.createElement('h3', {style: { fontSize: '1rem', fontWeight: '500', marginBottom: '2rem', textTransform: 'lowercase', letterSpacing: '0.5px' }}, "your design"), React.createElement('div', {className: "garment-preview", style: {
-                  backgroundColor: currentColor?.hex,
-                  backgroundImage: currentPattern?.pattern,
-                  borderRadius: '8px',
-                  boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: '0.875rem',
-                  color: '#666'
-                }}, React.createElement('div', {style: { textAlign: 'center' }}, React.createElement('div', null, currentColor?.name), React.createElement('div', {style: { fontSize: '0.75rem', marginTop: '0.5rem' }}, currentPattern?.name))), React.createElement('button', {style: {
-                  marginTop: '2rem',
-                  padding: '12px 32px',
-                  backgroundColor: 'black',
-                  color: 'white',
-                  border: 'none',
-                  cursor: 'pointer',
-                  fontSize: '0.875rem',
-                  fontWeight: '500',
-                  letterSpacing: '1px',
-                  textTransform: 'lowercase'
-                }}, " add to cart "))))
-      );
+      return el('div', { className: 'main-content fade-in' },
+        el('h1', { className: 'page-title' }, 'design your own'),
+        el('div', { className: 'studio-grid', style: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4rem', maxWidth: '1000px', margin: '3rem auto' } },
+          el('div', null,
+            el('h3', { className: 'studio-heading' }, 'choose a color'),
+            el('div', { style: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1.5rem', marginBottom: '3rem' } }, COLORWAYS.slice(0, 9).map(color =>
+              el('div', { key: color.id, className: `color-swatch ${selectedColor === color.id ? 'selected' : ''}`, style: { backgroundColor: color.hex }, title: color.name.toLowerCase(), onClick: () => setSelectedColor(color.id) }))),
+            el('h3', { className: 'studio-heading' }, 'select a pattern'),
+            el('div', { style: { display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1rem' } }, patterns.map(pattern =>
+              el('div', { key: pattern.id, className: `pattern-thumb ${selectedPattern === pattern.id ? 'selected' : ''}`, style: { background: pattern.color || pattern.pattern, backgroundImage: pattern.pattern }, title: pattern.name.toLowerCase(), onClick: () => setSelectedPattern(pattern.id) })))),
+          el('div', { style: { display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' } },
+            el('h3', { className: 'studio-heading' }, 'your design'),
+            el('div', { className: 'garment-preview', style: { backgroundColor: currentColor?.hex, backgroundImage: currentPattern?.pattern, borderRadius: '12px', boxShadow: '0 2px 8px rgba(0,0,0,0.08)', marginBottom: '1rem' } }),
+            el('div', { className: 'studio-caption' }, currentColor?.name, ', ', currentPattern?.name),
+            el('button', { className: 'btn-primary', style: { marginTop: '1.75rem' }, onClick: () => setAsked(true) }, 'add to cart'),
+            // A design of her own cannot be bought yet. Say so, rather than do nothing.
+            el('div', { className: 'btn-note', role: 'status' }, asked ? "a design of your own can't be bought yet. this studio is a preview." : ''))));
     }
 
     function CartPage({ cart, setCart }) {
+      const [asked, setAsked] = useState(false);
       const total = cart.reduce((sum, item) => sum + (item.product.price * item.qty), 0);
 
       const removeItem = (index) => {
@@ -2518,112 +3371,88 @@
         }
       };
 
-      return (
-        React.createElement('div', {className: "main-content fade-in"}, React.createElement('h1', {style: { fontSize: '2rem', fontWeight: '300', textAlign: 'center', margin: '3rem 0', letterSpacing: '1px' }}, "your cart"), cart.length === 0 ? (
-            React.createElement('div', {style: { textAlign: 'center', padding: '3rem' }}, React.createElement('p', {style: { fontSize: '1rem', color: '#666', marginBottom: '1rem' }}, "your cart is empty"), React.createElement('p', {style: { fontSize: '0.875rem', color: '#999' }}, "add some pieces to get started"))
-          ) : (
-            React.createElement(React.Fragment, null, React.createElement('div', {style: { maxWidth: '700px', margin: '0 auto' }}, cart.map((item, idx) => (
-                  React.createElement('div', {key: idx, className: "cart-item"}, React.createElement('div', {className: "cart-item-details"}, React.createElement('div', {className: "cart-item-name"}, item.product.name), React.createElement('div', {className: "cart-item-meta"}, item.colorway && React.createElement('span', null, item.colorway, " • "), item.size && React.createElement('span', null, item.size, " • "), " $", item.product.price)), React.createElement('div', {className: "quantity-control"}, React.createElement('button', {className: "qty-button", onClick: () => updateQuantity(idx, item.qty - 1)}, "-"), React.createElement('span', null, item.qty), React.createElement('button', {className: "qty-button", onClick: () => updateQuantity(idx, item.qty + 1)}, "+"), React.createElement('span', {style: { marginLeft: '1rem', fontWeight: '500' }}, "$", item.product.price * item.qty)))
-                ))), React.createElement('div', {style: { maxWidth: '700px', margin: '2rem auto', padding: '2rem', borderTop: '1px solid #efefeb', borderBottom: '1px solid #efefeb' }}, React.createElement('div', {style: { display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', fontSize: '1rem' }}, React.createElement('span', null, "subtotal"), React.createElement('span', null, "$", total.toFixed(2))), React.createElement('div', {style: { display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', fontSize: '0.875rem', color: '#666' }}, React.createElement('span', null, "shipping"), React.createElement('span', null, "calculated at checkout")), React.createElement('div', {style: { display: 'flex', justifyContent: 'space-between', fontSize: '1.1rem', fontWeight: '500' }}, React.createElement('span', null, "total"), React.createElement('span', null, "$", total.toFixed(2)))), React.createElement('div', {style: { textAlign: 'center', margin: '2rem 0' }}, React.createElement('button', {style: {
-                    padding: '14px 48px',
-                    backgroundColor: 'black',
-                    color: 'white',
-                    border: 'none',
-                    cursor: 'pointer',
-                    fontSize: '0.875rem',
-                    fontWeight: '500',
-                    letterSpacing: '1px',
-                    textTransform: 'lowercase'
-                  }}, " proceed to checkout ")))
-          ))
-      );
+      const colorName = (id) => {
+        const color = COLORWAYS.find(c => c.id === id);
+        return color ? color.name : id;
+      };
+
+      return el('div', { className: 'main-content fade-in' },
+        el('h1', { className: 'page-title' }, 'your cart'),
+        cart.length === 0 ? (
+          el('div', { className: 'cart-empty' },
+            el('p', null, 'your cart is empty'),
+            el('p', null, 'add some pieces to get started'))
+        ) : (
+          el(React.Fragment, null,
+            el('div', { style: { maxWidth: '700px', margin: '0 auto' } }, cart.map((item, idx) =>
+              el('div', { key: idx, className: 'cart-item' },
+                el('div', { className: 'cart-item-details' },
+                  el('div', { className: 'cart-item-name' }, item.product.name),
+                  el('div', { className: 'cart-item-meta' }, item.colorway && el('span', null, colorName(item.colorway), ' • '), item.size && el('span', null, 'size ', item.size, ' • '), '$', item.product.price)),
+                el('div', { className: 'quantity-control' },
+                  el('button', { className: 'qty-button', 'aria-label': 'one fewer', onClick: () => updateQuantity(idx, item.qty - 1) }, '-'),
+                  el('span', null, item.qty),
+                  el('button', { className: 'qty-button', 'aria-label': 'one more', onClick: () => updateQuantity(idx, item.qty + 1) }, '+'),
+                  el('span', { style: { marginLeft: '1rem', fontWeight: '500' } }, '$', item.product.price * item.qty))))),
+            el('div', { className: 'cart-totals' },
+              el('div', null, el('span', null, 'subtotal'), el('span', null, '$', total.toFixed(2))),
+              el('div', { className: 'soft' }, el('span', null, 'shipping'), el('span', null, 'calculated at checkout')),
+              el('div', { className: 'sum' }, el('span', null, 'total'), el('span', null, '$', total.toFixed(2)))),
+            el('div', { style: { textAlign: 'center', margin: '2rem 0' } },
+              el('button', { className: 'btn-primary', style: { padding: '15px 48px' }, onClick: () => setAsked(true) }, 'proceed to checkout'),
+              // There is no checkout yet. Say so, rather than do nothing.
+              el('div', { className: 'btn-note', role: 'status' }, asked ? "checkout isn't open yet. this site is a preview." : '')))));
     }
 
-    function CrewZone({ memberIdx, onSelectProduct, onBack, onSwitchZone, onShowOutfit }) {
+    function CrewZone({ memberIdx, onSelectProduct, onBack, onSwitchZone }) {
       var member = CREW_MEMBERS[memberIdx];
-      var chatContainerRef = React.useRef(null);
-      var showOutfitRef = React.useRef(onShowOutfit);
-      showOutfitRef.current = onShowOutfit;
-
-      useEffect(function() {
-        var zone = { left: false, call: null };
-        if (chatContainerRef.current) {
-          chatContainerRef.current.innerHTML = '';
-          var widget = document.createElement('elevenlabs-convai');
-          widget.setAttribute('agent-id', member.agentId);
-          widget.setAttribute('avatar-orb-color-1', member.orbColor1);
-          widget.setAttribute('avatar-orb-color-2', member.orbColor2);
-          widget.setAttribute('action-text', 'Chat with ' + member.name);
-          // Let the page tell the agent things (the widget ignores them without this).
-          widget.setAttribute('allow-events', 'true');
-          // A throwaway id for this visit, so the widget makes no fingerprint (see CREW_VISITOR).
-          widget.setAttribute('user-id', CREW_VISITOR);
-          // When a conversation starts, hand the agent its button on this page.
-          widget.addEventListener('elevenlabs-convai:call', function(e) {
-            if (!e.detail || !e.detail.config) return;
-            e.detail.config.clientTools = Object.assign({}, e.detail.config.clientTools, {
-              show_outfit: function(params) {
-                if (zone.left) return 'She has left your page. Nothing was shown.';
-                return showOutfitRef.current(params, member);
-              }
-            });
-            // Taken off the page, the widget ends a call that is up, but not one that is still
-            // connecting: that one would carry on, her microphone open and nothing on the page
-            // to end it with. So the page keeps hold of each call and ends it itself. It does so
-            // a moment after the call is handed over, once the widget has finished bringing it up.
-            e.detail.config.onConversationCreated = function(call) {
-              Promise.resolve().then(function() {
-                if (zone.left) { endCrewCall(call); return; }
-                if (zone.call && zone.call !== call) endCrewCall(zone.call);
-                zone.call = call;
-              });
-            };
-          });
-          chatContainerRef.current.appendChild(widget);
-          document.body.classList.add('crew-widget-on');
-          if (window.crewSound) window.crewSound(true);
-        }
-        return function() {
-          zone.left = true;
-          if (zone.call) endCrewCall(zone.call);
-          document.body.classList.remove('crew-widget-on');
-          if (window.crewSound) window.crewSound(false);
-          if (chatContainerRef.current) {
-            chatContainerRef.current.innerHTML = '';
-          }
-        };
-      }, [memberIdx]);
 
       var zoneProducts = member.productIds.map(function(id) {
         return PRODUCTS.find(function(p) { return p.id === id; });
       }).filter(Boolean);
 
-      return (
-        React.createElement('div', {className: "zone-page"}, React.createElement('div', {className: "zone-back", onClick: onBack}, '←', " back to crew"), React.createElement('div', {className: "zone-hero", style: { background: member.zoneBg }}, React.createElement('div', {className: "zone-hero-content"}, React.createElement('div', {className: "zone-hero-avatar", style: { borderColor: member.accent }}, member.img ? (
-                  React.createElement('img', {src: member.img, alt: member.name})
-                ) : (
-                  React.createElement('div', {className: "char-card-initials", style: { background: 'linear-gradient(135deg, ' + member.orbColor1 + ', ' + member.orbColor2 + ')' }}, member.initials)
-                )), React.createElement('div', {className: "zone-hero-name"}, member.name), React.createElement('div', {className: "zone-hero-role"}, member.role), React.createElement('div', {className: "zone-hero-tagline"}, member.zoneTagline))), React.createElement('div', {className: "zone-voice-bar", style: { background: member.accent }}, React.createElement('div', {className: "crew-chat-dot", style: { background: 'white' }}), React.createElement('span', null, member.name, ' is here. Tap "Start a call" to talk.')), React.createElement('div', {className: "zone-section"}, React.createElement('p', {style: { textAlign: 'center', fontSize: '1.05rem', color: '#555', lineHeight: '1.8', maxWidth: '580px', margin: '0 auto 3rem', fontWeight: '300' }}, member.zoneDesc), React.createElement('h2', {className: "zone-section-title"}, member.name.toLowerCase() + "'s picks"), React.createElement('div', {className: "zone-products"}, zoneProducts.map(function(product) {
-                return (
-                  React.createElement('div', {key: product.id, className: "product-card", onClick: function() { onSelectProduct(product); }}, React.createElement('div', {className: "product-card-image-wrapper"}, product.imageUrl ? (
-                        React.createElement('img', {src: product.imageUrl, alt: product.name, className: "product-image"})
-                      ) : (
-                        React.createElement('div', {style: { width: '100%', height: '100%', background: '#f5f5f0' }})
-                      )), React.createElement('div', {className: "product-info"}, React.createElement('div', {className: "product-name"}, product.name), React.createElement('div', {className: "product-price"}, '$' + product.price)))
-                );
-              }))), React.createElement('div', {style: { padding: '2rem 2rem 0', textAlign: 'center', borderTop: '1px solid #f0f0e8' }}, React.createElement('div', {style: { fontSize: '0.8rem', color: '#aaa', marginBottom: '0.75rem', letterSpacing: '0.5px', textTransform: 'lowercase' }}, "visit another zone")), React.createElement('div', {className: "zone-nav"}, CREW_MEMBERS.map(function(m, idx) {
-              if (idx === memberIdx) return null;
-              return (
-                React.createElement('button', {key: m.name, className: "zone-nav-chip", style: { '--chip-accent': m.accent }, onClick: function() { onSwitchZone(idx); }}, m.name.toLowerCase() + "'s zone")
-              );
-            })), React.createElement('div', {ref: chatContainerRef}))
-      );
+      return el('div', { className: 'zone-page', style: { '--zone-accent': member.accent } },
+        el('div', { className: 'zone-back', onClick: onBack }, '← back to crew'),
+        el('div', { className: 'zone-hero', style: { background: 'linear-gradient(180deg, ' + tint(member.accent, 0.7) + ' 0%, ' + tint(member.accent, 0.9) + ' 100%)' } },
+          el('div', { className: 'zone-hero-content' },
+            el(CrewAvatar, { member: member, className: 'zone-hero-avatar' }),
+            el('h1', { className: 'zone-hero-name' }, member.name),
+            el('div', { className: 'zone-hero-role' }, member.role),
+            el('div', { className: 'zone-hero-tagline' }, member.zoneTagline))),
+        el('div', { className: 'zone-talk', style: { background: member.accent } },
+          el('span', null, member.name, ' is your guide now.'),
+          el('button', { className: 'zone-talk-btn', onClick: function() { crewDesk.talk(); } }, el(MicIcon, null), 'talk to ' + member.name.toLowerCase())),
+        el('div', { className: 'zone-section' },
+          el('p', { className: 'zone-desc' }, member.zoneDesc),
+          el('h2', { className: 'zone-section-title' }, member.name.toLowerCase() + "'s picks"),
+          el('div', { className: 'zone-products' }, zoneProducts.map(function(product) {
+            return el('div', { key: product.id, className: 'product-card', onClick: function() { onSelectProduct(product); } },
+              el('div', { className: 'product-card-image-wrapper' },
+                el('img', { src: product.imageUrl, alt: product.name, className: 'product-image' })),
+              el('div', { className: 'product-info' },
+                el('div', { className: 'product-name' }, product.name),
+                el('div', { className: 'product-price' }, '$' + product.price)));
+          }))),
+        el('div', { className: 'zone-other' }, el('div', { className: 'zone-other-label' }, 'visit another zone')),
+        el('div', { className: 'zone-nav' }, CREW_MEMBERS.map(function(m, idx) {
+          if (idx === memberIdx) return null;
+          return el('button', { key: m.name, className: 'zone-nav-chip', style: { '--chip-accent': m.accent }, onClick: function() { onSwitchZone(idx); } }, m.name.toLowerCase() + "'s zone");
+        })));
     }
 
-    function Footer() {
-      return (
-        React.createElement('div', {className: "footer"}, React.createElement('div', {className: "footer-content"}, React.createElement('div', {className: "footer-section"}, React.createElement('h3', null, "piper & quinn"), React.createElement('div', {className: "footer-link"}, "fashion by sisters"), React.createElement('div', {className: "footer-link"}, "san francisco, california")), React.createElement('div', {className: "footer-section"}, React.createElement('h3', null, "shop"), React.createElement('div', {className: "footer-link"}, "new arrivals"), React.createElement('div', {className: "footer-link"}, "all products"), React.createElement('div', {className: "footer-link"}, "sale")), React.createElement('div', {className: "footer-section"}, React.createElement('h3', null, "customer care"), React.createElement('div', {className: "footer-link"}, "contact us"), React.createElement('div', {className: "footer-link"}, "shipping & returns"), React.createElement('div', {className: "footer-link"}, "size guide")), React.createElement('div', {className: "footer-section"}, React.createElement('h3', null, "connect"), React.createElement('div', {className: "footer-link"}, "instagram"), React.createElement('div', {className: "footer-link"}, "tiktok"), React.createElement('div', {className: "footer-link"}, "email"))), React.createElement('div', {style: { textAlign: 'center', marginTop: '3rem', paddingTop: '2rem', borderTop: '1px solid rgba(255,255,255,0.1)', fontSize: '0.75rem', color: '#999' }}, " © 2026 piper & quinn. all rights reserved. "))
-      );
+    function Footer({ navigateTo }) {
+      var link = function(page, words) {
+        return el('button', { className: 'footer-link', onClick: function() { navigateTo(page); } }, words);
+      };
+      return el('div', { className: 'footer' },
+        el('div', { className: 'color-rule' }),
+        el('div', { className: 'footer-content' },
+          el('div', null,
+            el('div', { className: 'footer-brand' }, el(Wordmark, null)),
+            el('div', { className: 'tagline footer-tagline' }, 'dress bold.'),
+            el('div', { className: 'footer-place' }, 'fashion by sisters. san francisco, california.')),
+          el('div', { className: 'footer-links' }, link('home', 'the crew'), link('shop', 'shop'), link('studio', 'studio'), link('cart', 'cart'))),
+        el('div', { className: 'footer-legal' }, '© 2026 piper & quinn'));
     }
 
     function App() {
@@ -2726,20 +3555,51 @@
       };
 
       var showNavbar = currentPage !== 'home';
+      // Her guide: the crew member whose zone she went into, until she goes back to the crew.
+      var guide = currentPage !== 'home' && activeZoneIdx !== null ? CREW_MEMBERS[activeZoneIdx] : null;
+
+      useEffect(function() {
+        document.body.classList.toggle('guide-on', !!guide);
+        if (window.crewSound) window.crewSound(!!guide);
+        return function() {
+          document.body.classList.remove('guide-on');
+          if (window.crewSound) window.crewSound(false);
+        };
+      }, [!!guide]);
+
+      // An on-screen keyboard covers the bottom of the screen without telling the page's
+      // layout. Note how much, so the chat can sit above it.
+      useEffect(function() {
+        var vv = window.visualViewport;
+        if (!vv) return;
+        var note = function() {
+          var covered = Math.max(0, Math.round(window.innerHeight - vv.height - vv.offsetTop));
+          document.documentElement.style.setProperty('--kb', (covered > 60 ? covered : 0) + 'px');
+        };
+        vv.addEventListener('resize', note);
+        vv.addEventListener('scroll', note);
+        return function() {
+          vv.removeEventListener('resize', note);
+          vv.removeEventListener('scroll', note);
+        };
+      }, []);
 
       return (
-        React.createElement('div', null, showNavbar && React.createElement(Navbar, {currentPage: currentPage, navigateTo: navigateTo, cartCount: cart.length}), currentPage === 'home' && (
-            React.createElement(CharacterSelect, {onSelectCrewMember: handleSelectCrewMember, navigateTo: navigateTo})
-          ), currentPage === 'zone' && activeZoneIdx !== null && (
-            React.createElement(CrewZone, {memberIdx: activeZoneIdx, onSelectProduct: setSelectedProduct, onBack: handleBackToCrew, onShowOutfit: handleShowOutfit, onSwitchZone: function(idx) {
-                setActiveZoneIdx(idx);
-                window.scrollTo(0, 0);
-              }})
-          ), currentPage === 'shop' && React.createElement(ShopPage, {setCurrentPage: navigateTo, onSelectProduct: setSelectedProduct}), currentPage === 'studio' && React.createElement(DesignStudio, null), currentPage === 'cart' && React.createElement(CartPage, {cart: cart, setCart: setCart}), outfit && (
-            React.createElement(OutfitWindow, {key: outfit.n, outfit: outfit, onClose: closeOutfit, onView: setSelectedProduct, tryPhoto: tryPhoto, setTryPhoto: setTryPhoto, upRef: outfitRef})
-          ), selectedProduct && (
-            React.createElement(ProductDetail, {product: selectedProduct, onClose: () => setSelectedProduct(null), onAddToCart: handleAddToCart, tryPhoto: tryPhoto, setTryPhoto: setTryPhoto})
-          ), currentPage !== 'home' && React.createElement(Footer, null))
+        el('div', null,
+          showNavbar && el(Navbar, { currentPage: currentPage, navigateTo: navigateTo, cartCount: cart.length }),
+          el('div', { className: 'page-main' },
+            currentPage === 'home' && el(CharacterSelect, { onSelectCrewMember: handleSelectCrewMember, navigateTo: navigateTo }),
+            currentPage === 'zone' && activeZoneIdx !== null && el(CrewZone, { memberIdx: activeZoneIdx, onSelectProduct: setSelectedProduct, onBack: handleBackToCrew, onSwitchZone: function(idx) {
+              setActiveZoneIdx(idx);
+              window.scrollTo(0, 0);
+            } }),
+            currentPage === 'shop' && el(ShopPage, { setCurrentPage: navigateTo, onSelectProduct: setSelectedProduct }),
+            currentPage === 'studio' && el(DesignStudio, null),
+            currentPage === 'cart' && el(CartPage, { cart: cart, setCart: setCart }),
+            currentPage !== 'home' && el(Footer, { navigateTo: navigateTo })),
+          outfit && el(OutfitWindow, { key: outfit.n, outfit: outfit, onClose: closeOutfit, onView: setSelectedProduct, tryPhoto: tryPhoto, setTryPhoto: setTryPhoto, upRef: outfitRef }),
+          selectedProduct && el(ProductDetail, { product: selectedProduct, onClose: () => setSelectedProduct(null), onAddToCart: handleAddToCart, tryPhoto: tryPhoto, setTryPhoto: setTryPhoto }),
+          guide && el(GuideChat, { key: guide.name, member: guide, onAddToCart: handleAddToCart, onView: setSelectedProduct, onShowOutfit: handleShowOutfit }))
       );
     }
 
