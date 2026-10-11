@@ -1278,8 +1278,8 @@
       pointer-events: none;
     }
 
-    /* 31 to 54 is the shape of the clips. Each still is cut to it, so the clip lies exactly
-       on the still. */
+    /* 31 to 54 is the shape of the stills. A clip shows the whole of its still, set a touch
+       narrower, so both are stretched to this one box and the clip lies exactly on the still. */
     .home-figure {
       position: relative;
       display: block;
@@ -1296,7 +1296,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      object-fit: cover;
+      object-fit: fill;
     }
 
     /* The clip opens on the still, so it can come in at once. At its end it holds its last
