@@ -181,21 +181,6 @@
       color: var(--ink);
     }
 
-    .studio-heading {
-      font-size: 1.1rem;
-      font-weight: 400;
-      color: var(--pq-green);
-      text-transform: lowercase;
-      letter-spacing: 0.02em;
-      margin-bottom: 1.5rem;
-    }
-
-    .studio-caption {
-      font-size: 0.9rem;
-      color: var(--ink-soft);
-      text-align: center;
-    }
-
     .cart-empty {
       text-align: center;
       padding: 3rem;
@@ -314,41 +299,359 @@
       border-bottom-color: var(--pq-green);
     }
 
-    .color-swatch {
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
+    /* ===== THE DESIGN STUDIO =====
+       A real piece, drawn in her color and her print. */
+    .studio {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    .studio .studio-title {
+      margin: 2.5rem 0 0.35rem;
+    }
+
+    .studio-sub {
+      text-align: center;
+      font-size: 1.05rem;
+      margin: 0 0 2.25rem;
+    }
+
+    .studio-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+      gap: 3rem;
+      align-items: start;
+    }
+
+    /* The piece stays in sight while she works down the choices. */
+    .studio-show {
+      position: sticky;
+      top: calc(var(--studio-top, var(--nav-h)) + 1.25rem);
+    }
+
+    .studio-stage {
+      position: relative;
+      background: var(--orbit-white);
+      border-radius: var(--radius-lg);
+      padding: 6%;
+    }
+
+    .studio-canvas {
+      display: block;
+      width: auto;
+      height: auto;
+      max-width: 100%;
+      max-height: clamp(220px, calc(100vh - 19rem), 520px);
+      margin: 0 auto;
+    }
+
+    @media (max-height: 560px) {
+      .studio-show {
+        position: static;
+      }
+    }
+
+    .studio-oops {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      padding: 1rem;
+      text-align: center;
+      font-size: 0.95rem;
+      color: var(--ink-soft);
+    }
+
+    .studio-caption {
+      text-align: center;
+      padding: 0.9rem 0.5rem 0;
+    }
+
+    .studio-name {
+      font-size: 1.5rem;
+      font-weight: 300;
+      line-height: 1.2;
+      overflow-wrap: anywhere;
+    }
+
+    .studio-words {
+      font-size: 0.9rem;
+      color: var(--ink-soft);
+      margin-top: 0.2rem;
+    }
+
+    .studio-show-acts {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.6rem;
+      margin-top: 1rem;
+    }
+
+    .btn-quiet {
+      padding: 11px 22px;
+      background: #fff;
+      color: var(--ink);
+      border: 1px solid var(--line);
+      border-radius: 999px;
       cursor: pointer;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      font-family: 'Jost', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 400;
+      letter-spacing: 0.04em;
+      text-transform: lowercase;
+      transition: border-color 0.2s ease;
+    }
+
+    .btn-quiet:not(:disabled):hover {
+      border-color: var(--ink);
+    }
+
+    .btn-quiet:disabled {
+      color: #8a8a8a;
+      cursor: not-allowed;
+    }
+
+    /* The room under the choices is the panel's own, so the piece beside it holds its place
+       to the end. */
+    .studio-panel {
+      min-width: 0;
+      padding-bottom: 5rem;
+    }
+
+    .studio-step {
+      margin: 0 0 1.75rem;
+      scroll-margin-top: calc(var(--studio-top, var(--nav-h)) + var(--studio-stuck, 0px) + 0.75rem);
+    }
+
+    .studio-label {
+      display: flex;
+      align-items: baseline;
+      gap: 0.6rem;
+      margin-bottom: 0.7rem;
+      font-size: 1rem;
+      font-weight: 400;
+      letter-spacing: 0.02em;
+      color: var(--pq-green);
+    }
+
+    .studio-picked {
+      font-size: 0.85rem;
+      letter-spacing: 0;
+      color: var(--ink-soft);
+    }
+
+    .studio-pieces,
+    .studio-prints {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 0.6rem;
+    }
+
+    .studio-piece,
+    .studio-print {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.3rem;
+      padding: 0.4rem 0.3rem 0.45rem;
+      background: #fff;
+      border: 2px solid transparent;
+      border-radius: var(--radius);
+      cursor: pointer;
+      font-family: 'Jost', sans-serif;
+      font-size: 0.72rem;
+      line-height: 1.2;
+      color: var(--ink-soft);
+      text-transform: lowercase;
+      text-align: center;
+    }
+
+    .studio-piece {
+      background: var(--orbit-white);
+    }
+
+    .studio-piece canvas {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    .studio-print canvas {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
       border: 1px solid var(--line);
     }
 
-    .color-swatch:hover {
+    .studio-piece[aria-pressed="true"],
+    .studio-print[aria-pressed="true"] {
+      border-color: var(--ink);
+      color: var(--ink);
+    }
+
+    .studio-piece[aria-pressed="true"] {
+      background: #fff;
+    }
+
+    .studio-swatches {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 44px));
+      gap: 0.65rem;
+    }
+
+    /* as tall as it is wide, in every browser */
+    .studio-swatch {
+      width: 100%;
+      height: 0;
+      padding: 0 0 100%;
+      border-radius: 50%;
+      border: 1px solid var(--line);
+      cursor: pointer;
+      transition: transform 0.15s ease;
+    }
+
+    .studio-swatch:not(:disabled):hover {
       transform: scale(1.08);
     }
 
-    .color-swatch.selected {
+    .studio-swatch[aria-pressed="true"] {
       box-shadow: 0 0 0 3px #fff, 0 0 0 5px var(--ink);
     }
 
-    .pattern-thumb {
-      width: 80px;
-      height: 80px;
-      cursor: pointer;
+    /* the cloth's own color cannot be the print's: it would not show. An empty ring holds its place. */
+    .studio-swatch:disabled {
+      background: none !important;
+      border: 1px dashed rgba(42, 42, 42, 0.3);
+      cursor: not-allowed;
+    }
+
+    .studio-field {
+      display: block;
+      width: 100%;
+      padding: 0.7rem 0.9rem;
+      border: 1px solid rgba(42, 42, 42, 0.22);
       border-radius: var(--radius);
-      border: 1px solid var(--line);
-      transition: box-shadow 0.2s ease;
+      background: #fff;
+      color: var(--ink);
+      font-size: 1rem;
+      line-height: 1.4;
     }
 
-    .pattern-thumb.selected {
-      box-shadow: 0 0 0 3px #fff, 0 0 0 5px var(--ink);
+    textarea.studio-field {
+      min-height: 4.6rem;
+      resize: vertical;
     }
 
-    .garment-preview {
-      width: 200px;
-      height: 300px;
-      margin: 2rem auto;
-      position: relative;
+    .studio-hint {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-top: 0.4rem;
+      font-size: 0.8rem;
+      color: var(--ink-soft);
+    }
+
+    .studio-actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .studio-status {
+      min-height: 1.5em;
+      margin-top: 0.9rem;
+      font-size: 0.95rem;
+      scroll-margin: calc(var(--studio-top, var(--nav-h)) + var(--studio-stuck, 0px) + 0.75rem) 0 1.5rem;
+    }
+
+    .studio-status.bad {
+      color: var(--error);
+    }
+
+    .studio-fine {
+      margin-top: 0.6rem;
+      font-size: 0.8rem;
+      color: var(--ink-soft);
+    }
+
+    /* One column. The piece sticks under the navbar, small enough to leave the choices room.
+       While she types, it lets go: the keyboard needs the space. */
+    @media (max-width: 720px) {
+      .studio {
+        padding: 0 1rem;
+      }
+
+      .studio-panel {
+        padding-bottom: 3rem;
+      }
+
+      .studio .studio-title {
+        margin-top: 1.5rem;
+      }
+
+      .studio-sub {
+        margin-bottom: 1rem;
+      }
+
+      .studio-grid {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 0;
+      }
+
+      .studio-show {
+        display: contents;
+      }
+
+      .studio-stick {
+        position: sticky;
+        top: var(--studio-top, 56px);
+        z-index: 5;
+        margin: 0 -1rem;
+        padding: 0.5rem 1rem 0.6rem;
+        background: #fff;
+        border-bottom: 1px solid var(--line-soft);
+      }
+
+      .studio.typing .studio-stick {
+        position: static;
+      }
+
+      .studio-stage {
+        padding: 0.5rem;
+      }
+
+      .studio-canvas {
+        max-height: min(30vh, 280px);
+      }
+
+      .studio-caption {
+        padding-top: 0.45rem;
+      }
+
+      .studio-name {
+        font-size: 1.15rem;
+      }
+
+      .studio-words {
+        font-size: 0.82rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .studio-show-acts {
+        margin: 0.9rem 0 1.5rem;
+      }
     }
 
     .fade-in {
@@ -845,25 +1148,6 @@
         padding: 1rem 1rem 1.5rem;
       }
 
-      .color-swatch {
-        width: 48px;
-        height: 48px;
-      }
-
-      .pattern-thumb {
-        width: 64px;
-        height: 64px;
-      }
-
-      .garment-preview {
-        width: 150px !important;
-        height: 225px !important;
-      }
-
-      .studio-grid {
-        grid-template-columns: 1fr !important;
-        gap: 2rem !important;
-      }
     }
 
     /* On the narrowest phones the links give way, not the wordmark: the guide's least
@@ -1002,8 +1286,16 @@
       font-size: clamp(1.25rem, 3.4vw, 1.6rem);
     }
 
-    .home-skip {
+    .home-more {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.7rem 1.75rem;
       margin-top: 1.5rem;
+    }
+
+    .home-skip,
+    .home-make {
       background: none;
       border: none;
       border-bottom: 2px solid var(--sky-blue);
@@ -1017,7 +1309,8 @@
       transition: border-color 0.2s ease;
     }
 
-    .home-skip:hover {
+    .home-skip:hover,
+    .home-make:hover {
       border-bottom-color: var(--pq-green);
     }
 
@@ -2221,6 +2514,11 @@
       body.guide-peek-on .modal-details {
         padding-bottom: 17rem;
       }
+
+      /* the studio's answer to a send or a save comes into sight above the bar */
+      body.guide-on .studio-status {
+        scroll-margin-bottom: calc(var(--guide-bar) + 1.5rem);
+      }
     }
   </style>
 </head>
@@ -2774,12 +3072,13 @@
     // A crew member is a voice agent at ElevenLabs. The page talks with the agent through
     // ElevenLabs' client library (vendor/), by voice or in writing, and draws the
     // conversation itself: what is said, and each piece she talks about, with its own
-    // "add to cart". An agent has four buttons on this page:
+    // "add to cart". An agent has five buttons on this page:
     //   show_piece    put one piece on her screen, in a color if one was named
     //   show_outfit   show a dress, or a top and a bottom. If her photo is in, the page
     //                 puts the outfit on her.
     //   add_to_cart   put a piece in her cart, in the size she said
     //   go_to         take her to a page: home, shop, studio, team or cart
+    //   design        put a color and a print on a piece in the studio
     // Each button answers the agent in words, because the agent cannot see the screen.
     var STYLIST_FREE_LOOKS = 5; // looks a crew member may start without her tap, per visit
     var OUTFIT_ORDER = ['bottoms', 'tops', 'dresses']; // the order pieces go on
@@ -2835,7 +3134,7 @@
     var PAGE_WORDS = {
       home: 'the home page, with Piper and Quinn',
       shop: 'the shop page, with all seven pieces',
-      studio: 'the studio page, where she can put a color and a pattern on a piece',
+      studio: 'the studio page, where she puts a color and a print on a piece and can send it in as an idea',
       team: 'the team page, with Kate, Birdie and Otto',
       cart: 'the cart page',
     };
@@ -3141,6 +3440,8 @@
     var PEEK_WORDS_FOR = 9000;    // ms a line from the guide stays above the folded bar
     var PEEK_PIECES_FOR = 20000;  // and a line that names pieces
     var GUIDE_ADDS = 8;           // things a guide may put in her cart in one talk
+    var QUIET_END = 180000;       // ms of a voice call with nothing from her before the page ends it
+    var AWAY_END = 60000;         // and with the page out of sight
 
     // The chat with her guide. It stays with her on every page until she picks another guide
     // or closes it. `acts` is the page's side of the agent's buttons, and `acts.where()` says
@@ -3171,6 +3472,8 @@
       var addsRef = React.useRef(0);
       var micTimer = React.useRef(0);
       var peekTimer = React.useRef(0);
+      var seenRef = React.useRef(0);   // when she last did anything: a tap, a key, a scroll, a word
+      var awayRef = React.useRef(0);   // when the page went out of sight, or 0
       var name = member.name.toLowerCase();
 
       var setState = function(next) { statusRef.current = next; setStatus(next); };
@@ -3281,6 +3584,10 @@
           go_to: function(params) {
             if (!mine() || talk.over) return gone;
             return actsRef.current.goTo(params);
+          },
+          design: function(params) {
+            if (!mine() || talk.over) return gone;
+            return actsRef.current.design(params);
           }
         }, {
           onSay: function(who, words) {
@@ -3299,6 +3606,7 @@
               showPeek(words, named);
             } else {
               talk.sheSpoke = true;
+              seenRef.current = Date.now();
               herAsk(words);
             }
           },
@@ -3443,6 +3751,37 @@
         var t = threadRef.current;
         if (t) t.scrollTop = t.scrollHeight;
       }, [items.length, status, open]);
+
+      // A voice call costs by the minute, used or not. When nothing has come from her for a
+      // while, or the page has been out of sight, the page ends the call and says so.
+      var inCall = status === 'live' && !written;
+      useEffect(function() {
+        if (!inCall) return;
+        var seen = function() { seenRef.current = Date.now(); };
+        var sight = function() {
+          awayRef.current = document.hidden ? Date.now() : 0;
+          if (!document.hidden) seen();
+        };
+        seen();
+        sight();
+        var kinds = ['pointerdown', 'keydown', 'touchstart', 'wheel', 'scroll'];
+        kinds.forEach(function(k) { window.addEventListener(k, seen, { capture: true, passive: true }); });
+        document.addEventListener('visibilitychange', sight);
+        var timer = setInterval(function() {
+          var now = Date.now();
+          var away = !!awayRef.current && now - awayRef.current >= AWAY_END;
+          if (!away && (now - seenRef.current < QUIET_END || modeRef.current === 'speaking')) return;
+          stop(true);
+          var line = away ? 'the call ended while you were away. tap talk to start again.' : "it's been quiet for a while, so the call ended. tap talk to pick it up again.";
+          put({ kind: 'aside', text: line });
+          showPeek(line, []);
+        }, 5000);
+        return function() {
+          kinds.forEach(function(k) { window.removeEventListener(k, seen, { capture: true }); });
+          document.removeEventListener('visibilitychange', sight);
+          clearInterval(timer);
+        };
+      }, [inCall]);
 
       // While a line shows above the folded bar, a window leaves more room at its foot.
       var peeking = !!peek && !open;
@@ -3685,7 +4024,9 @@
         el('h1', { className: 'sr-only' }, 'piper & quinn'),
         el('div', { className: 'home-pair' }, sisters),
         el('p', { className: 'tagline home-tagline' }, 'fashion by sisters. dress bold.'),
-        el('button', { type: 'button', className: 'home-skip', onClick: function() { navigateTo('shop'); } }, 'or skip to the shop'));
+        el('div', { className: 'home-more' },
+          el('button', { type: 'button', className: 'home-skip', onClick: function() { navigateTo('shop'); } }, 'or skip to the shop'),
+          el('button', { type: 'button', className: 'home-make', onClick: function() { navigateTo('studio'); } }, 'or design your own')));
     }
 
     // The team: Kate, Birdie and Otto. Back-up for when she wants a second opinion.
@@ -3725,38 +4066,605 @@
       );
     }
 
-    function DesignStudio() {
-      const [selectedColor, setSelectedColor] = useState('pq-green');
-      const [selectedPattern, setSelectedPattern] = useState('solid');
-      const [asked, setAsked] = useState(false);
+    // ===== THE DESIGN STUDIO =====
+    // A real piece in her color and her print. Each piece has a shade map in img/studio/: a
+    // grey picture of its folds and seams, cut to its shape. The page fills that shape with
+    // her color, lays her print over it, and multiplies the folds back in. The six prints
+    // are the brand style guide's (7.0), drawn to the guide's own measures. What she makes
+    // can be sent to the idea box (/api/idea) and saved as a picture.
+    //
+    // `scale` evens the prints out, so a dot is the same size on a skirt as on a dress.
+    var STUDIO_PIECES = [['burgundy-polo', 1.27], ['blush-sweater', 1.01], ['polka-dot-dress', 0.89], ['lime-polo-dress', 0.89], ['classic-polo', 1.26], ['pleated-skirt', 1.49], ['ruffle-skirt', 1.69]].map(function(s) {
+      var product = findPiece(s[0]);
+      return { key: s[0], scale: s[1], product: product, name: product.name.toLowerCase().replace(/^the\s+/, '') };
+    });
+    // `repeat` is how wide one repeat is beside classic polka's, read off the guide.
+    var STUDIO_PRINTS = [
+      { id: 'classic-polka', name: 'classic polka', repeat: 1 },
+      { id: 'city-grid', name: 'city grid', repeat: 0.5 },
+      { id: 'confetti-scatter', name: 'confetti scatter', repeat: 6.8 },
+      { id: 'cabana-stripe', name: 'cabana stripe', repeat: 1.414 },
+      { id: 'mod-block', name: 'mod block', repeat: 1.5 },
+      { id: 'circle-link', name: 'circle link', repeat: 1.25 },
+    ];
+    var STUDIO_START = { piece: 'blush-sweater', color: 'hot-pink', print: 'classic-polka', ink: 'white', name: '', note: '' };
+    var STUDIO_NAME_MAX = 30;
+    var STUDIO_NOTE_MAX = 140;
+    var STUDIO_TELL_AFTER = 1500; // ms after her last change before her guide is told what she has made
+    var IDEA_URL = '/api/idea';
 
-      const patterns = [
-        { id: 'solid', name: 'Solid', color: '#6DC067' },
-        { id: 'stripe', name: 'Stripe', pattern: 'repeating-linear-gradient(90deg, #6DC067 0px, #6DC067 10px, white 10px, white 20px)' },
-        { id: 'floral', name: 'Floral', pattern: 'radial-gradient(circle, #FBB040 30%, #ACD9F4 30%)' },
-        { id: 'dots', name: 'Dots', pattern: 'radial-gradient(circle, black 20%, transparent 20%)' },
-      ];
+    function studioPiece(key) {
+      return STUDIO_PIECES.find(function(p) { return p.key === key; }) || STUDIO_PIECES[0];
+    }
 
-      const currentColor = COLORWAYS.find(c => c.id === selectedColor);
-      const currentPattern = patterns.find(p => p.id === selectedPattern);
+    function studioPrintOf(id) {
+      return STUDIO_PRINTS.find(function(p) { return p.id === id; }) || null;
+    }
 
-      return el('div', { className: 'main-content fade-in' },
-        el('h1', { className: 'page-title' }, 'design your own'),
-        el('div', { className: 'studio-grid', style: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4rem', maxWidth: '1000px', margin: '3rem auto' } },
-          el('div', null,
-            el('h3', { className: 'studio-heading' }, 'choose a color'),
-            el('div', { style: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1.5rem', marginBottom: '3rem' } }, COLORWAYS.slice(0, 9).map(color =>
-              el('div', { key: color.id, className: `color-swatch ${selectedColor === color.id ? 'selected' : ''}`, style: { backgroundColor: color.hex }, title: color.name.toLowerCase(), onClick: () => setSelectedColor(color.id) }))),
-            el('h3', { className: 'studio-heading' }, 'select a pattern'),
-            el('div', { style: { display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1rem' } }, patterns.map(pattern =>
-              el('div', { key: pattern.id, className: `pattern-thumb ${selectedPattern === pattern.id ? 'selected' : ''}`, style: { background: pattern.color || pattern.pattern, backgroundImage: pattern.pattern }, title: pattern.name.toLowerCase(), onClick: () => setSelectedPattern(pattern.id) })))),
-          el('div', { style: { display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' } },
-            el('h3', { className: 'studio-heading' }, 'your design'),
-            el('div', { className: 'garment-preview', style: { backgroundColor: currentColor?.hex, backgroundImage: currentPattern?.pattern, borderRadius: '12px', boxShadow: '0 2px 8px rgba(0,0,0,0.08)', marginBottom: '1rem' } }),
-            el('div', { className: 'studio-caption' }, currentColor?.name, ', ', currentPattern?.name),
-            el('button', { className: 'btn-primary', style: { marginTop: '1.75rem' }, onClick: () => setAsked(true) }, 'add to cart'),
-            // A design of her own cannot be bought yet. Say so, rather than do nothing.
-            el('div', { className: 'btn-note', role: 'status' }, asked ? "a design of your own can't be bought yet. this studio is a preview." : ''))));
+    function studioHex(id) {
+      var c = COLORWAYS.find(function(x) { return x.id === id; });
+      return c ? c.hex : '#FFFFFF';
+    }
+
+    // A print never takes the color of the cloth under it: it would not show.
+    function studioInk(color, ink) {
+      if (ink && ink !== color && COLORWAYS.some(function(c) { return c.id === ink; })) return ink;
+      return color === 'white' ? 'midnight' : 'white';
+    }
+
+    // One design is one piece, color, print and print color. Two designs with the same key look the same.
+    function studioKey(d) {
+      return [d.piece, d.color, d.print, d.print === 'none' ? '' : d.ink].join('/');
+    }
+
+    // Her design in words. For the page: "blush sweater in hot pink, classic polka in white".
+    function studioCaption(d) {
+      var print = studioPrintOf(d.print);
+      return studioPiece(d.piece).name + ' in ' + colorName(d.color) + (print ? ', ' + print.name + ' in ' + colorName(d.ink) : '');
+    }
+
+    // For her guide: "The Blush Sweater in hot pink, with the classic polka print in white".
+    function studioSays(d) {
+      var print = studioPrintOf(d.print);
+      return studioPiece(d.piece).product.name + ' in ' + colorName(d.color) + (print ? ', with the ' + print.name + ' print in ' + colorName(d.ink) : ', with no print');
+    }
+
+    // A color as it might be said -> one of the studio's twelve, or null.
+    function studioColor(said) {
+      if (said == null) return null;
+      var squash = function(s) { return String(s).toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]/g, ''); };
+      var key = squash(said);
+      if (!key) return null;
+      var hit = COLORWAYS.find(function(c) { return squash(c.id) === key || squash(c.name) === key; });
+      if (hit) return hit.id;
+      return (COLOR_ALSO[key] || [])[0] || null;
+    }
+
+    // A print as it might be said -> its id, 'none', or null.
+    var PRINT_ALSO = {
+      none: 'none', plain: 'none', solid: 'none', noprint: 'none', nothing: 'none', no: 'none', off: 'none',
+      polka: 'classic-polka', polkadot: 'classic-polka', polkadots: 'classic-polka', dots: 'classic-polka', dot: 'classic-polka', spots: 'classic-polka',
+      grid: 'city-grid', check: 'city-grid', checks: 'city-grid', checked: 'city-grid', plaid: 'city-grid', squares: 'city-grid',
+      confetti: 'confetti-scatter', scatter: 'confetti-scatter', sprinkles: 'confetti-scatter',
+      stripe: 'cabana-stripe', stripes: 'cabana-stripe', striped: 'cabana-stripe', cabana: 'cabana-stripe',
+      block: 'mod-block', blocks: 'mod-block', mod: 'mod-block',
+      circle: 'circle-link', circles: 'circle-link', rings: 'circle-link', ring: 'circle-link', links: 'circle-link', link: 'circle-link',
+    };
+    function studioPrint(said) {
+      if (said == null) return null;
+      var key = String(said).toLowerCase().replace(/[^a-z0-9]/g, '').replace(/^the/, '').replace(/(print|pattern)$/, '');
+      if (!key) return null;
+      var hit = STUDIO_PRINTS.find(function(p) { return p.id.replace(/-/g, '') === key; });
+      return hit ? hit.id : PRINT_ALSO[key] || null;
+    }
+
+    // A print with more than one ink takes the next colors round the palette from her ink,
+    // skipping the cloth's own color: the brights in the guide's order, then white, midnight
+    // and khaki.
+    var STUDIO_RING = [0, 1, 2, 3, 5, 6, 7, 8, 9, 10, 11, 4];
+    function studioInks(ink, ground) {
+      var at = Math.max(0, STUDIO_RING.findIndex(function(i) { return COLORWAYS[i].hex === ink; }));
+      var inks = [ink];
+      for (var i = 1; inks.length < 5 && i < 24; i++) {
+        var hex = COLORWAYS[STUDIO_RING[(at + i) % STUDIO_RING.length]].hex;
+        if (hex !== ground) inks.push(hex);
+      }
+      return inks;
+    }
+
+    // One seamless repeat of a print, `unit` pixels wide. The measures are the brand guide's
+    // own, as shares of the repeat.
+    function studioTile(printId, ground, ink, unit) {
+      var c = studioInks(ink, ground);
+      var u = Math.max(4, Math.round(unit)); // whole pixels, so repeats meet with no seam
+      var cv = document.createElement('canvas');
+      cv.width = u;
+      cv.height = printId === 'confetti-scatter' ? Math.max(4, Math.round(u * 180 / 272)) : u; // the guide's confetti card is 272 by 180
+      var g = cv.getContext('2d'), h = cv.height;
+      g.fillStyle = ground;
+      g.fillRect(0, 0, u, h);
+      var dot = function(x, y, r, color) {
+        g.fillStyle = color;
+        g.beginPath();
+        g.arc(x, y, r, 0, 2 * Math.PI);
+        g.fill();
+      };
+      if (printId === 'classic-polka') {
+        // two dots on the diagonal of each repeat
+        dot(0.75 * u, 0.25 * u, 0.22 * u, c[0]);
+        dot(0.25 * u, 0.75 * u, 0.22 * u, c[0]);
+      } else if (printId === 'city-grid') {
+        // thin lines: the second ink across, her ink down and on top
+        g.fillStyle = c[1];
+        g.fillRect(0, 0, u, 0.15 * u);
+        g.fillStyle = c[0];
+        g.fillRect(0, 0, 0.15 * u, u);
+      } else if (printId === 'confetti-scatter') {
+        // five dots, each its own size and ink
+        dot(0.80 * u, 0.75 * h, 9 / 272 * u, c[0]);
+        dot(0.25 * u, 0.80 * h, 10 / 272 * u, c[1]);
+        dot(0.75 * u, 0.25 * h, 12 / 272 * u, c[2]);
+        dot(0.25 * u, 0.25 * h, 8 / 272 * u, c[3]);
+        dot(0.50 * u, 0.60 * h, 6 / 272 * u, c[4]);
+      } else if (printId === 'cabana-stripe') {
+        // 45 degree stripes: her ink, cloth, the second ink, cloth
+        [0, 0.5].forEach(function(f, i) {
+          g.fillStyle = c[i];
+          [0, 1].forEach(function(k) {
+            var a = (f - k) * u, b = (f + 0.25 - k) * u;
+            g.beginPath();
+            g.moveTo(a, 0); g.lineTo(b, 0); g.lineTo(b + u, u); g.lineTo(a + u, u);
+            g.fill();
+          });
+        });
+      } else if (printId === 'mod-block') {
+        g.fillStyle = c[0];
+        g.fillRect(0.33 * u, 0, 0.67 * u, 0.33 * u);
+        g.fillStyle = c[1];
+        g.fillRect(0, 0.66 * u, 0.66 * u, 0.34 * u);
+      } else if (printId === 'circle-link') {
+        // thin rings: her ink at the middle, the second ink at the corners
+        g.lineWidth = Math.max(1, 0.035 * u);
+        [[0.5, 0.5, 0], [0, 0, 1], [1, 0, 1], [0, 1, 1], [1, 1, 1]].forEach(function(p) {
+          g.strokeStyle = c[p[2]];
+          g.beginPath();
+          g.arc(p[0] * u, p[1] * u, 0.233 * u, 0, 2 * Math.PI);
+          g.stroke();
+        });
+      }
+      return cv;
+    }
+
+    // Paint a piece to fill the canvas, contained and centred.
+    // shade: its shade map, loaded. opts: { color, print, ink, printScale }, colors as hex.
+    function studioDraw(canvas, shade, opts) {
+      var ctx = canvas.getContext('2d');
+      var W = canvas.width, H = canvas.height;
+      var iw = shade.naturalWidth || shade.width, ih = shade.naturalHeight || shade.height;
+      var k = Math.min(W / iw, H / ih);
+      var w = Math.round(iw * k), h = Math.round(ih * k);
+      var x = Math.round((W - w) / 2), y = Math.round((H - h) / 2);
+      ctx.save();
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.globalAlpha = 1;
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = 'high';
+      ctx.clearRect(0, 0, W, H);
+      // the cloth, flat
+      ctx.fillStyle = opts.color;
+      ctx.fillRect(x, y, w, h);
+      // the print: one repeat, tiled out from the middle of the piece
+      var p = studioPrintOf(opts.print);
+      if (p) {
+        var unit = 0.05 * Math.max(w, h) * (opts.printScale || 1) * p.repeat;
+        var cx = x + Math.round(w / 2), cy = y + Math.round(h / 2);
+        ctx.save();
+        ctx.translate(cx, cy);
+        ctx.fillStyle = ctx.createPattern(studioTile(p.id, opts.color, opts.ink, unit), 'repeat');
+        ctx.fillRect(x - cx, y - cy, w, h);
+        ctx.restore();
+      }
+      // a faint sheen, so a dark color keeps its folds
+      ctx.globalCompositeOperation = 'screen';
+      ctx.globalAlpha = 0.06;
+      ctx.drawImage(shade, x, y, w, h);
+      ctx.globalAlpha = 1;
+      // folds and seams
+      ctx.globalCompositeOperation = 'multiply';
+      ctx.drawImage(shade, x, y, w, h);
+      // cut to the piece's shape
+      ctx.globalCompositeOperation = 'destination-in';
+      ctx.drawImage(shade, x, y, w, h);
+      ctx.restore();
+    }
+
+    // A small square of a print, on the cloth's color.
+    function studioSwatch(canvas, printId, ground, ink) {
+      var g = canvas.getContext('2d'), W = canvas.width, H = canvas.height;
+      g.setTransform(1, 0, 0, 1, 0, 0);
+      g.clearRect(0, 0, W, H);
+      g.fillStyle = ground;
+      g.fillRect(0, 0, W, H);
+      var p = studioPrintOf(printId);
+      if (!p) return;
+      g.save();
+      g.translate(Math.round(W / 2), Math.round(H / 2));
+      g.fillStyle = g.createPattern(studioTile(p.id, ground, ink, 0.2 * W * p.repeat), 'repeat');
+      g.fillRect(-W, -H, 2 * W, 2 * H);
+      g.restore();
+    }
+
+    // The shade maps, loaded once each. `then` gets { img, state }: 'ready' or 'failed'.
+    // One that failed is tried again the next time it is asked for.
+    var studioShades = {};
+    function studioShade(key, then) {
+      var s = studioShades[key];
+      if (!s || s.state === 'failed') {
+        s = studioShades[key] = { img: new Image(), state: 'loading', waiting: [] };
+        var done = function(state) {
+          return function() {
+            s.state = state;
+            s.waiting.splice(0).forEach(function(f) { f(s); });
+          };
+        };
+        s.img.onload = done('ready');
+        s.img.onerror = done('failed');
+        s.img.src = 'img/studio/' + key + '.webp';
+      }
+      if (s.state === 'loading') s.waiting.push(then);
+      else then(s);
+    }
+
+    // A piece in a design, on a square canvas. `onState` hears 'loading', 'ready' or 'failed'.
+    function StudioGarment({ piece, design, size, className, label, again, onState }) {
+      var ref = React.useRef(null);
+      const [state, setState] = useState('loading');
+      useEffect(function() {
+        var alive = true, answered = false;
+        var say = function(next) {
+          setState(next);
+          if (onState) onState(next);
+        };
+        var wipe = function() {
+          var cv = ref.current;
+          if (!cv) return;
+          cv.getContext('2d').clearRect(0, 0, cv.width, cv.height);
+          cv.removeAttribute('data-drawn');
+        };
+        studioShade(piece.key, function(s) {
+          answered = true;
+          if (!alive) return;
+          if (s.state === 'ready' && ref.current) {
+            studioDraw(ref.current, s.img, { color: studioHex(design.color), print: design.print, ink: studioHex(design.ink), printScale: piece.scale });
+            ref.current.setAttribute('data-drawn', studioKey(design)); // what is painted, as against what was asked for
+          } else {
+            wipe();
+          }
+          say(s.state);
+        });
+        if (!answered) { wipe(); say('loading'); }
+        return function() { alive = false; };
+      }, [piece.key, design.color, design.print, design.ink, again]);
+      // with no label it is decoration: the button it sits in carries the name
+      return el('canvas', { ref: ref, width: size, height: size, className: className, role: label ? 'img' : undefined, 'aria-label': label || undefined, 'aria-hidden': label ? undefined : 'true', 'data-state': state, 'data-piece': piece.key, 'data-design': studioKey(design) });
+    }
+
+    function StudioPrintSwatch({ print, color, ink }) {
+      var ref = React.useRef(null);
+      useEffect(function() {
+        if (ref.current) studioSwatch(ref.current, print, studioHex(color), studioHex(ink));
+      }, [print, color, ink]);
+      return el('canvas', { ref: ref, width: 120, height: 120, 'aria-hidden': 'true' });
+    }
+
+    // The picture she saves: her design on orbit white, its name, and the wordmark.
+    function studioCard(piece, design, shade) {
+      var W = 1080, H = 1350, side = 860;
+      var cv = document.createElement('canvas');
+      cv.width = W;
+      cv.height = H;
+      var g = cv.getContext('2d');
+      g.fillStyle = '#F8F6F1';
+      g.fillRect(0, 0, W, H);
+      // the guide's rule: green, sky blue, grass, orange
+      var rule = g.createLinearGradient(0, 0, W, 0);
+      ['#6DC067', '#ACD9F4', '#B1D355', '#FBB040'].forEach(function(c, i) { rule.addColorStop(i / 3, c); });
+      g.fillStyle = rule;
+      g.fillRect(0, 0, W, 14);
+      var art = document.createElement('canvas');
+      art.width = art.height = side;
+      studioDraw(art, shade, { color: studioHex(design.color), print: design.print, ink: studioHex(design.ink), printScale: piece.scale });
+      g.drawImage(art, (W - side) / 2, 80);
+      var font = function(style, px) { return style + ' ' + px + "px Jost, 'Helvetica Neue', Arial, sans-serif"; };
+      // words set to fit the width: from `px` down, never under `least`
+      var fit = function(words, style, px, least) {
+        g.font = font(style, px);
+        while (px > least && g.measureText(words).width > W - 140) {
+          px -= 2;
+          g.font = font(style, px);
+        }
+      };
+      g.textAlign = 'center';
+      g.textBaseline = 'alphabetic';
+      var name = design.name.replace(/\s+/g, ' ').trim().toLowerCase();
+      var words = studioCaption(design);
+      if (name) {
+        fit(name, '300', 68, 32);
+        g.fillStyle = '#2A2A2A';
+        g.fillText(name, W / 2, 1052);
+        fit(words, '400', 30, 20);
+        g.fillStyle = '#5e5e5e';
+        g.fillText(words, W / 2, 1108);
+      } else {
+        fit(words, '300', 44, 24);
+        g.fillStyle = '#2A2A2A';
+        g.fillText(words, W / 2, 1076);
+      }
+      // the wordmark: green, the ampersand in sky blue
+      g.font = font('300', 46);
+      g.textAlign = 'left';
+      var parts = [['piper ', '#6DC067'], ['&', '#ACD9F4'], [' quinn', '#6DC067']];
+      var x = (W - parts.reduce(function(n, p) { return n + g.measureText(p[0]).width; }, 0)) / 2;
+      parts.forEach(function(p) {
+        g.fillStyle = p[1];
+        g.fillText(p[0], x, 1250);
+        x += g.measureText(p[0]).width;
+      });
+      // the tagline: green, light italic
+      g.textAlign = 'center';
+      g.font = font('italic 300', 28);
+      g.fillStyle = '#6DC067';
+      g.fillText('dress bold.', W / 2, 1298);
+      return cv;
+    }
+
+    // A canvas as a PNG, made on the spot: a share sheet opens only inside her tap.
+    function canvasPng(canvas) {
+      var bytes = atob(canvas.toDataURL('image/png').split(',')[1]);
+      var buf = new Uint8Array(bytes.length);
+      for (var i = 0; i < bytes.length; i++) buf[i] = bytes.charCodeAt(i);
+      return new Blob([buf], { type: 'image/png' });
+    }
+
+    // Send a design to the idea box. Settles with { ok: true, same } or { ok: false, message }.
+    // It never rejects. `same` is how many times that design had been sent before.
+    function studioSend(idea) {
+      var ctl = window.AbortController ? new AbortController() : null;
+      var timer = setTimeout(function() { if (ctl) ctl.abort(); }, 15000);
+      return fetch(IDEA_URL, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(idea), signal: ctl ? ctl.signal : undefined })
+        .then(function(res) {
+          return res.text().then(function(text) {
+            var data = null;
+            try { data = JSON.parse(text); } catch (e) {}
+            if (res.ok && data && data.ok === true) return { ok: true, same: Number(data.same) || 0 };
+            // the idea box says what went wrong in words she can read
+            if (data && typeof data.message === 'string' && data.message) return { ok: false, message: data.message };
+            if (res.status === 429) return { ok: false, message: "that's a lot of ideas at once. wait a minute, then send it again." };
+            if (res.status === 404) return { ok: false, message: "the idea box isn't set up yet." };
+            return { ok: false, message: "the idea box didn't answer right. try again later." };
+          });
+        })
+        .catch(function() {
+          return { ok: false, message: "we couldn't reach the idea box. check your connection and try again." };
+        })
+        .then(function(out) {
+          clearTimeout(timer);
+          return out;
+        });
+    }
+
+    function touchScreen() {
+      return !!(window.matchMedia && window.matchMedia('(pointer: coarse)').matches);
+    }
+
+    function DesignStudio({ design, setDesign, onSeeReal }) {
+      const [typing, setTyping] = useState(false);
+      const [stage, setStage] = useState('loading'); // the big picture: loading | ready | failed
+      const [again, setAgain] = useState(0);
+      const [sending, setSending] = useState('idle'); // idle | sending | sent | failed
+      const [note, setNote] = useState({ text: '', bad: false }); // what the last send or save came to
+      var rootRef = React.useRef(null);
+      var statusRef = React.useRef(null);
+      var aliveRef = React.useRef(true);
+      var sentRef = React.useRef('');
+      var typingTimer = React.useRef(0);
+
+      var piece = studioPiece(design.piece);
+      var print = studioPrintOf(design.print);
+      var caption = studioCaption(design);
+      var name = design.name.replace(/\s+/g, ' ').trim();
+      // everything that would be sent: the design and her words
+      var whole = studioKey(design) + '|' + name.toLowerCase() + '|' + design.note.replace(/\s+/g, ' ').trim();
+      var sent = sending === 'sent' && sentRef.current === whole;
+
+      var change = function(patch) {
+        var next = Object.assign({}, design, patch);
+        if (next.print !== 'none') next.ink = studioInk(next.color, next.ink);
+        setDesign(next);
+      };
+
+      // A new color, print and print color for the piece she has. Never the same as before.
+      var surprise = function() {
+        var pick = function(list, not) {
+          var from = list.filter(function(x) { return not.indexOf(x) === -1; });
+          return from[Math.floor(Math.random() * from.length)];
+        };
+        var color = pick(COLORWAYS.map(function(c) { return c.id; }), [design.color]);
+        var nextPrint = pick(STUDIO_PRINTS.map(function(p) { return p.id; }), [design.print]);
+        change({ color: color, print: nextPrint, ink: pick(COLORWAYS.map(function(c) { return c.id; }), [color]) });
+      };
+
+      var send = function() {
+        if (sending === 'sending' || sent) return;
+        var mine = whole;
+        setSending('sending');
+        setNote({ text: '', bad: false });
+        studioSend({ piece: design.piece, color: design.color, print: design.print, ink: print ? design.ink : '', name: design.name, note: design.note }).then(function(out) {
+          if (!aliveRef.current) return;
+          if (!out.ok) {
+            setSending('failed');
+            setNote({ text: out.message, bad: true });
+            return;
+          }
+          sentRef.current = mine;
+          setSending('sent');
+          setNote({ text: "sent. it's in piper & quinn's idea box. " + (out.same === 0 ? "you're the first to send this combo." : 'this combo has been sent ' + out.same + (out.same === 1 ? ' time' : ' times') + ' before.'), bad: false });
+          tellCrew('She sent her studio design to the idea box: ' + studioSays(design) + '.');
+        });
+      };
+
+      var save = function() {
+        var s = studioShades[piece.key];
+        if (!s || s.state !== 'ready') return;
+        var slug = (name || caption).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 64) || 'design';
+        var fileName = 'piper-and-quinn-' + slug + '.png';
+        var blob;
+        try {
+          blob = canvasPng(studioCard(piece, design, s.img));
+        } catch (e) {
+          setNote({ text: "the picture couldn't be made. try again.", bad: true });
+          return;
+        }
+        var download = function() {
+          var url = URL.createObjectURL(blob);
+          var a = document.createElement('a');
+          a.href = url;
+          a.download = fileName;
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          setTimeout(function() { URL.revokeObjectURL(url); }, 30000);
+          if (aliveRef.current) setNote({ text: 'saved. look in your downloads.', bad: false });
+        };
+        // On a phone or a tablet the share sheet is the way into her photos.
+        var file = null;
+        try { file = new File([blob], fileName, { type: 'image/png' }); } catch (e) {}
+        var canShare = false;
+        try { canShare = !!file && touchScreen() && !!navigator.share && !!navigator.canShare && navigator.canShare({ files: [file] }); } catch (e) {}
+        if (!canShare) { download(); return; }
+        setNote({ text: '', bad: false });
+        navigator.share({ files: [file] }).catch(function(err) {
+          if (!err || err.name !== 'AbortError') download();
+        });
+      };
+
+      // What she changes after sending is a new idea: the old answer goes.
+      useEffect(function() {
+        if (sending === 'sent' || sending === 'failed') setSending('idle');
+        if (sending !== 'sending') setNote({ text: '', bad: false });
+      }, [whole]);
+
+      // The piece sticks under the navbar: note how tall the navbar is. On a narrow screen
+      // it sticks over the choices: note how tall it is too, so that when the browser
+      // scrolls to a choice by itself, it stops below the piece and not behind it.
+      useEffect(function() {
+        aliveRef.current = true;
+        var root = rootRef.current;
+        var stick = root ? root.querySelector('.studio-stick') : null;
+        var measure = function() {
+          var nav = document.querySelector('.navbar');
+          if (!nav || !root || !stick) return;
+          root.style.setProperty('--studio-top', Math.round(nav.getBoundingClientRect().height) + 'px');
+          root.style.setProperty('--studio-stuck', (getComputedStyle(stick).position === 'sticky' ? Math.round(stick.getBoundingClientRect().height) : 0) + 'px');
+        };
+        measure();
+        window.addEventListener('resize', measure);
+        var watch = window.ResizeObserver && stick ? new ResizeObserver(measure) : null;
+        if (watch) watch.observe(stick);
+        return function() {
+          aliveRef.current = false;
+          window.removeEventListener('resize', measure);
+          if (watch) watch.disconnect();
+        };
+      }, [typing]);
+
+      // The answer to a send or a save is brought into sight, below the piece where it sticks.
+      useEffect(function() {
+        var line = statusRef.current;
+        if (!typing && note.text && line && line.scrollIntoView) line.scrollIntoView({ block: 'nearest' });
+      }, [typing, note.text]);
+
+      useEffect(function() {
+        return function() { clearTimeout(typingTimer.current); };
+      }, []);
+
+      var swatches = function(picked, onPick, group, attr, off) {
+        return el('div', { className: 'studio-swatches', role: 'group', 'aria-label': group }, COLORWAYS.map(function(c) {
+          var props = { key: c.id, type: 'button', className: 'studio-swatch', style: { backgroundColor: c.hex }, title: c.name.toLowerCase(), 'aria-label': c.name.toLowerCase(), 'aria-pressed': picked === c.id, disabled: off === c.id, onClick: function() { onPick(c.id); } };
+          props[attr] = c.id;
+          return el('button', props);
+        }));
+      };
+      var label = function(words, picked, htmlFor) {
+        return el(htmlFor ? 'label' : 'div', { className: 'studio-label', htmlFor: htmlFor }, words, picked && el('span', { className: 'studio-picked' }, picked));
+      };
+      // While she types, the piece lets go of the top of the screen. It takes hold again a
+      // moment after she stops: a tap that ends her typing lands on what she tapped first.
+      var words = {
+        onFocus: function() {
+          clearTimeout(typingTimer.current);
+          setTyping(true);
+        },
+        onBlur: function() {
+          clearTimeout(typingTimer.current);
+          typingTimer.current = setTimeout(function() { if (aliveRef.current) setTyping(false); }, 350);
+        },
+      };
+
+      return el('div', { className: 'studio fade-in' + (typing ? ' typing' : ''), ref: rootRef },
+        el('h1', { className: 'page-title studio-title' }, 'design studio'),
+        el('p', { className: 'tagline studio-sub' }, 'your color. your rules.'),
+        el('div', { className: 'studio-grid' },
+          el('div', { className: 'studio-show' },
+            el('div', { className: 'studio-stick' },
+              el('div', { className: 'studio-stage' },
+                el(StudioGarment, { piece: piece, design: design, size: 1000, className: 'studio-canvas', label: 'your design: ' + caption, again: again, onState: setStage }),
+                stage === 'failed' && el('div', { className: 'studio-oops', role: 'alert' },
+                  "this piece didn't load.",
+                  el('button', { type: 'button', className: 'btn-quiet studio-again', onClick: function() { setAgain(again + 1); } }, 'try again'))),
+              el('div', { className: 'studio-caption' },
+                name && el('div', { className: 'studio-name' }, name),
+                el('div', { className: 'studio-words' }, caption))),
+            el('div', { className: 'studio-show-acts' },
+              el('button', { type: 'button', className: 'btn-quiet studio-surprise', onClick: surprise }, 'surprise me'),
+              el('button', { type: 'button', className: 'btn-quiet studio-real', onClick: function() { onSeeReal(piece.product); } }, 'see the real ' + piece.name))),
+          el('div', { className: 'studio-panel' },
+            el('div', { className: 'studio-step' },
+              label('piece', piece.name),
+              el('div', { className: 'studio-pieces', role: 'group', 'aria-label': 'piece' }, STUDIO_PIECES.map(function(p) {
+                return el('button', { key: p.key, type: 'button', className: 'studio-piece', 'data-piece': p.key, 'aria-pressed': p.key === piece.key, onClick: function() { change({ piece: p.key }); } },
+                  el(StudioGarment, { piece: p, design: design, size: 160, again: again }),
+                  p.name);
+              }))),
+            el('div', { className: 'studio-step' },
+              label('color', colorName(design.color)),
+              swatches(design.color, function(id) { change({ color: id }); }, 'color', 'data-color')),
+            el('div', { className: 'studio-step' },
+              label('print', print ? print.name : 'no print'),
+              el('div', { className: 'studio-prints', role: 'group', 'aria-label': 'print' },
+                [{ id: 'none', name: 'no print' }].concat(STUDIO_PRINTS).map(function(p) {
+                  return el('button', { key: p.id, type: 'button', className: 'studio-print', 'data-print': p.id, 'aria-pressed': design.print === p.id, onClick: function() { change({ print: p.id }); } },
+                    el(StudioPrintSwatch, { print: p.id, color: design.color, ink: studioInk(design.color, design.ink) }),
+                    p.name);
+                }))),
+            print && el('div', { className: 'studio-step' },
+              label('print color', colorName(design.ink)),
+              swatches(design.ink, function(id) { change({ ink: id }); }, 'print color', 'data-ink', design.color)),
+            el('div', { className: 'studio-step' },
+              label('name it', null, 'studio-name'),
+              el('input', Object.assign({ id: 'studio-name', className: 'studio-field', type: 'text', value: design.name, maxLength: STUDIO_NAME_MAX, placeholder: 'sunset flamingo', autoComplete: 'off', autoCapitalize: 'off', spellCheck: false, enterKeyHint: 'done', onChange: function(e) { setDesign(Object.assign({}, design, { name: e.target.value })); } }, words))),
+            el('div', { className: 'studio-step' },
+              label('what should we make next?', null, 'studio-note'),
+              el('textarea', Object.assign({ id: 'studio-note', className: 'studio-field', value: design.note, maxLength: STUDIO_NOTE_MAX, placeholder: 'a jacket? pants with pockets? tell us.', onChange: function(e) { setDesign(Object.assign({}, design, { note: e.target.value })); } }, words)),
+              el('div', { className: 'studio-hint' },
+                el('span', null, 'leave out your name, numbers and links.'),
+                el('span', { className: 'studio-count' }, design.note.length + '/' + STUDIO_NOTE_MAX))),
+            el('div', { className: 'studio-actions' },
+              el('button', { type: 'button', className: 'btn-primary studio-send', disabled: sending === 'sending' || sent, onClick: send }, sending === 'sending' ? 'sending…' : sent ? 'sent' : 'send my idea'),
+              el('button', { type: 'button', className: 'btn-quiet studio-save', disabled: stage !== 'ready', onClick: save }, 'save picture')),
+            el('div', { className: 'studio-status' + (note.bad ? ' bad' : ''), role: 'status', ref: statusRef }, note.text),
+            el('div', { className: 'studio-fine' }, "a design of your own can't be bought yet. send it, and it goes in piper & quinn's idea box."))));
     }
 
     function CartPage({ cart, setCart }) {
@@ -3875,6 +4783,7 @@
       const [guideIdx, setGuideIdx] = useState(null);           // her guide: with her on every page until she picks another or closes the chat
       const [tryPhoto, setTryPhoto] = useState(null);
       const [outfit, setOutfit] = useState(null);
+      const [design, setDesign] = useState(STUDIO_START);        // what she has made in the studio: it stays as she goes from page to page
       var tryPhotoRef = React.useRef(null);
       tryPhotoRef.current = tryPhoto;
       var freeLooksRef = React.useRef(0);
@@ -3889,6 +4798,8 @@
       var pageRef = React.useRef('home');
       var zoneRef = React.useRef(null);
       var quietPage = React.useRef(true); // the first page, and a page her guide took her to, need no note
+      var designRef = React.useRef(STUDIO_START);
+      var toldDesign = React.useRef(studioKey(STUDIO_START)); // the design her guide last heard about
 
       var closeOutfit = function() {
         outfitRef.current = null;
@@ -4008,6 +4919,63 @@
         };
       };
 
+      var putDesign = function(next) {
+        designRef.current = next;
+        setDesign(next);
+      };
+
+      // Her design, for her guide. Once said, it is not said again until it changes.
+      var designNow = function() {
+        toldDesign.current = studioKey(designRef.current);
+        return studioSays(designRef.current);
+      };
+
+      // Her guide pressed design: put a color and a print on a piece in the studio. What is
+      // not named stays as she has it. Says in words what happened.
+      var handleDesign = function(params) {
+        params = params || {};
+        var given = function(v) { return v != null && String(v).trim() !== ''; };
+        var short = function(v) { return String(v).trim().slice(0, 30); };
+        var now = designRef.current;
+        var next = Object.assign({}, now);
+        var colors = 'The colors are: ' + listWords(COLORWAYS.map(function(c) { return c.name.toLowerCase(); })) + '.';
+        if (given(params.piece)) {
+          var p = findPiece(params.piece);
+          if (!p) return 'No piece is called ' + short(params.piece) + '. Nothing was changed. The pieces are: ' + PRODUCTS.map(pieceKey).join(', ') + '.';
+          next.piece = pieceKey(p);
+        }
+        if (given(params.color)) {
+          var color = studioColor(params.color);
+          if (!color) return 'The studio has no color called ' + short(params.color) + '. Nothing was changed. ' + colors;
+          next.color = color;
+        }
+        if (given(params.print)) {
+          var print = studioPrint(params.print);
+          if (!print) return 'There is no print called ' + short(params.print) + '. Nothing was changed. The prints are: ' + listWords(STUDIO_PRINTS.map(function(q) { return q.name; })) + ', or none.';
+          next.print = print;
+        }
+        var aside = '';
+        if (given(params.print_color)) {
+          var ink = studioColor(params.print_color);
+          if (!ink) return 'The studio has no color called ' + short(params.print_color) + '. Nothing was changed. ' + colors;
+          if (next.print === 'none') aside = ' There is no print on it, so the print color changed nothing: name a print too.';
+          else if (ink === next.color) aside = ' A print in the same color as the piece would not show, so the print is in ' + colorName(studioInk(next.color, ink)) + '.';
+          next.ink = ink;
+        }
+        if (next.print !== 'none') next.ink = studioInk(next.color, next.ink);
+        var busy = tryingOn();
+        if (busy) return 'She is in the middle of trying on ' + busy + ', so her screen was left as it is. Offer again when her picture is done.';
+        closePiece();
+        closeOutfit();
+        putDesign(next);
+        if (pageRef.current !== 'studio') {
+          quietPage.current = true;
+          navigateTo('studio');
+        }
+        foldCrewChat();
+        return 'In the studio, on her screen now: ' + designNow() + '.' + aside + ' She can change it, name it, save a picture of it, and send it to the idea box herself.';
+      };
+
       var navigateTo = function(page) {
         zoneRef.current = null;
         pageRef.current = page;
@@ -4028,7 +4996,7 @@
         if (pageRef.current !== page) quietPage.current = true;
         navigateTo(page);
         foldCrewChat();
-        return 'She is now on ' + PAGE_WORDS[page] + '.' + (page === 'cart' ? ' ' + cartWords(cartRef.current) : '');
+        return 'She is now on ' + PAGE_WORDS[page] + '.' + (page === 'cart' ? ' ' + cartWords(cartRef.current) : page === 'studio' ? ' Her design there: ' + designNow() + '.' : '');
       };
 
       // A crew member pressed show_outfit. Show it, and answer her with what happened.
@@ -4080,6 +5048,7 @@
       var whereNow = function() {
         var zone = pageRef.current === 'zone' && zoneRef.current !== null ? CREW_MEMBERS[zoneRef.current] : null;
         var said = 'She is on ' + (zone ? zone.name + "'s page, with " + zone.name + "'s picks" : PAGE_WORDS[pageRef.current] || 'the site') + '. ';
+        if (pageRef.current === 'studio') said += 'Her design there: ' + designNow() + '. ';
         if (pieceRef.current) said += pieceRef.current.product.name + ' is open on her screen. ';
         else if (outfitRef.current) said += 'An outfit is open on her screen: ' + outfitRef.current.pieces.slice().reverse().map(function(p) { return p.name; }).join(' with ') + '. ';
         return said + cartWords(cartRef.current);
@@ -4110,8 +5079,17 @@
       useEffect(function() {
         if (quietPage.current) { quietPage.current = false; return; }
         var zone = currentPage === 'zone' && activeZoneIdx !== null ? CREW_MEMBERS[activeZoneIdx] : null;
-        tellCrew('She went to ' + (zone ? zone.name + "'s page, with " + zone.name + "'s picks" : PAGE_WORDS[currentPage] || 'another page') + '.' + (currentPage === 'cart' ? ' ' + cartWords(cartRef.current) : ''));
+        tellCrew('She went to ' + (zone ? zone.name + "'s page, with " + zone.name + "'s picks" : PAGE_WORDS[currentPage] || 'another page') + '.' + (currentPage === 'cart' ? ' ' + cartWords(cartRef.current) : currentPage === 'studio' ? ' Her design there: ' + designNow() + '.' : ''));
       }, [currentPage, activeZoneIdx]);
+
+      // In the studio, tell her guide what she has made, once she has stopped changing it.
+      useEffect(function() {
+        if (currentPage !== 'studio' || studioKey(design) === toldDesign.current) return;
+        var timer = setTimeout(function() {
+          tellCrew('In the studio she now has: ' + designNow() + '.');
+        }, STUDIO_TELL_AFTER);
+        return function() { clearTimeout(timer); };
+      }, [currentPage, design.piece, design.color, design.print, design.ink]);
 
       // An on-screen keyboard covers the bottom of the screen without telling the page's
       // layout. Note how much, so the chat can sit above it.
@@ -4130,7 +5108,7 @@
         };
       }, []);
 
-      var acts = { showOutfit: handleShowOutfit, showPiece: handleShowPiece, addToCart: handleGuideAdd, goTo: handleGoTo, where: whereNow };
+      var acts = { showOutfit: handleShowOutfit, showPiece: handleShowPiece, addToCart: handleGuideAdd, goTo: handleGoTo, design: handleDesign, where: whereNow };
 
       return (
         el('div', null,
@@ -4139,7 +5117,7 @@
             currentPage === 'home' && el(HomePage, { onSelectCrewMember: handleSelectCrewMember, navigateTo: navigateTo }),
             currentPage === 'zone' && activeZoneIdx !== null && el(CrewZone, { memberIdx: activeZoneIdx, onSelectProduct: viewPiece, onSwitchZone: handleSelectCrewMember, navigateTo: navigateTo, isGuide: guideIdx === activeZoneIdx, onGuide: function() { setGuideIdx(activeZoneIdx); } }),
             currentPage === 'shop' && el(ShopPage, { setCurrentPage: navigateTo, onSelectProduct: viewPiece }),
-            currentPage === 'studio' && el(DesignStudio, null),
+            currentPage === 'studio' && el(DesignStudio, { design: design, setDesign: putDesign, onSeeReal: viewPiece }),
             currentPage === 'team' && el(TeamPage, { onSelectCrewMember: handleSelectCrewMember }),
             currentPage === 'cart' && el(CartPage, { cart: cart, setCart: putCart }),
             el(Footer, { navigateTo: navigateTo })),
