@@ -4,11 +4,46 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Piper & Quinn — Fashion by Sisters</title>
+  <meta name="description" content="Fashion by sisters.">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Piper &amp; Quinn">
+  <meta property="og:title" content="Piper &amp; Quinn: Fashion by Sisters">
+  <meta property="og:description" content="Fashion by sisters.">
+  <meta property="og:url" content="https://staging--piperandquin.netlify.app/">
+  <meta property="og:image" content="https://staging--piperandquin.netlify.app/img/share.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Three outfits from Piper &amp; Quinn, with the name across the bottom.">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" type="image/png" href="img/favicon.png">
+  <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-  <script src="https://unpkg.com/@elevenlabs/convai-widget-embed" async type="text/javascript"></script>
+  <script>
+    // Safari on a Mac can play a crew member's voice with no sound. The voice widget gets
+    // sound ready only on an iPhone or iPad, which it tells by touch, and it looks once, as
+    // it loads. crewSound(true) has Safari on a Mac take that same step. crewSound(false)
+    // undoes it. It stays on until the widget has loaded, then is on only while a crew zone
+    // is open. ElevenLabs was sent a fix (github.com/elevenlabs/packages/pull/1025). It is
+    // not in 0.19.0. When a version has it, take this script out and move the version on.
+    (function () {
+      var macSafari = false;
+      try { macSafari = navigator.vendor === 'Apple Computer, Inc.' && !('ontouchend' in document); } catch (e) {}
+      var loaded = function () { return !!(window.customElements && customElements.get('elevenlabs-convai')); };
+      window.crewSound = function (on) {
+        if (!macSafari || (!on && !loaded())) return;
+        try { if (on) document.ontouchend = null; else delete document.ontouchend; } catch (e) {}
+      };
+      window.crewSound(true);
+      if (window.customElements) customElements.whenDefined('elevenlabs-convai').then(function () {
+        if (!document.querySelector('elevenlabs-convai')) window.crewSound(false);
+      });
+    })();
+  </script>
+  <!-- One fixed version of the widget: the one this page is checked against. -->
+  <script src="https://unpkg.com/@elevenlabs/convai-widget-embed@0.19.0/dist/index.js" async type="text/javascript"></script>
   <style>
     * {
       font-family: 'Jost', 'system-ui', 'sans-serif';
@@ -1977,7 +2012,9 @@
 
     // The try-on panel. `pieces` is one product, or two for an outfit (in the order they go on).
     // `autoGo` is a number that changes each time a look should start on its own.
-    function TryOn({ pieces, photo, setPhoto, look, onLook, startOpen, autoGo, onDone }) {
+    // `lookRef`, in the outfit window only, is where the app reads how her look stands:
+    // none | reading (she is choosing a photo, or it is being read) | making | made.
+    function TryOn({ pieces, photo, setPhoto, look, onLook, startOpen, autoGo, onDone, lookRef }) {
       const [open, setOpen] = useState(!!startOpen);
       const [phase, setPhase] = useState('idle'); // idle | opening | working | error
       const [message, setMessage] = useState('');
@@ -1986,6 +2023,8 @@
       var panelRef = React.useRef(null);
       var runRef = React.useRef(0);
       var two = pieces.length > 1;
+      // Set as things happen, not as the page draws: a press can arrive before the next draw.
+      var mark = function(state) { if (lookRef) lookRef.current = state; };
 
       // On a phone the panel can sit half off the screen. Bring it into view when she is
       // using it, so the button and any message are in front of her.
@@ -2006,26 +2045,42 @@
 
       var pick = function() {
         if (busy || !fileRef.current) return;
+        mark('reading'); // from the moment the chooser opens, she is adding or changing her photo
         fileRef.current.click();
       };
+
+      // She shut the chooser without choosing: her look stands as it did.
+      var madeRef = React.useRef(false);
+      madeRef.current = !!look;
+      useEffect(function() {
+        var input = fileRef.current;
+        if (!input) return;
+        var back = function() { mark(madeRef.current ? 'made' : 'none'); };
+        input.addEventListener('cancel', back);
+        return function() { input.removeEventListener('cancel', back); };
+      }, [open]);
 
       var onFile = function(e) {
         var file = e.target.files && e.target.files[0];
         e.target.value = '';
-        if (!file || busy) return;
+        if (!file) { mark(look ? 'made' : 'none'); return; }
+        if (busy) return;
         var my = ++runRef.current;
         setPhase('opening');
         setMessage('');
+        mark('reading');
         fitPhoto(file).then(function(dataUrl) {
           if (runRef.current !== my) return;
           onLook(null);
           setPhoto(dataUrl);
           setPhase('idle');
+          mark('none');
           showPanel();
         }, function(err) {
           if (runRef.current !== my) return;
           setPhase('error');
           setMessage(err.message);
+          mark(look ? 'made' : 'none');
           showPanel();
         });
       };
@@ -2037,6 +2092,7 @@
         setPhoto(null);
         setPhase('idle');
         setMessage('');
+        mark('none');
       };
 
       var go = function() {
@@ -2045,10 +2101,12 @@
         var alive = function() { return runRef.current === my; };
         setPhase('working');
         setMessage('');
+        mark('making');
         showPanel();
         tryonLook(pieces, photo, alive).then(function(image) {
           if (!alive()) return;
           setPhase('idle');
+          mark('made');
           onLook(image);
           if (onDone) onDone(true, '');
         }, function(err) {
@@ -2056,6 +2114,7 @@
           var words = err.message || 'Try-on had a problem. Try again.';
           setPhase('error');
           setMessage(words);
+          mark(look ? 'made' : 'none');
           showPanel();
           if (onDone) onDone(false, words);
         });
@@ -2064,6 +2123,7 @@
       // A crew member showed this outfit and her photo is already in: start without a tap.
       useEffect(function() {
         if (autoGo && photo) go();
+        else if (autoGo) mark('none');
       }, [autoGo]);
 
       if (!open) {
@@ -2180,7 +2240,28 @@
       } catch (e) {}
     }
 
-    function OutfitWindow({ outfit, onClose, onView, tryPhoto, setTryPhoto }) {
+    // One throwaway id for this visit, given to the voice widget. Without one the widget works
+    // out a fingerprint of her browser and keeps it in the browser's storage. On a first visit
+    // that also holds a call back for a moment after her tap, long enough to leave the zone
+    // or tap twice, and either way a call came up that the page was never told about.
+    var CREW_VISITOR = (function() {
+      try {
+        if (window.crypto && crypto.randomUUID) return 'visit-' + crypto.randomUUID();
+      } catch (e) {}
+      return 'visit-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 12);
+    })();
+
+    // End a crew member's call from the page's side. Ending one that has ended does nothing.
+    function endCrewCall(call) {
+      try {
+        var ending = call.endSession();
+        if (ending && ending.catch) ending.catch(function() {});
+      } catch (e) {}
+    }
+
+    // `outfit.look` is how her look in this window stands (see TryOn). `upRef` holds the outfit
+    // that is up now: once it is another one, this window has been replaced.
+    function OutfitWindow({ outfit, onClose, onView, tryPhoto, setTryPhoto, upRef }) {
       const [look, setLook] = useState(null);
       const [showLook, setShowLook] = useState(false);
       const [lookCount, setLookCount] = useState(0);
@@ -2204,6 +2285,7 @@
       }, [lookCount]);
 
       var handleDone = function(ok, words) {
+        if (upRef && upRef.current !== outfit) return;
         tellCrew(ok
           ? 'The outfit is on her in the picture now. You cannot see it. Ask her what she thinks.'
           : 'The picture could not be made: ' + words);
@@ -2241,7 +2323,7 @@
                   el('button', { className: 'tryon-link', onClick: function() { onView(p); } }, 'view'));
               }),
               pieces.length > 1 && el('div', { className: 'outfit-total' }, el('span', null, 'together'), el('span', null, '$' + total))),
-            el(TryOn, { pieces: pieces, photo: tryPhoto, setPhoto: setTryPhoto, look: look, onLook: handleLook, startOpen: true, autoGo: outfit.auto ? outfit.n : 0, onDone: handleDone }))));
+            el(TryOn, { pieces: pieces, photo: tryPhoto, setPhoto: setTryPhoto, look: look, onLook: handleLook, startOpen: true, autoGo: outfit.auto ? outfit.n : 0, onDone: handleDone, lookRef: outfit.look }))));
     }
 
     function ProductDetail({ product, onClose, onAddToCart, tryPhoto, setTryPhoto }) {
@@ -2464,6 +2546,7 @@
       showOutfitRef.current = onShowOutfit;
 
       useEffect(function() {
+        var zone = { left: false, call: null };
         if (chatContainerRef.current) {
           chatContainerRef.current.innerHTML = '';
           var widget = document.createElement('elevenlabs-convai');
@@ -2473,18 +2556,38 @@
           widget.setAttribute('action-text', 'Chat with ' + member.name);
           // Let the page tell the agent things (the widget ignores them without this).
           widget.setAttribute('allow-events', 'true');
+          // A throwaway id for this visit, so the widget makes no fingerprint (see CREW_VISITOR).
+          widget.setAttribute('user-id', CREW_VISITOR);
           // When a conversation starts, hand the agent its button on this page.
           widget.addEventListener('elevenlabs-convai:call', function(e) {
             if (!e.detail || !e.detail.config) return;
             e.detail.config.clientTools = Object.assign({}, e.detail.config.clientTools, {
-              show_outfit: function(params) { return showOutfitRef.current(params, member); }
+              show_outfit: function(params) {
+                if (zone.left) return 'She has left your page. Nothing was shown.';
+                return showOutfitRef.current(params, member);
+              }
             });
+            // Taken off the page, the widget ends a call that is up, but not one that is still
+            // connecting: that one would carry on, her microphone open and nothing on the page
+            // to end it with. So the page keeps hold of each call and ends it itself. It does so
+            // a moment after the call is handed over, once the widget has finished bringing it up.
+            e.detail.config.onConversationCreated = function(call) {
+              Promise.resolve().then(function() {
+                if (zone.left) { endCrewCall(call); return; }
+                if (zone.call && zone.call !== call) endCrewCall(zone.call);
+                zone.call = call;
+              });
+            };
           });
           chatContainerRef.current.appendChild(widget);
           document.body.classList.add('crew-widget-on');
+          if (window.crewSound) window.crewSound(true);
         }
         return function() {
+          zone.left = true;
+          if (zone.call) endCrewCall(zone.call);
           document.body.classList.remove('crew-widget-on');
+          if (window.crewSound) window.crewSound(false);
           if (chatContainerRef.current) {
             chatContainerRef.current.innerHTML = '';
           }
@@ -2500,7 +2603,7 @@
                   React.createElement('img', {src: member.img, alt: member.name})
                 ) : (
                   React.createElement('div', {className: "char-card-initials", style: { background: 'linear-gradient(135deg, ' + member.orbColor1 + ', ' + member.orbColor2 + ')' }}, member.initials)
-                )), React.createElement('div', {className: "zone-hero-name"}, member.name), React.createElement('div', {className: "zone-hero-role"}, member.role), React.createElement('div', {className: "zone-hero-tagline"}, member.zoneTagline))), React.createElement('div', {className: "zone-voice-bar", style: { background: member.accent }}, React.createElement('div', {className: "crew-chat-dot", style: { background: 'white' }}), React.createElement('span', null, member.name, " is here ", '—', " tap the chat bubble to talk")), React.createElement('div', {className: "zone-section"}, React.createElement('p', {style: { textAlign: 'center', fontSize: '1.05rem', color: '#555', lineHeight: '1.8', maxWidth: '580px', margin: '0 auto 3rem', fontWeight: '300' }}, member.zoneDesc), React.createElement('h2', {className: "zone-section-title"}, member.name.toLowerCase() + "'s picks"), React.createElement('div', {className: "zone-products"}, zoneProducts.map(function(product) {
+                )), React.createElement('div', {className: "zone-hero-name"}, member.name), React.createElement('div', {className: "zone-hero-role"}, member.role), React.createElement('div', {className: "zone-hero-tagline"}, member.zoneTagline))), React.createElement('div', {className: "zone-voice-bar", style: { background: member.accent }}, React.createElement('div', {className: "crew-chat-dot", style: { background: 'white' }}), React.createElement('span', null, member.name, ' is here. Tap "Start a call" to talk.')), React.createElement('div', {className: "zone-section"}, React.createElement('p', {style: { textAlign: 'center', fontSize: '1.05rem', color: '#555', lineHeight: '1.8', maxWidth: '580px', margin: '0 auto 3rem', fontWeight: '300' }}, member.zoneDesc), React.createElement('h2', {className: "zone-section-title"}, member.name.toLowerCase() + "'s picks"), React.createElement('div', {className: "zone-products"}, zoneProducts.map(function(product) {
                 return (
                   React.createElement('div', {key: product.id, className: "product-card", onClick: function() { onSelectProduct(product); }}, React.createElement('div', {className: "product-card-image-wrapper"}, product.imageUrl ? (
                         React.createElement('img', {src: product.imageUrl, alt: product.name, className: "product-image"})
@@ -2533,19 +2636,52 @@
       var tryPhotoRef = React.useRef(null);
       tryPhotoRef.current = tryPhoto;
       var freeLooksRef = React.useRef(0);
+      // The outfit that is up, as of the last press or close. Kept here and set as things
+      // happen: a second press can arrive before the page has drawn the first. Each outfit
+      // carries how her look in its window stands, in `look` (see TryOn).
+      var outfitRef = React.useRef(null);
+      var openPieceRef = React.useRef(null);
+      openPieceRef.current = selectedProduct;
+
+      var closeOutfit = function() {
+        outfitRef.current = null;
+        setOutfit(null);
+      };
 
       // A crew member pressed show_outfit. Show it, and answer her with what happened.
       var handleShowOutfit = function(params, member) {
         var asked = readOutfit(params);
         if (!asked.pieces.length) return asked.problem;
-        var hasPhoto = !!tryPhotoRef.current;
-        var auto = hasPhoto && freeLooksRef.current < STYLIST_FREE_LOOKS;
-        if (auto) freeLooksRef.current += 1;
-        setSelectedProduct(null);
-        setOutfit({ pieces: asked.pieces, note: asked.note, by: member.name, auto: auto, n: Date.now() + Math.random() });
-        foldCrewChat();
         var shown = asked.pieces.slice().reverse();
         var two = shown.length > 1;
+        var hasPhoto = !!tryPhotoRef.current;
+        var auto = hasPhoto && freeLooksRef.current < STYLIST_FREE_LOOKS;
+        // A press for the outfit that is already up shows it again only when that puts it on
+        // her: her photo is in, no picture is made or on its way, and she has no piece open
+        // in front. Otherwise the window is left as it is. Showing it again would start her
+        // look over, and each look costs.
+        var up = outfitRef.current;
+        var same = up && up.pieces.length === asked.pieces.length && up.pieces.every(function(p, i) { return p.id === asked.pieces[i].id; });
+        var inFront = openPieceRef.current;
+        if (same && !(auto && up.look.current === 'none' && !inFront)) {
+          foldCrewChat();
+          var how = up.look.current;
+          var there = 'That outfit is already on her screen. ';
+          if (inFront) there += 'She has ' + inFront.name + ' open in front of it. ';
+          if (how === 'made') there += 'The picture of it on her is made. ';
+          else if (how === 'making') there += 'The page is still making the picture of it on her. ';
+          else if (how === 'reading') there += 'She is adding her photo. ';
+          else if (!hasPhoto) there += 'She has not added a photo. ';
+          else there += 'Her photo is in, and the picture of the outfit is not made. ' + (auto ? '' : 'It waits for her own tap. ');
+          return asked.problem + there + 'The outfit stays there until she closes it.';
+        }
+        if (auto) freeLooksRef.current += 1;
+        var next = { pieces: asked.pieces, note: asked.note, by: member.name, auto: auto, n: Date.now() + Math.random(), look: { current: auto ? 'making' : 'none' } };
+        outfitRef.current = next;
+        openPieceRef.current = null;
+        setSelectedProduct(null);
+        setOutfit(next);
+        foldCrewChat();
         var total = shown.reduce(function(sum, p) { return sum + p.price; }, 0);
         var said = 'On her screen now: ' + shown.map(function(p) { return p.name + ' ($' + p.price + ')'; }).join(' with ') + (two ? ', $' + total + ' together. ' : '. ');
         if (auto) said += 'Her photo is in, so the page is putting ' + (two ? 'the outfit' : 'it') + ' on her. That takes about ' + (two ? 'half a minute' : '15 seconds') + '. You cannot see the picture.';
@@ -2600,7 +2736,7 @@
                 window.scrollTo(0, 0);
               }})
           ), currentPage === 'shop' && React.createElement(ShopPage, {setCurrentPage: navigateTo, onSelectProduct: setSelectedProduct}), currentPage === 'studio' && React.createElement(DesignStudio, null), currentPage === 'cart' && React.createElement(CartPage, {cart: cart, setCart: setCart}), outfit && (
-            React.createElement(OutfitWindow, {key: outfit.n, outfit: outfit, onClose: () => setOutfit(null), onView: setSelectedProduct, tryPhoto: tryPhoto, setTryPhoto: setTryPhoto})
+            React.createElement(OutfitWindow, {key: outfit.n, outfit: outfit, onClose: closeOutfit, onView: setSelectedProduct, tryPhoto: tryPhoto, setTryPhoto: setTryPhoto, upRef: outfitRef})
           ), selectedProduct && (
             React.createElement(ProductDetail, {product: selectedProduct, onClose: () => setSelectedProduct(null), onAddToCart: handleAddToCart, tryPhoto: tryPhoto, setTryPhoto: setTryPhoto})
           ), currentPage !== 'home' && React.createElement(Footer, null))
