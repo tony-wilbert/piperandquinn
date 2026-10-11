@@ -2,8 +2,9 @@
 // sends it to Piper & Quinn. This keeps the idea.
 //
 //   GET  /api/idea           Is the idea box set up? Asks nobody and writes nothing.
-//   GET  /api/idea?check=1   Proves it: writes a small test note, reads it back, removes
-//                            it, and counts the ideas.
+//   GET  /api/idea?check=1   Proves it: writes a small test note, finds it in a listing
+//                            made right after, reads it back, removes it, and counts the
+//                            ideas.
 //   POST /api/idea           { "piece", "color", "print", "ink", "name", "note" }
 //                            Answers { ok: true, id, same, count }. "same" is how many
 //                            ideas with that piece, color, print and ink were there
@@ -55,6 +56,9 @@ async function check(url) {
   let count;
   try {
     await box.put(key, note);
+    // A count is only as good as the listing behind it: a note just written must be in it.
+    step = "the test note was written but the listing could not be read";
+    const listed = (await box.keys("check/")).includes(key);
     step = "the test note was written but could not be read back";
     const back = await box.text(key);
     step = "the test note was written and read back, but could not be removed";
@@ -67,14 +71,18 @@ async function check(url) {
       log("check", "changed");
       return say(false, "Not ready: the test note came back changed.");
     }
-    step = "the test note was written, read back and removed, but the ideas could not be counted";
+    if (!listed) {
+      log("check", "stale_list");
+      return say(false, "Not ready: the test note was written, but a listing made right after did not show it. Counts would lag.");
+    }
+    step = "the test note was written, listed, read back and removed, but the ideas could not be counted";
     count = (await box.keys("idea/")).length;
   } catch (e) {
     const [, code, , , why] = boxTrouble(e);
     log("check", code, about(e));
     return say(false, "Not ready: " + step + ". Cause: " + why + ".");
   }
-  return say(true, "Ready. A test note was written, read back and removed. The box holds " + count + (count === 1 ? " idea." : " ideas."), count);
+  return say(true, "Ready. A test note was written, listed, read back and removed. The box holds " + count + (count === 1 ? " idea." : " ideas."), count);
 }
 
 async function keep(req, url) {
