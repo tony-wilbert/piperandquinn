@@ -1215,10 +1215,10 @@
     }
 
     /* ===== HOME: THE OPENING =====
-       A wall of pictures from edge to edge: Piper, the brand's own photo, Quinn. Each sister
-       is shown full length, and walks up and waves when the page opens. A small button on her
-       picture lets her say hello, with sound. Under the pictures the name of the brand is set
-       with theirs: piper, the ampersand, quinn. */
+       Piper and Quinn, side by side, and nobody else. Each sister is shown full length, and
+       walks up and waves when the page opens. A small button on her picture lets her say
+       hello, with sound. Under the pictures the name of the brand is set with theirs: piper,
+       the ampersand, quinn. */
     .home {
       --words: 9.75rem;   /* the room kept under the pictures for the names and the ways in */
       --tall: max(17rem, calc(100vh - var(--nav-h) - var(--words)));
@@ -1237,8 +1237,8 @@
       container-name: home;
     }
 
-    /* A narrow page, and any browser that cannot ask how wide the stage is: the sisters side
-       by side, and the photo under them. */
+    /* The sisters stand together in the middle of the page. Each is as tall as the screen
+       allows, and never more than half the stage wide. */
     .home-pair {
       display: flex;
       flex-wrap: wrap;
@@ -1481,10 +1481,6 @@
       pointer-events: none;
     }
 
-    .home-amp-mid {
-      display: none;
-    }
-
     .home-role {
       font-size: 0.85rem;
       line-height: 1.2;
@@ -1499,34 +1495,16 @@
       border-bottom: 2px solid var(--zone-accent, var(--pq-green));
     }
 
+    /* Under the sisters and their words: the tagline, and two more ways on. */
     .home-mid {
       flex: 0 0 100%;
       min-width: 0;
-      display: flex;
-      flex-direction: column;
     }
 
     .home-mid-words {
-      order: 1;
       grid-template-rows: auto auto;
       row-gap: 0.9rem;
       padding: 0 1rem 2.25rem;
-    }
-
-    .home-photo {
-      order: 2;
-      aspect-ratio: 2 / 3;
-      max-height: 92vh;
-      overflow: hidden;
-      background: var(--line-soft);
-    }
-
-    .home-photo img {
-      display: block;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: 50% 12%;
     }
 
     .home-tagline {
@@ -1560,56 +1538,6 @@
     .home-skip:hover,
     .home-make:hover {
       border-bottom-color: var(--pq-green);
-    }
-
-    /* A wide stage: three pictures in a row, the photo between the sisters. Each sister is as
-       tall as the screen allows and never more than a third of the stage wide. The photo takes
-       the rest. The words under the photo carry the ampersand. */
-    @container home (min-width: 860px) {
-      .home-pair {
-        --w: min(calc(var(--tall) * 31 / 54), calc(33.333cqw - 2px));
-        flex-wrap: nowrap;
-      }
-
-      .home-col {
-        order: 1;
-        width: var(--w);
-      }
-
-      .home-col + .home-col {
-        order: 3;
-      }
-
-      .home-figure {
-        aspect-ratio: auto;
-        height: calc(var(--w) * 54 / 31);
-      }
-
-      .home-mid {
-        order: 2;
-        flex: 1 1 0;
-      }
-
-      .home-photo {
-        order: 0;
-        aspect-ratio: auto;
-        max-height: none;
-        height: calc(var(--w) * 54 / 31);
-      }
-
-      .home-mid-words {
-        grid-template-rows: 3.3rem 1.7rem 2.1rem;
-        row-gap: 0;
-        padding: 0.75rem 0.5rem 1.9rem;
-      }
-
-      .home-amp-seam {
-        display: none;
-      }
-
-      .home-amp-mid {
-        display: block;
-      }
     }
 
     .team-face img {
@@ -2958,7 +2886,7 @@
     // `agentId` is the member's ElevenLabs voice agent. `img` is a square picture of the head
     // and shoulders (tools/make_crew.py cuts them), or null for the first letter of the name.
     var CREW_MEMBERS = [
-      { name: 'Piper', role: 'lead designer', helps: 'classic pieces, and outfits that just work.', zoneTagline: '"i design what i want to wear, and what my friends keep stealing"', zoneDesc: "welcome to my studio. this is where every p&q piece starts: a sketch, a color, a feeling. these are my favorites from the collection.", agentId: 'agent_7401m4b3y21deyhbcryt8dstz8q8', img: 'img/crew-piper.jpg', accent: '#6DC067', orbColor1: '#6DC067', orbColor2: '#ACD9F4', productIds: [5, 8, 1, 6] },
+      { name: 'Piper', role: 'marketing & operations', helps: 'classic pieces, and outfits that just work.', zoneTagline: '"i design what i want to wear, and what my friends keep stealing"', zoneDesc: "welcome to my studio. this is where every p&q piece starts: a sketch, a color, a feeling. these are my favorites from the collection.", agentId: 'agent_7401m4b3y21deyhbcryt8dstz8q8', img: 'img/crew-piper.jpg', accent: '#6DC067', orbColor1: '#6DC067', orbColor2: '#ACD9F4', productIds: [5, 8, 1, 6] },
       { name: 'Quinn', role: 'creative director', helps: 'bold prints, ruffles, and color.', zoneTagline: '"fashion is art you can wear. every outfit tells a story"', zoneDesc: "this is where the magic happens. i mix colors, patterns, and vibes until something feels right. check out what i'm loving right now.", agentId: 'agent_0601m4b3ybjwezd8gwwrv5p51c90', img: 'img/crew-quinn.jpg', accent: '#E84B8A', orbColor1: '#E84B8A', orbColor2: '#C4A7D7', productIds: [2, 3, 7] },
       { name: 'Kate', role: 'marketing & social', team: true, helps: "what's trending, and what's actually worth it.", zoneTagline: '"if it\'s fire, i\'ll let you know. if it\'s not, i\'ll let you know too"', zoneDesc: "what's trending, what's dropping, what everyone's talking about. these are the pieces that are about to blow up.", agentId: 'agent_1001m4b3ymzzf75tmnd0gps61ndn', img: 'img/crew-kate.jpg', accent: '#FBB040', orbColor1: '#FBB040', orbColor2: '#F7D559', productIds: [3, 4, 1] },
       { name: 'Birdie', role: 'pattern designer', team: true, helps: 'prints, colors, and what goes with what.', zoneTagline: '"a print should make you smile before you know why"', zoneDesc: "this is where the prints happen. dots, stripes, the color nobody expected. these are the pieces that show them off.", agentId: 'agent_8401m4b3z9asedb9b62hmx17a2na', img: 'img/crew-birdie.jpg', accent: '#ACD9F4', orbColor1: '#ACD9F4', orbColor2: '#C4A7D7', productIds: [3, 7, 4] },
@@ -4320,13 +4248,12 @@
       );
     }
 
-    // Home: the opening. Piper, the brand's photo, Quinn, from edge to edge. Under them the
+    // Home: the opening. Piper and Quinn, side by side, and nobody else. Under them the
     // name of the brand is set with the sisters' own names. Each sister is a still, full
     // length, and over it a short clip in which she walks up and waves. The clip opens on
     // the still, so nobody sees it start. It plays once when the page opens, and again when
     // a pointer comes over her. `wait` is how long after the page opens, in ms: Quinn starts
-    // a little after Piper. The photo between them comes in three sizes, and the browser
-    // takes the one its screen needs.
+    // a little after Piper.
     // still: her picture. clip: her walking up and waving, with no sound. hello: the same walk with
     // her lips moving and her voice, played only on a tap. says: her words, shown while she says them.
     var HOME_FIGURES = {
@@ -4482,11 +4409,7 @@
           el('div', { className: 'home-pair' },
             sisters,
             el('div', { className: 'home-mid' },
-              el('div', { className: 'home-photo' },
-                el('img', { sizes: '(min-width: 1250px) 56vw, (min-width: 860px) 36vw, 100vw', srcSet: 'img/twirl-1024.jpg 1024w, img/twirl-1600.jpg 1600w, img/twirl-2048.jpg 2048w',
-                  src: 'img/twirl-1024.jpg', alt: 'a girl spinning on the grass in the polka dot dress' })),
               el('div', { className: 'home-mid-words' },
-                el('span', { className: 'home-amp home-amp-mid', 'aria-hidden': 'true' }, '&'),
                 el('p', { className: 'tagline home-tagline' }, 'fashion by sisters. dress bold.'),
                 el('div', { className: 'home-more' },
                   el('button', { type: 'button', className: 'home-skip', onClick: function() { navigateTo('shop'); } }, 'or skip to the shop'),
