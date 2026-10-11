@@ -2601,6 +2601,7 @@
       { id: 5, name: 'The Classic Polo', category: 'tops', price: 48, description: 'Timeless pique cotton polo. The foundation of every outfit.', colorways: ['sky-blue', 'pq-green', 'coral', 'midnight', 'ocean'], sizes: ['xxs', 'xs', 's', 'm', 'l', 'xl'], imageUrl: 'img/blue-polo-pants.jpg', tryOn: true },
       { id: 6, name: 'The Pleated Skirt', category: 'bottoms', price: 58, description: 'Crisp white pleats with movement. Style it your way.', colorways: ['coral', 'sky-blue', 'city-khaki', 'midnight', 'white'], sizes: ['xxs', 'xs', 's', 'm', 'l', 'xl'], imageUrl: 'img/burgundy-polo-skirt.jpg', tryOn: true },
       { id: 7, name: 'The Ruffle Skirt', category: 'bottoms', price: 56, description: 'Tiered ruffles in cream. Sweet and effortless.', colorways: ['hot-pink', 'lavender', 'coral', 'ocean', 'pq-green'], sizes: ['xxs', 'xs', 's', 'm', 'l', 'xl'], imageUrl: 'img/dot-sweater-skirt.jpg', tryOn: true },
+      { id: 8, name: 'The Wide Leg Pants', category: 'bottoms', price: 60, description: 'Wide leg, cropped at the ankle, with a striped ribbon tab on each side of the belt line. Piper wears hers with the classic polo.', colorways: ['city-khaki', 'midnight', 'white', 'ocean', 'pq-green'], sizes: ['xxs', 'xs', 's', 'm', 'l', 'xl'], imageUrl: 'img/blue-polo-pants.jpg', tryOn: true },
     ];
 
     // ===== THE BRAND'S PARTS =====
@@ -2682,7 +2683,7 @@
     // `agentId` is the member's ElevenLabs voice agent. `img` is a square picture of the head
     // and shoulders (tools/make_crew.py cuts them), or null for the first letter of the name.
     var CREW_MEMBERS = [
-      { name: 'Piper', role: 'lead designer', helps: 'classic pieces, and outfits that just work.', zoneTagline: '"i design what i want to wear, and what my friends keep stealing"', zoneDesc: "welcome to my studio. this is where every p&q piece starts: a sketch, a color, a feeling. these are my favorites from the collection.", agentId: 'agent_7401m4b3y21deyhbcryt8dstz8q8', img: 'img/crew-piper.jpg', accent: '#6DC067', orbColor1: '#6DC067', orbColor2: '#ACD9F4', productIds: [1, 5, 6] },
+      { name: 'Piper', role: 'lead designer', helps: 'classic pieces, and outfits that just work.', zoneTagline: '"i design what i want to wear, and what my friends keep stealing"', zoneDesc: "welcome to my studio. this is where every p&q piece starts: a sketch, a color, a feeling. these are my favorites from the collection.", agentId: 'agent_7401m4b3y21deyhbcryt8dstz8q8', img: 'img/crew-piper.jpg', accent: '#6DC067', orbColor1: '#6DC067', orbColor2: '#ACD9F4', productIds: [5, 8, 1, 6] },
       { name: 'Quinn', role: 'creative director', helps: 'bold prints, ruffles, and color.', zoneTagline: '"fashion is art you can wear. every outfit tells a story"', zoneDesc: "this is where the magic happens. i mix colors, patterns, and vibes until something feels right. check out what i'm loving right now.", agentId: 'agent_0601m4b3ybjwezd8gwwrv5p51c90', img: 'img/crew-quinn.jpg', accent: '#E84B8A', orbColor1: '#E84B8A', orbColor2: '#C4A7D7', productIds: [2, 3, 7] },
       { name: 'Kate', role: 'marketing & social', team: true, helps: "what's trending, and what's actually worth it.", zoneTagline: '"if it\'s fire, i\'ll let you know. if it\'s not, i\'ll let you know too"', zoneDesc: "what's trending, what's dropping, what everyone's talking about. these are the pieces that are about to blow up.", agentId: 'agent_1001m4b3ymzzf75tmnd0gps61ndn', img: 'img/crew-kate.jpg', accent: '#FBB040', orbColor1: '#FBB040', orbColor2: '#F7D559', productIds: [3, 4, 1] },
       { name: 'Birdie', role: 'pattern designer', team: true, helps: 'prints, colors, and what goes with what.', zoneTagline: '"a print should make you smile before you know why"', zoneDesc: "this is where the prints happen. dots, stripes, the color nobody expected. these are the pieces that show them off.", agentId: 'agent_8401m4b3z9asedb9b62hmx17a2na', img: 'img/crew-birdie.jpg', accent: '#ACD9F4', orbColor1: '#ACD9F4', orbColor2: '#C4A7D7', productIds: [3, 7, 4] },
@@ -3157,7 +3158,7 @@
     // The pages, in words for the guide, and other things a page gets called.
     var PAGE_WORDS = {
       home: 'the home page, with Piper and Quinn',
-      shop: 'the shop page, with all seven pieces',
+      shop: 'the shop page, with all eight pieces',
       studio: 'the studio page, where she puts a color and a print on a piece and can send it in as an idea',
       team: 'the team page, with Piper, Quinn, Kate, Birdie and Otto',
       cart: 'the cart page',
@@ -3385,7 +3386,7 @@
 
     // The pieces a line of talk names, in the order they come up. A piece is known by its
     // name without "the", and by a few other things people call it.
-    var PIECE_ALSO = { 2: ['pink sweater'], 3: ['polka-dot dress', 'dot dress'], 4: ['lime dress', 'polo dress'], 5: ['blue polo'], 6: ['white skirt'], 7: ['ruffled skirt', 'tiered skirt'] };
+    var PIECE_ALSO = { 2: ['pink sweater'], 3: ['polka-dot dress', 'dot dress'], 4: ['lime dress', 'polo dress'], 5: ['blue polo'], 6: ['white skirt'], 7: ['ruffled skirt', 'tiered skirt'], 8: ['pants', 'pant', 'trousers'] };
     var PIECE_WORDS = PRODUCTS.map(function(p) {
       var words = [p.name.toLowerCase().replace(/^the\s+/, '')].concat(PIECE_ALSO[p.id] || []);
       var loose = words.map(function(w) { return w.replace(/[^a-z0-9]+/g, '[^a-z0-9]+'); });
@@ -4116,10 +4117,16 @@
     // can be sent to the idea box (/api/idea) and saved as a picture.
     //
     // `scale` evens the prints out, so a dot is the same size on a skirt as on a dress.
-    var STUDIO_PIECES = [['burgundy-polo', 1.27], ['blush-sweater', 1.01], ['polka-dot-dress', 0.89], ['lime-polo-dress', 0.89], ['classic-polo', 1.26], ['pleated-skirt', 1.49], ['ruffle-skirt', 1.69]].map(function(s) {
+    var STUDIO_PIECES = [['burgundy-polo', 1.27], ['blush-sweater', 1.01], ['polka-dot-dress', 0.89], ['lime-polo-dress', 0.89], ['classic-polo', 1.26], ['pleated-skirt', 1.49], ['ruffle-skirt', 1.69], ['wide-leg-pants', 0.93]].map(function(s) {
       var product = findPiece(s[0]);
       return { key: s[0], scale: s[1], product: product, name: product.name.toLowerCase().replace(/^the\s+/, '') };
     });
+    // The pencil stripe ribbon, from the Birdie style guide (8.6) and the silhouettes made
+    // from it: a tab with two buttons on each side of the pants' belt line, and over the side
+    // vents of the polos, with a tee holder on the side seam. A piece that carries it has a
+    // second picture, img/studio/<key>-trim.webp: the ribbon and its buttons in their own
+    // colors, clear everywhere else. It is laid over the cloth and the print, under the folds.
+    var STUDIO_TRIMS = { 'wide-leg-pants': true, 'burgundy-polo': true, 'classic-polo': true };
     // `repeat` is how wide one repeat is beside classic polka's, read off the guide.
     var STUDIO_PRINTS = [
       { id: 'classic-polka', name: 'classic polka', repeat: 1 },
@@ -4278,7 +4285,8 @@
     }
 
     // Paint a piece to fill the canvas, contained and centred.
-    // shade: its shade map, loaded. opts: { color, print, ink, printScale }, colors as hex.
+    // shade: its shade map, loaded. opts: { color, print, ink, printScale, trim }, colors as
+    // hex. trim: the piece's trim picture, loaded, if it has one.
     function studioDraw(canvas, shade, opts) {
       var ctx = canvas.getContext('2d');
       var W = canvas.width, H = canvas.height;
@@ -4307,6 +4315,8 @@
         ctx.fillRect(x - cx, y - cy, w, h);
         ctx.restore();
       }
+      // trim that keeps its own colors, whatever the cloth and the print
+      if (opts.trim) ctx.drawImage(opts.trim, x, y, w, h);
       // a faint sheen, so a dark color keeps its folds
       ctx.globalCompositeOperation = 'screen';
       ctx.globalAlpha = 0.06;
@@ -4337,22 +4347,30 @@
       g.restore();
     }
 
-    // The shade maps, loaded once each. `then` gets { img, state }: 'ready' or 'failed'.
-    // One that failed is tried again the next time it is asked for.
+    // The shade maps, loaded once each. `then` gets { img, trim, state }: 'ready' or 'failed'.
+    // One that failed is tried again the next time it is asked for. A piece with trim waits
+    // for its trim picture too. If only the trim cannot be loaded, the piece is drawn without it.
     var studioShades = {};
     function studioShade(key, then) {
       var s = studioShades[key];
       if (!s || s.state === 'failed') {
-        s = studioShades[key] = { img: new Image(), state: 'loading', waiting: [] };
-        var done = function(state) {
-          return function() {
-            s.state = state;
-            s.waiting.splice(0).forEach(function(f) { f(s); });
-          };
+        s = studioShades[key] = { img: new Image(), trim: null, state: 'loading', waiting: [] };
+        var left = STUDIO_TRIMS[key] ? 2 : 1, shaded = false;
+        var settle = function() {
+          left -= 1;
+          if (left) return;
+          s.state = shaded ? 'ready' : 'failed';
+          s.waiting.splice(0).forEach(function(f) { f(s); });
         };
-        s.img.onload = done('ready');
-        s.img.onerror = done('failed');
+        s.img.onload = function() { shaded = true; settle(); };
+        s.img.onerror = settle;
         s.img.src = 'img/studio/' + key + '.webp';
+        if (STUDIO_TRIMS[key]) {
+          var trim = new Image();
+          trim.onload = function() { s.trim = trim; settle(); };
+          trim.onerror = settle;
+          trim.src = 'img/studio/' + key + '-trim.webp';
+        }
       }
       if (s.state === 'loading') s.waiting.push(then);
       else then(s);
@@ -4373,13 +4391,15 @@
           if (!cv) return;
           cv.getContext('2d').clearRect(0, 0, cv.width, cv.height);
           cv.removeAttribute('data-drawn');
+          cv.removeAttribute('data-trim');
         };
         studioShade(piece.key, function(s) {
           answered = true;
           if (!alive) return;
           if (s.state === 'ready' && ref.current) {
-            studioDraw(ref.current, s.img, { color: studioHex(design.color), print: design.print, ink: studioHex(design.ink), printScale: piece.scale });
+            studioDraw(ref.current, s.img, { color: studioHex(design.color), print: design.print, ink: studioHex(design.ink), printScale: piece.scale, trim: s.trim });
             ref.current.setAttribute('data-drawn', studioKey(design)); // what is painted, as against what was asked for
+            if (s.trim) ref.current.setAttribute('data-trim', '1'); else ref.current.removeAttribute('data-trim');
           } else {
             wipe();
           }
@@ -4418,7 +4438,7 @@
     }
 
     // The picture she saves: her design on orbit white, its name, and the wordmark.
-    function studioCard(piece, design, shade) {
+    function studioCard(piece, design, shade, trim) {
       var W = 1080, H = 1350, side = 860;
       var cv = document.createElement('canvas');
       cv.width = W;
@@ -4433,7 +4453,7 @@
       g.fillRect(0, 0, W, 14);
       var art = document.createElement('canvas');
       art.width = art.height = side;
-      studioDraw(art, shade, { color: studioHex(design.color), print: design.print, ink: studioHex(design.ink), printScale: piece.scale });
+      studioDraw(art, shade, { color: studioHex(design.color), print: design.print, ink: studioHex(design.ink), printScale: piece.scale, trim: trim });
       g.drawImage(art, (W - side) / 2, 80);
       var font = function(style, px) { return style + ' ' + px + "px Jost, 'Helvetica Neue', Arial, sans-serif"; };
       // words set to fit the width: from `px` down, never under `least`
@@ -4580,7 +4600,7 @@
         var fileName = 'piper-and-quinn-' + slug + '.png';
         var blob;
         try {
-          blob = canvasPng(studioCard(piece, design, s.img));
+          blob = canvasPng(studioCard(piece, design, s.img, s.trim));
         } catch (e) {
           setNote({ text: "the picture couldn't be made. try again.", bad: true });
           return;
@@ -4715,7 +4735,7 @@
               el('input', Object.assign({ id: 'studio-name', className: 'studio-field', type: 'text', value: design.name, maxLength: STUDIO_NAME_MAX, placeholder: 'sunset flamingo', autoComplete: 'off', autoCapitalize: 'off', spellCheck: false, enterKeyHint: 'done', onChange: function(e) { setDesign(Object.assign({}, design, { name: e.target.value })); } }, words))),
             el('div', { className: 'studio-step' },
               label('what should we make next?', null, 'studio-note'),
-              el('textarea', Object.assign({ id: 'studio-note', className: 'studio-field', value: design.note, maxLength: STUDIO_NOTE_MAX, placeholder: 'a jacket? pants with pockets? tell us.', onChange: function(e) { setDesign(Object.assign({}, design, { note: e.target.value })); } }, words)),
+              el('textarea', Object.assign({ id: 'studio-note', className: 'studio-field', value: design.note, maxLength: STUDIO_NOTE_MAX, placeholder: 'a jacket? shorts with pockets? tell us.', onChange: function(e) { setDesign(Object.assign({}, design, { note: e.target.value })); } }, words)),
               el('div', { className: 'studio-hint' },
                 el('span', null, 'leave out your name, numbers and links.'),
                 el('span', { className: 'studio-count' }, design.note.length + '/' + STUDIO_NOTE_MAX))),
