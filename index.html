@@ -26,7 +26,8 @@
     // sound ready only on an iPhone or iPad, which it tells by touch. It looks as it loads,
     // and again at each tap. crewSound(true) has Safari on a Mac take that same step.
     // crewSound(false) undoes it. The step is on until the library has loaded, then only
-    // while a crew member is with her as her guide. ElevenLabs was sent a fix
+    // while a crew member is with her as her guide, or her pointer or her keyboard is on a
+    // "talk to" button on the home page. ElevenLabs was sent a fix
     // (github.com/elevenlabs/packages/pull/1025). It is not in 1.27.0. When a version has
     // it, take this script out and move the library on.
     (function () {
@@ -1217,8 +1218,9 @@
     /* ===== HOME: THE OPENING =====
        Piper and Quinn, side by side, and nobody else. Each sister is shown full length, and
        walks up and waves when the page opens. A small button on her picture lets her say
-       hello, with sound. Under the pictures the name of the brand is set with theirs: piper,
-       the ampersand, quinn. */
+       hello, with sound. A second one starts a voice call with her, and she talks from her
+       picture. Under the pictures the name of the brand is set with theirs: piper, the
+       ampersand, quinn. */
     .home {
       --words: 9.75rem;   /* the room kept under the pictures for the names and the ways in */
       --tall: max(17rem, calc(100vh - var(--nav-h) - var(--words)));
@@ -1248,7 +1250,7 @@
     }
 
     /* One sister's column. Her picture and her words are one button: her way in. Over the
-       picture sits a second, small button: to hear her say hello. */
+       picture sit two small buttons: to hear her say hello, and to talk to her. */
     .home-col {
       position: relative;
       flex: none;
@@ -1299,7 +1301,8 @@
 
     .home-still,
     .home-clip,
-    .home-say {
+    .home-say,
+    .home-talk {
       position: absolute;
       top: 0;
       left: 0;
@@ -1311,21 +1314,43 @@
     /* The clip opens on the still, so it can come in at once. At its end it holds its last
        frame for a moment, then fades back to her. */
     .home-clip,
-    .home-say {
+    .home-say,
+    .home-talk {
       opacity: 0;
       transition: opacity 0.6s ease 0.9s;
       pointer-events: none;
     }
 
     .home-figure.live .home-clip,
-    .home-figure.saying .home-say {
+    .home-figure.saying .home-say,
+    .home-figure.talking .home-talk {
       opacity: 1;
       transition: opacity 0.15s ease;
     }
 
+    /* Where her talking clip has to cut, the picture she was in is held over it and fades
+       off, so that she eases into her next pose and does not jump. */
+    .home-veil {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .home-veil[data-veil="on"] {
+      opacity: 1;
+    }
+
+    .home-veil[data-veil="off"] {
+      transition: opacity 0.3s ease;
+    }
+
     /* Over her picture: at the top, clear of her face, the button to hear her. At the foot,
-       what she is saying while she says it. The layer itself takes no taps, so a tap on the
-       picture still opens her page. */
+       what she is saying while she says it, and the button to talk to her. The layer itself
+       takes no taps, so a tap on the picture still opens her page. */
     .home-over {
       position: absolute;
       top: 0;
@@ -1335,9 +1360,23 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      align-items: flex-end;
       padding: 0.6rem;
       pointer-events: none;
+    }
+
+    .home-over-top,
+    .home-over-foot {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .home-over-top {
+      align-items: flex-end;
+    }
+
+    .home-over-foot {
+      align-items: center;
+      gap: 0.45rem;
     }
 
     .home-hear {
@@ -1431,6 +1470,78 @@
       line-height: 1.3;
       color: var(--ink);
       text-transform: lowercase;
+    }
+
+    /* As a call with her starts: that her voice is an ai's, and where what is said goes. The
+       chat says the same in its small print. On a wide screen the chat is in sight beside the
+       page, so the note is left to it. */
+    .home-ai {
+      font-size: 0.8rem;
+      color: var(--ink-soft);
+    }
+
+    @media (min-width: 1100px) {
+      .home-ai {
+        display: none;
+      }
+    }
+
+    /* At the foot of her picture: talk to her. A tap starts a voice call with her, here on
+       the home page, and she talks from her picture. In a call it is the way to end it. */
+    .home-call {
+      pointer-events: auto;
+      flex: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.45rem;
+      max-width: 100%;
+      min-height: 2.75rem;
+      padding: 0 1rem;
+      background: var(--ink);
+      border: 1px solid var(--ink);
+      border-radius: 999px;
+      font: inherit;
+      font-size: 0.88rem;
+      font-weight: 500;
+      letter-spacing: 0.03em;
+      color: #fff;
+      text-transform: lowercase;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+
+    .home-call:focus-visible {
+      outline: 3px solid var(--sky-blue);
+      outline-offset: 2px;
+    }
+
+    .home-call.on {
+      background: #fff;
+      border-color: var(--line);
+      color: var(--ink);
+    }
+
+    /* the mark: a microphone to talk, a square to end. On a narrow stage the microphone is
+       left out, so that the words fit. */
+    .home-call svg {
+      display: none;
+      flex: none;
+      width: 15px;
+      height: 15px;
+    }
+
+    .home-call-mark {
+      flex: none;
+      width: 0.7rem;
+      height: 0.7rem;
+      background: var(--ink);
+    }
+
+    @container home (min-width: 520px) {
+      .home-call svg {
+        display: block;
+      }
     }
 
     /* Three rows under the pictures, level across the page: the names, the roles, the ways in. */
@@ -3819,7 +3930,9 @@
     var crewDesk = {
       tell: function() {},   // say something to the crew member without interrupting her
       fold: function() {},   // on a narrow screen, fold the chat down to its bar
-      talk: function() {},   // open the chat and start talking
+      talk: function() {},   // start talking. talk(true): with the chat left folded, for a call started on her picture
+      hang: function() {},   // end the conversation that is up
+      wish: null,            // { name, at }: the chat that comes up for this crew member starts a call as it does
     };
 
     // Tell the crew member something without interrupting her (she cannot see the screen).
@@ -4062,7 +4175,7 @@
     // The chat with her guide. It stays with her on every page until she picks another guide
     // or closes it. `acts` is the page's side of the agent's buttons, and `acts.where()` says
     // where she is.
-    function GuideChat({ member, onAddToCart, onView, acts, onClose }) {
+    function GuideChat({ member, onAddToCart, onView, acts, onClose, onVoice }) {
       const [items, setItems] = useState([]);       // the thread: what was said, and pieces
       const [status, setStatus] = useState('idle'); // idle | starting | live
       const [written, setWritten] = useState(false); // the conversation that is up is in writing
@@ -4083,6 +4196,7 @@
       var actsRef = React.useRef(acts);
       actsRef.current = acts;
       var modeRef = React.useRef('listening');
+      var writtenRef = React.useRef(false);
       var mutedRef = React.useRef(false);
       var hushedRef = React.useRef(false);
       var addsRef = React.useRef(0);
@@ -4143,17 +4257,20 @@
         }).join(' / ') + ' Carry on from there, and do not greet her as if she were new.';
       };
 
-      var start = function(inWriting, firstWords) {
+      // `folded`: the call was started on her picture, on the home page. The chat stays as it
+      // is, so that on a narrow screen she can see her talk.
+      var start = function(inWriting, firstWords, folded) {
         if (statusRef.current !== 'idle') return;
         var before = recap();
         var hold = !inWriting && holdsMic();
         setState('starting');
         setWritten(!!inWriting);
+        writtenRef.current = !!inWriting;
         setMode('listening');
         setMuted(false);
         setHushed(false);
         setTrouble('');
-        setOpen(true);
+        if (!folded) setOpen(true);
         modeRef.current = 'listening';
         mutedRef.current = false;
         hushedRef.current = false;
@@ -4269,6 +4386,7 @@
           if (!mine()) return;
           talkRef.current = null;
           setState('idle');
+          setOpen(true);   // the reason shows in the chat: bring it into sight
           setTrouble(err && err.name === 'NoLibrary'
             ? name + "'s voice didn't load. check your connection, load the page again and try once more."
             : crewTrouble(err, member, inWriting));
@@ -4285,7 +4403,7 @@
         hushedRef.current = false;
         setHushed(false);
         setState('idle');
-        if (!quiet) put({ kind: 'aside', text: 'you ended the ' + (written ? 'chat' : 'call') + '.' });
+        if (!quiet) put({ kind: 'aside', text: 'you ended the ' + (writtenRef.current ? 'chat' : 'call') + '.' });
       };
 
       var send = function(e) {
@@ -4349,9 +4467,20 @@
       useEffect(function() {
         crewDesk.tell = function(words) { if (talkRef.current) talkRef.current.tell(words); };
         crewDesk.fold = function() { setOpen(false); };
-        crewDesk.talk = function() { setOpen(true); start(false); };
+        // "talk to piper", on her page or on her picture. A chat in writing gives way to the call.
+        crewDesk.talk = function(folded) {
+          if (!folded) setOpen(true);
+          if (statusRef.current === 'live' && writtenRef.current) stop(true);
+          start(false, null, folded);
+        };
+        crewDesk.hang = function() { stop(); };
+        // She asked for this crew member by tapping "talk to" on her picture: the call starts as
+        // the chat comes up, inside that tap.
+        var wish = crewDesk.wish;
+        crewDesk.wish = null;
+        if (wish && wish.name === member.name && Date.now() - wish.at < 3000) start(false, null, true);
         return function() {
-          crewDesk.tell = crewDesk.fold = crewDesk.talk = function() {};
+          crewDesk.tell = crewDesk.fold = crewDesk.talk = crewDesk.hang = function() {};
           clearTimeout(micTimer.current);
           clearTimeout(peekTimer.current);
           document.body.classList.remove('guide-peek-on');
@@ -4408,6 +4537,16 @@
       var live = status === 'live';
       var voice = live && !written;
       var talking = voice && mode === 'speaking' && !hushed;
+
+      // The page is told how a voice call stands, so that her picture on the home page can talk.
+      // It is told before the screen is drawn, so the chat and her picture never disagree.
+      var calling = status === 'starting' && !written ? 'starting' : !voice ? null : talking ? 'speaking' : 'listening';
+      React.useLayoutEffect(function() {
+        if (onVoice) onVoice(calling);
+      }, [calling]);
+      React.useLayoutEffect(function() {
+        return function() { if (onVoice) onVoice(null); };
+      }, []);
       var state = status === 'starting' ? 'connecting…'
         : !live ? 'your guide. talk or type.'
         : written ? 'chatting with you'
@@ -4658,10 +4797,39 @@
     // a little after Piper.
     // still: her picture. clip: her walking up and waving, with no sound. hello: the same walk with
     // her lips moving and her voice, played only on a tap. says: her words, shown while she says them.
+    // talk: her talking, with no sound, shown while she speaks in a voice call. It opens on the
+    // still and ends on it. From `from` to `to`, in seconds, she is talking: while she speaks the
+    // clip goes round between the two, and when she stops it plays on from `to`, back to how
+    // she stands. Her lips move while her voice plays. They do not follow her words.
+    // `from` and `to` are each a moment just inside a frame the clip can go to at once: the first
+    // frame of her talking, and the first of her way back. Just before `to` stand TALK_GUARD
+    // copies of the frame at `from` (see tools/talk/make_talk.py).
     var HOME_FIGURES = {
-      Piper: { still: 'img/piper-full.jpg', clip: 'img/piper-walk', wait: 600, hello: 'img/piper-hello', says: "hi, i'm piper! come shop with me." },
-      Quinn: { still: 'img/quinn-full.jpg', clip: 'img/quinn-walk', wait: 1700, hello: 'img/quinn-hello', says: "hi, i'm quinn! let's dress bold." },
+      Piper: { still: 'img/piper-full.jpg', clip: 'img/piper-walk', wait: 600, hello: 'img/piper-hello', says: "hi, i'm piper! come shop with me.", talk: { clip: 'img/piper-talk', from: 0.927, to: 4.093 } },
+      Quinn: { still: 'img/quinn-full.jpg', clip: 'img/quinn-walk', wait: 1700, hello: 'img/quinn-hello', says: "hi, i'm quinn! let's dress bold.", talk: { clip: 'img/quinn-talk', from: 0.677, to: 4.135 } },
     };
+    var TALK_LINGER = 350;   // ms she goes on after her voice stops: a breath between two sentences is not the end
+    var TALK_FRAME = 1 / 24;   // one frame of a talking clip, in seconds
+    var TALK_GUARD = 6;        // frames in a talking clip between the last of her talking and `to`
+
+    // Can a frame of this clip be drawn? A browser may hand a canvas nothing for it, or black.
+    // Then no picture is held over a cut: a cut is better than a black flash. These are pictures
+    // in daylight, so a frame that is all but black is no frame.
+    var talkProbe = null;
+    function talkFrameDraws(v) {
+      try {
+        if (!talkProbe) { talkProbe = document.createElement('canvas'); talkProbe.width = 4; talkProbe.height = 4; }
+        var g = talkProbe.getContext('2d', { willReadFrequently: true });
+        g.clearRect(0, 0, 4, 4);
+        g.drawImage(v, 0, 0, 4, 4);
+        var d = g.getImageData(0, 0, 4, 4).data, light = 0;
+        for (var i = 0; i < d.length; i += 4) {
+          if (d[i + 3] < 250) return false;
+          light += d[i] + d[i + 1] + d[i + 2];
+        }
+        return light > 16 * 3 * 12;
+      } catch (e) { return false; }
+    }
 
     // No clip for someone who has asked for less motion, or to save data: she gets the still.
     function homeMoves() {
@@ -4676,17 +4844,27 @@
     // `saying` is true while her hello plays: the silent clip gives way to it. `sayRef` hands the
     // page her hello, so that a tap can start it at once. `onSaid` tells the page she has stopped,
     // and `onStuck` that none of her hello's files could be had.
-    function HomeFigure({ member, again, saying, sayRef, onSaid, onStuck }) {
+    // `call` is how a voice call with her stands: 'starting', 'listening' or 'speaking'. Without one it is null.
+    function HomeFigure({ member, again, saying, sayRef, onSaid, onStuck, call }) {
       var fig = HOME_FIGURES[member.name];
       var clipRef = React.useRef(null);
+      var talkRef = React.useRef(null);
       var sayingNow = React.useRef(false);
       sayingNow.current = saying;
+      var callNow = React.useRef(null);
+      callNow.current = call || null;
+      var spokeAt = React.useRef(0);                 // when she was last seen speaking, by the watch on her talking clip
+      var veilRef = React.useRef(null);
+      var draws = React.useRef(null);                // can a frame of her talking clip be drawn? Not known until the first cut
       var [live, setLive] = useState(false);
       var [shown, setShown] = useState(false);   // her hello has a frame up
+      var [talking, setTalking] = useState(false);   // her talking clip is playing
+      var talkingNow = React.useRef(false);
+      talkingNow.current = talking;
       var [moves] = useState(homeMoves);
       var play = function() {
         var v = clipRef.current;
-        if (!v || sayingNow.current || (!v.paused && !v.ended)) return;   // no clip, she is talking, or it is playing now
+        if (!v || sayingNow.current || callNow.current || (!v.paused && !v.ended)) return;   // no clip, she is talking, or it is playing now
         try {
           v.muted = true;
           if (v.currentTime > 0) v.currentTime = 0;
@@ -4705,11 +4883,107 @@
         var v = clipRef.current;
         if (v && !v.paused) { try { v.pause(); } catch (e) {} }
       }, [saying]);
+
+      // In a call with her the walking clip stands aside, and her talking clip is fetched.
+      var inCall = !!call;
+      useEffect(function() {
+        if (!inCall) return;
+        var w = clipRef.current;
+        if (w && !w.paused) { try { w.pause(); } catch (e) {} }
+        var v = talkRef.current;
+        if (v && v.preload !== 'auto') { v.preload = 'auto'; try { v.load(); } catch (e) {} }
+      }, [inCall]);
+
+      // She begins to speak: her talking clip plays, from her still. She stops: see the watch below.
+      var speaking = call === 'speaking';
+      useEffect(function() {
+        var v = talkRef.current;
+        if (!v) return;
+        if (!speaking) {
+          if (!talkingNow.current && !v.paused) { try { v.pause(); } catch (e) {} }   // she stopped before it had a frame up
+          return;
+        }
+        spokeAt.current = Date.now();
+        if (!v.paused && !v.ended) return;   // still playing out her last line: the watch takes it round again
+        try {
+          v.muted = true;
+          if (v.currentTime > 0) v.currentTime = 0;
+          var p = v.play();
+          if (p && p.catch) p.catch(function() {});   // a browser that will not play it: the still stays
+        } catch (e) {}
+      }, [speaking]);
+
+      // Before a cut in her talking clip, the picture she is in is held over it. It fades off
+      // once the clip is where it was sent, so that she eases into her next pose and does not jump.
+      var hold = function(v) {
+        var c = veilRef.current;
+        if (!c || !v.videoWidth) return;
+        try {
+          if (draws.current === null) draws.current = talkFrameDraws(v);
+          if (!draws.current) return;
+          if (c.width !== v.videoWidth || c.height !== v.videoHeight) { c.width = v.videoWidth; c.height = v.videoHeight; }
+          c.getContext('2d').drawImage(v, 0, 0, c.width, c.height);
+          c.setAttribute('data-veil', 'on');
+          var lift = function() {
+            clearTimeout(late);
+            v.removeEventListener('seeked', lift);
+            c.setAttribute('data-veil', 'off');
+          };
+          var late = setTimeout(lift, 400);
+          v.addEventListener('seeked', lift);
+        } catch (e) {}
+      };
+
+      // While her talking clip plays, a look at each frame. As long as she speaks it goes round
+      // between `from` and `to`: it is sent back to `from` as the last frame of her talking comes
+      // up. Until the browser has done so it shows the copies of the frame at `from` that stand
+      // behind it, and never the first frame of her way back. Once she has been quiet for a
+      // moment it skips on to `to` and plays out: back to how she stands in her still. She
+      // speaks again on her way back: round she goes again.
+      useEffect(function() {
+        if (!talking) return;
+        var span = fig.talk, frame = 0, turn = span.to - (TALK_GUARD + 1) * TALK_FRAME - 0.015;
+        var watch = function() {
+          frame = requestAnimationFrame(watch);
+          var v = talkRef.current;
+          if (!v || v.paused) return;
+          var at = v.currentTime, now = Date.now();
+          try {
+            if (callNow.current === 'speaking') {
+              spokeAt.current = now;
+              if (at >= turn) {
+                if (at > span.to + TALK_FRAME) hold(v);   // she was on her way back: that is a cut
+                v.currentTime = span.from;
+              }
+            }
+            else if (at >= span.from && at < span.to && now - spokeAt.current >= TALK_LINGER) { hold(v); v.currentTime = span.to; }
+          } catch (e) {}
+        };
+        frame = requestAnimationFrame(watch);
+        return function() { cancelAnimationFrame(frame); };
+      }, [talking]);
+
+      // Her talking clip ran to its end. If she is speaking, it missed its turn: take it round.
+      var talked = function() {
+        var v = talkRef.current;
+        if (v && callNow.current === 'speaking') {
+          try {
+            hold(v);
+            v.currentTime = fig.talk.from;
+            var p = v.play();
+            if (p && p.catch) p.catch(function() {});
+          } catch (e) {}
+          return;
+        }
+        setTalking(false);
+      };
+
       // data-clip says what is showing of the silent clip: 'off' (no clip here), 'still' or 'playing'.
       // data-say is 'saying' while her hello plays. Someone who asked for less motion hears her and
-      // keeps the still.
-      return el('span', { className: 'home-figure' + (live ? ' live' : '') + (saying && shown && moves ? ' saying' : ''),
-          'data-clip': !moves ? 'off' : live ? 'playing' : 'still', 'data-say': saying ? 'saying' : 'quiet' },
+      // keeps the still. data-talk is the same for her talking clip: 'off', 'still' or 'talking'.
+      return el('span', { className: 'home-figure' + (live ? ' live' : '') + (saying && shown && moves ? ' saying' : '') + (talking ? ' talking' : ''),
+          'data-clip': !moves ? 'off' : live ? 'playing' : 'still', 'data-say': saying ? 'saying' : 'quiet',
+          'data-talk': !(moves && fig.talk) ? 'off' : talking ? 'talking' : 'still' },
         el('img', { className: 'home-still', src: fig.still, alt: '' }),
         moves && el('video', { ref: clipRef, className: 'home-clip', muted: true, playsInline: true, preload: 'auto', tabIndex: -1, 'aria-hidden': 'true', disablePictureInPicture: true,
             onPlaying: function() { setLive(true); }, onEnded: function() { setLive(false); }, onPause: function() { setLive(false); } },
@@ -4719,13 +4993,32 @@
             onPlaying: function() { setShown(true); }, onEnded: onSaid, onPause: onSaid },
           el('source', { src: fig.hello + '.mp4', type: 'video/mp4' }),
           // when the last file fails too, the browser waits for ever and tells nobody but this
-          el('source', { src: fig.hello + '.webm', type: 'video/webm', onError: onStuck })));
+          el('source', { src: fig.hello + '.webm', type: 'video/webm', onError: onStuck })),
+        moves && fig.talk && el('video', { ref: talkRef, className: 'home-talk', muted: true, playsInline: true, preload: 'none', tabIndex: -1, 'aria-hidden': 'true', disablePictureInPicture: true,
+            onPlaying: function() { setTalking(true); }, onPause: function() { setTalking(false); }, onEnded: talked },
+          el('source', { src: fig.talk.clip + '.mp4', type: 'video/mp4' }),
+          el('source', { src: fig.talk.clip + '.webm', type: 'video/webm' })),
+        moves && fig.talk && el('canvas', { ref: veilRef, className: 'home-veil', 'aria-hidden': 'true' }));
     }
 
-    function HomePage({ onSelectCrewMember, navigateTo }) {
+    // `voice` is the voice call that is up: { name, state }, or null. `onTalk(idx)` starts one with
+    // a sister, here on the home page, and `onHang()` ends it. `guided`: she has a guide.
+    function HomePage({ onSelectCrewMember, navigateTo, voice, onTalk, onHang, guided }) {
       var [again, setAgain] = useState({});
       var [talking, setTalking] = useState(null);   // the sister who is saying hello now, by name
       var [trouble, setTrouble] = useState(null);   // the sister whose hello would not play
+      var [heard, setHeard] = useState(null);       // the sister who has had her first say in this call
+      var spoke = React.useRef(null);
+      // Safari on a Mac readies its sound at a tap only once it has been told to, and the voice
+      // library looks before this page's buttons hear the tap (see crewSound, at the top of the
+      // page). So it is told as a pointer or the keyboard comes to "talk to", and untold as they
+      // leave, unless a guide is with her by then.
+      var guidedNow = React.useRef(false);
+      guidedNow.current = !!guided;
+      var near = function(on) { if (window.crewSound) window.crewSound(on || guidedNow.current); };
+      useEffect(function() {
+        return function() { near(false); };
+      }, []);
       var hellos = React.useRef({});                // each sister's hello: the <video> itself
       var talkingNow = React.useRef(null);
       talkingNow.current = talking;
@@ -4771,6 +5064,15 @@
         var t = setTimeout(function() { setTrouble(null); }, 3200);
         return function() { clearTimeout(t); };
       }, [trouble]);
+      // A call comes up: one voice at a time, so a hello that is playing stops. The note about
+      // her voice stays on her picture until she has had her first say.
+      var callWith = voice ? voice.name : null, callState = voice ? voice.state : null;
+      useEffect(function() {
+        if (!callWith) { spoke.current = null; setHeard(null); return; }
+        if (talkingNow.current) { hush(talkingNow.current); quiet(talkingNow.current); }
+        if (callState === 'speaking') spoke.current = callWith;
+        else if (callState === 'listening' && spoke.current === callWith) setHeard(callWith);
+      }, [callWith, callState]);
       // leaving the page stops her
       useEffect(function() {
         return function() {
@@ -4785,11 +5087,12 @@
         var fig = HOME_FIGURES[member.name];
         var low = member.name.toLowerCase();
         var on = talking === member.name;
+        var call = voice && voice.name === member.name ? voice.state : null;   // how a voice call with her stands
         sisters.push(el('div', { key: member.name, className: 'home-col', style: { '--zone-accent': member.accent } },
           el('button', { type: 'button', className: 'home-sister',
               onClick: function() { onSelectCrewMember(idx); },
               onMouseEnter: function() { setAgain(function(was) { var now = Object.assign({}, was); now[member.name] = (was[member.name] || 0) + 1; return now; }); } },
-            el(HomeFigure, { member: member, again: again[member.name] || 0, saying: on,
+            el(HomeFigure, { member: member, again: again[member.name] || 0, saying: on, call: call,
               sayRef: function(node) { hellos.current[member.name] = node; }, onSaid: function() { quiet(member.name); },
               onStuck: function() { if (talkingNow.current === member.name) fail(member.name); } }),
             el('span', { className: 'home-words' },
@@ -4797,13 +5100,23 @@
               el('span', { className: 'home-role' }, member.role),
               el('span', { className: 'home-go' }, 'shop with ' + low),
               first && el('span', { className: 'home-amp home-amp-seam', 'aria-hidden': 'true' }, '&'))),
-          fig.hello && el('div', { className: 'home-over' },
-            el('button', { type: 'button', className: 'home-hear' + (on ? ' on' : ''), 'aria-label': on ? 'stop ' + low : 'hear ' + low + ' say hello',
-                onClick: function() { hear(member.name); } },
-              el('span', { className: 'home-hear-mark', 'aria-hidden': 'true' }),
-              el('span', { className: 'home-hear-word' }, on ? 'stop' : 'hear ' + low)),
-            on ? el('p', { className: 'home-said' }, fig.says)
-              : trouble === member.name ? el('p', { className: 'home-said', role: 'status' }, "that didn't play. tap to try again.") : null)));
+          el('div', { className: 'home-over' },
+            // while a call is up there is one voice: no hello
+            el('div', { className: 'home-over-top' },
+              fig.hello && !voice && el('button', { type: 'button', className: 'home-hear' + (on ? ' on' : ''), 'aria-label': on ? 'stop ' + low : 'hear ' + low + ' say hello',
+                  onClick: function() { hear(member.name); } },
+                el('span', { className: 'home-hear-mark', 'aria-hidden': 'true' }),
+                el('span', { className: 'home-hear-word' }, on ? 'stop' : 'hear ' + low))),
+            el('div', { className: 'home-over-foot' },
+              on ? el('p', { className: 'home-said' }, fig.says)
+                : trouble === member.name ? el('p', { className: 'home-said', role: 'status' }, "that didn't play. tap to try again.")
+                : call && heard !== member.name ? el('p', { className: 'home-said home-ai' }, low + ' is an ai voice. what you say goes to elevenlabs.') : null,
+              el('button', { type: 'button', className: 'home-call' + (call ? ' on' : ''), 'aria-label': call && call !== 'starting' ? 'end call with ' + low : null,
+                  onPointerEnter: function() { near(true); }, onPointerDown: function() { near(true); }, onFocus: function() { near(true); }, onKeyDown: function() { near(true); },
+                  onPointerLeave: function() { near(false); }, onBlur: function() { near(false); },
+                  onClick: function() { if (call) onHang(); else onTalk(idx); } },
+                call === 'starting' ? null : call ? el('span', { className: 'home-call-mark', 'aria-hidden': 'true' }) : el(MicIcon, null),
+                el('span', { className: 'home-call-word' }, call === 'starting' ? 'connecting…' : call ? 'end call' : 'talk to ' + low))))));
       });
       return el('div', { className: 'home fade-in' },
         el('h1', { className: 'sr-only' }, 'piper & quinn'),
@@ -5628,6 +5941,7 @@
       const [piece, setPiece] = useState(null);                 // the piece window that is open (see ProductDetail)
       const [activeZoneIdx, setActiveZoneIdx] = useState(first.zone); // whose page she is on, on the zone page
       const [guideIdx, setGuideIdx] = useState(first.zone);     // her guide: with her on every page until she picks another or closes the chat
+      const [voice, setVoice] = useState(null);                 // the voice call with her guide: 'starting', 'listening' or 'speaking'. null: none
       const [outfit, setOutfit] = useState(null);
       const [design, setDesign] = useState(STUDIO_START);        // what she has made in the studio: it stays as she goes from page to page
       var freeLooksRef = React.useRef(0);
@@ -6165,6 +6479,14 @@
 
       var guide = guideIdx !== null ? CREW_MEMBERS[guideIdx] : null;
 
+      // "talk to piper", on her picture on the home page: she becomes the guide, where the
+      // shopper is, and the call starts inside the tap. A phone readies its sound in that tap.
+      var talkTo = function(idx) {
+        if (guideIdx === idx) { crewDesk.talk(true); return; }
+        crewDesk.wish = { name: CREW_MEMBERS[idx].name, at: Date.now() };
+        ReactDOM.flushSync(function() { setGuideIdx(idx); });
+      };
+
       useEffect(function() {
         document.body.classList.toggle('guide-on', !!guide);
         if (window.crewSound) window.crewSound(!!guide);
@@ -6247,7 +6569,8 @@
           el(Navbar, { currentPage: currentPage, navigateTo: navigateTo, cartCount: cart.length, photo: me.photo, onMe: function() { openMe(true); } }),
           el('input', { ref: meFile, type: 'file', accept: 'image/*', onChange: onPhotoFile, className: 'tryon-file me-file', tabIndex: -1, 'aria-hidden': 'true' }),
           el('div', { className: 'page-main' },
-            currentPage === 'home' && el(HomePage, { onSelectCrewMember: handleSelectCrewMember, navigateTo: navigateTo }),
+            currentPage === 'home' && el(HomePage, { onSelectCrewMember: handleSelectCrewMember, navigateTo: navigateTo,
+              voice: guide && voice ? { name: guide.name, state: voice } : null, onTalk: talkTo, onHang: function() { crewDesk.hang(); }, guided: !!guide }),
             currentPage === 'zone' && activeZoneIdx !== null && el(CrewZone, { memberIdx: activeZoneIdx, onSelectProduct: viewPiece, onSwitchZone: handleSelectCrewMember, navigateTo: navigateTo, isGuide: guideIdx === activeZoneIdx, onGuide: function() { setGuideIdx(activeZoneIdx); }, me: me }),
             currentPage === 'shop' && el(ShopPage, { setCurrentPage: navigateTo, onSelectProduct: viewPiece, me: me, meDo: meDo }),
             currentPage === 'studio' && el(DesignStudio, { design: design, setDesign: putDesign, onSeeReal: viewPiece }),
@@ -6267,7 +6590,7 @@
             meDo: meDo,
           }),
           meOpen && el(MePanel, { me: me, meDo: meDo, onClose: function() { openMe(false); } }),
-          guide && el(GuideChat, { key: guide.name, member: guide, onAddToCart: handleAddToCart, onView: viewFromChat, acts: acts, onClose: function() { setGuideIdx(null); } }))
+          guide && el(GuideChat, { key: guide.name, member: guide, onAddToCart: handleAddToCart, onView: viewFromChat, acts: acts, onClose: function() { setGuideIdx(null); }, onVoice: setVoice }))
       );
     }
 
