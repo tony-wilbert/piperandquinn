@@ -1,0 +1,5 @@
+# piperandquinn.com is the site's address. The old spelling forwards to it, keeping the rest of the address.
+http://piperandquin.com/* https://piperandquinn.com/:splat 301!
+https://piperandquin.com/* https://piperandquinn.com/:splat 301!
+http://www.piperandquin.com/* https://piperandquinn.com/:splat 301!
+https://www.piperandquin.com/* https://piperandquinn.com/:splat 301!
