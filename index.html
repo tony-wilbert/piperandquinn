@@ -2275,7 +2275,8 @@
       margin-top: 0.5rem;
     }
 
-    .me-sheet .me-add {
+    .me-sheet .me-add,
+    .me-sheet .btn-quiet.me-snap {
       margin-top: 0.9rem;
     }
 
@@ -2284,6 +2285,125 @@
       font-size: 0.78rem;
       color: var(--ink-soft);
       line-height: 1.5;
+    }
+
+    /* ===== TAKE A PHOTO ===== */
+    /* The camera's window sits over everything, the guide's bar on a phone included. */
+    .modal-overlay.cam-overlay {
+      z-index: 130;
+    }
+
+    .cam-sheet {
+      position: relative;
+      width: 100%;
+      max-width: 560px;
+      max-height: 94vh;
+      max-height: 94dvh;
+      overflow-y: auto;
+      background: #fff;
+      border-radius: var(--radius-lg);
+      box-shadow: 0 25px 50px rgba(42, 42, 42, 0.22);
+      padding: 1.6rem 1.5rem 1.4rem;
+    }
+
+    .cam-sheet .me-sheet-title {
+      margin-bottom: 0.9rem;
+    }
+
+    /* The picture takes what room the window has left, so the buttons stay on the screen. */
+    .cam-stage {
+      position: relative;
+      height: clamp(180px, calc(94vh - 330px), 520px);
+      height: clamp(180px, calc(94dvh - 330px), 520px);
+      background: var(--wild-black);
+      border-radius: 14px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .cam-stage.off {
+      display: none;
+    }
+
+    .cam-video,
+    .cam-shot {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .cam-video.mirror {
+      transform: scaleX(-1);
+    }
+
+    .cam-video.gone {
+      display: none;
+    }
+
+    .cam-count {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 7rem;
+      font-weight: 300;
+      color: #fff;
+      text-shadow: 0 2px 14px rgba(0, 0, 0, 0.5);
+      pointer-events: none;
+    }
+
+    .cam-wait {
+      position: absolute;
+      color: #fff;
+      font-size: 0.9rem;
+    }
+
+    .cam-says {
+      margin-top: 0.9rem;
+      min-height: 1.4em;
+      font-size: 0.92rem;
+      line-height: 1.5;
+    }
+
+    .cam-says.bad {
+      color: var(--error);
+    }
+
+    .cam-acts {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      margin-top: 0.7rem;
+    }
+
+    .cam-acts .tryon-go {
+      width: auto;
+      flex: 1 1 12rem;
+      padding: 12px 22px;
+    }
+
+    .cam-acts .btn-quiet {
+      flex: 1 1 8rem;
+    }
+
+    .cam-opts {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0 1.2rem;
+      margin-top: 0.3rem;
+    }
+
+    .me-band-acts .me-snap {
+      margin: 0;
+    }
+
+    .tryon-snap {
+      display: block;
+      margin: 0.35rem auto 0;
     }
 
     /* ===== THE OUTFIT A CREW MEMBER SHOWS ===== */
@@ -3563,7 +3683,8 @@
             me.trouble || 'see every piece on you. add a full-length photo of you, facing the camera.',
             !me.trouble && el('span', { className: 'me-band-fine' }, meNote(me.kept))),
           el('div', { className: 'me-band-acts' },
-            el('button', { type: 'button', className: 'btn-quiet me-add', disabled: me.reading, onClick: meDo.pick }, me.reading ? 'opening your photo…' : 'add my photo')));
+            el('button', { type: 'button', className: 'btn-quiet me-add', disabled: me.reading, onClick: meDo.pick }, me.reading ? 'opening your photo…' : 'add my photo'),
+            el('button', { type: 'button', className: 'btn-quiet me-snap', disabled: me.reading, onClick: function() { meDo.snap(); } }, 'take a photo')));
       }
       var how = meWords(me);
       return el('div', { className: 'me-band' },
@@ -3599,14 +3720,260 @@
                 el('div', { className: 'me-sheet-says' + (me.trouble || how.bad ? ' bad' : ''), role: 'status' }, me.trouble || how.words),
                 el('div', { className: 'me-sheet-links' },
                   el('button', { type: 'button', className: 'tryon-link', disabled: me.reading, onClick: meDo.pick }, me.reading ? 'opening your photo…' : 'change photo'),
+                  el('button', { type: 'button', className: 'tryon-link me-snap', disabled: me.reading, onClick: function() { meDo.snap(); } }, 'take a new photo'),
                   el('button', { type: 'button', className: 'tryon-link', disabled: me.reading, onClick: function() { meDo.removePhoto(); setRemoved(true); } }, 'remove photo'))))
           ) : (
             el('div', null,
               el('div', { className: 'me-sheet-says' + (me.trouble ? ' bad' : ''), role: 'status' },
                 me.trouble || (removed ? 'your photo and your looks are gone from this device.' : 'no photo yet. add one to see every piece on you.')),
-              el('button', { type: 'button', className: 'btn-quiet me-add', disabled: me.reading, onClick: meDo.pick }, me.reading ? 'opening your photo…' : 'add my photo'))
+              el('div', { className: 'me-band-acts' },
+                el('button', { type: 'button', className: 'btn-quiet me-add', disabled: me.reading, onClick: meDo.pick }, me.reading ? 'opening your photo…' : 'add my photo'),
+                el('button', { type: 'button', className: 'btn-quiet me-snap', disabled: me.reading, onClick: function() { meDo.snap(); } }, 'take a photo')))
           ),
           el('div', { className: 'me-sheet-fine' }, meNote(me.kept))));
+    }
+
+    // ===== TAKE A PHOTO =====
+    // The camera, in the page. The front camera starts with a 5-second timer, so she can prop
+    // up her phone and step back for a full-length photo. The back camera starts without one,
+    // for a friend to take it. A photo she takes goes the way a chosen one goes: it is kept on
+    // her device and sent to FASHN for her looks. Where the page cannot open the camera, "add
+    // a photo instead" opens the device's own chooser, which offers its camera on a phone.
+    var SNAP_WAIT = 5;
+    var snapWas = { facing: 'user' };   // the camera she used last, for the next time
+
+    function cameraTrouble(err) {
+      var name = err && err.name;
+      if (name === 'NotAllowedError' || name === 'PermissionDeniedError' || name === 'SecurityError') {
+        return 'the camera is off for this site. turn it on in your browser, or add a photo instead.';
+      }
+      if (name === 'NotFoundError' || name === 'DevicesNotFoundError' || name === 'OverconstrainedError') {
+        return "we couldn't find a camera. add a photo instead.";
+      }
+      if (name === 'NotReadableError' || name === 'TrackStartError') {
+        return 'another app is using the camera. close it and try again, or add a photo instead.';
+      }
+      return "the camera didn't start. try again, or add a photo instead.";
+    }
+
+    // `onDone(file)` when she uses a photo, `onDone(null)` when she closes the window.
+    function CameraSheet({ kept, onDone }) {
+      const [phase, setPhase] = useState('starting');   // starting | live | counting | taken | trouble
+      const [facing, setFacing] = useState(snapWas.facing);
+      const [timer, setTimer] = useState(snapWas.facing !== 'environment');
+      const [count, setCount] = useState(0);
+      const [shot, setShot] = useState(null);           // { url, blob }
+      const [trouble, setTrouble] = useState('');
+      const [mirror, setMirror] = useState(true);
+      const [cams, setCams] = useState(0);
+      const [retry, setRetry] = useState(true);   // false where the browser has no camera to ask for
+      var videoRef = React.useRef(null);
+      var streamRef = React.useRef(null);
+      var fileRef = React.useRef(null);
+      var takeRef = React.useRef(null);
+      var runRef = React.useRef(0);
+      var goneRef = React.useRef(false);
+      var timerSet = React.useRef(false);
+      var phaseRef = React.useRef(phase);
+      phaseRef.current = phase;
+      var facingRef = React.useRef(facing);
+      facingRef.current = facing;
+      var shotRef = React.useRef(shot);
+      shotRef.current = shot;
+
+      var stopStream = function() {
+        var stream = streamRef.current;
+        streamRef.current = null;
+        if (stream) stream.getTracks().forEach(function(t) { try { t.stop(); } catch (e) {} });
+        if (videoRef.current) videoRef.current.srcObject = null;
+      };
+
+      var startStream = function(face) {
+        var my = ++runRef.current;
+        stopStream();
+        var md = navigator.mediaDevices;
+        if (!md || !md.getUserMedia) {
+          setTrouble("this browser can't open the camera here. add a photo instead.");
+          setRetry(false);
+          setPhase('trouble');
+          return;
+        }
+        setTrouble('');
+        setPhase('starting');
+        md.getUserMedia({ audio: false, video: { facingMode: { ideal: face }, width: { ideal: 1920 }, height: { ideal: 1920 } } }).then(function(stream) {
+          if (goneRef.current || runRef.current !== my) {
+            stream.getTracks().forEach(function(t) { try { t.stop(); } catch (e) {} });
+            return;
+          }
+          streamRef.current = stream;
+          var track = stream.getVideoTracks()[0];
+          var got = track && track.getSettings ? track.getSettings() : {};
+          // a back camera is shown as it sees. A front camera, or a laptop's, as a mirror.
+          setMirror(got.facingMode !== 'environment');
+          var v = videoRef.current;
+          if (v) {
+            v.srcObject = stream;
+            var playing = v.play();
+            if (playing && playing.catch) playing.catch(function() {});
+          }
+          setPhase('live');
+          if (md.enumerateDevices) {
+            md.enumerateDevices().then(function(list) {
+              if (!goneRef.current) setCams(list.filter(function(d) { return d.kind === 'videoinput'; }).length);
+            }, function() {});
+          }
+        }, function(err) {
+          if (goneRef.current || runRef.current !== my) return;
+          setTrouble(cameraTrouble(err));
+          setPhase('trouble');
+        });
+      };
+
+      // The camera starts as the window opens, and is let go when it closes.
+      useEffect(function() {
+        startStream(facingRef.current);
+        return function() {
+          goneRef.current = true;
+          runRef.current += 1;
+          stopStream();
+          if (shotRef.current) URL.revokeObjectURL(shotRef.current.url);
+        };
+      }, []);
+
+      // Leaving the page lets the camera go, and stops a timer. Coming back takes it up again.
+      useEffect(function() {
+        var onShow = function() {
+          if (document.visibilityState === 'hidden') {
+            runRef.current += 1;
+            stopStream();
+            if (phaseRef.current === 'counting' || phaseRef.current === 'starting') setPhase('live');
+          } else if (phaseRef.current === 'live' || phaseRef.current === 'starting') {
+            startStream(facingRef.current);
+          }
+        };
+        document.addEventListener('visibilitychange', onShow);
+        return function() { document.removeEventListener('visibilitychange', onShow); };
+      }, []);
+
+      // Escape closes this window, and nothing under it.
+      useEffect(function() {
+        var onKey = function(e) {
+          if (e.key !== 'Escape') return;
+          e.stopPropagation();
+          onDone(null);
+        };
+        window.addEventListener('keydown', onKey, true);
+        return function() { window.removeEventListener('keydown', onKey, true); };
+      }, []);
+
+      useEffect(function() {
+        if (phase === 'live' && takeRef.current) takeRef.current.focus({ preventScroll: true });
+      }, [phase]);
+
+      var snapNow = function() {
+        var v = videoRef.current;
+        if (!v || !v.videoWidth || !streamRef.current) { setPhase('live'); return; }
+        var c = document.createElement('canvas');
+        c.width = v.videoWidth;
+        c.height = v.videoHeight;
+        var ctx = c.getContext('2d');
+        // the photo is as she saw it
+        if (mirror) { ctx.translate(c.width, 0); ctx.scale(-1, 1); }
+        ctx.drawImage(v, 0, 0, c.width, c.height);
+        c.toBlob(function(blob) {
+          if (goneRef.current) return;
+          if (!blob) {
+            setTrouble("that photo didn't come out. try again.");
+            setPhase('live');
+            return;
+          }
+          setShot({ blob: blob, url: URL.createObjectURL(blob) });
+          setPhase('taken');
+        }, 'image/jpeg', 0.92);
+      };
+
+      // The timer: one second at a time, then the photo.
+      useEffect(function() {
+        if (phase !== 'counting') return;
+        if (count <= 0) { snapNow(); return; }
+        var t = setTimeout(function() { setCount(function(n) { return n - 1; }); }, 1000);
+        return function() { clearTimeout(t); };
+      }, [phase, count]);
+
+      var take = function() {
+        if (phase !== 'live') return;
+        setTrouble('');
+        if (timer) {
+          setCount(SNAP_WAIT);
+          setPhase('counting');
+        } else {
+          snapNow();
+        }
+      };
+      var stopTimer = function() {
+        setCount(0);
+        setPhase('live');
+      };
+      var again = function() {
+        if (shot) URL.revokeObjectURL(shot.url);
+        setShot(null);
+        if (streamRef.current) setPhase('live');
+        else startStream(facing);
+      };
+      var use = function() {
+        if (!shot) return;
+        var file;
+        try { file = new File([shot.blob], 'camera.jpg', { type: 'image/jpeg' }); } catch (e) { file = shot.blob; }
+        snapWas.facing = facing;
+        onDone(file);
+      };
+      var flip = function() {
+        var next = facing === 'environment' ? 'user' : 'environment';
+        setFacing(next);
+        if (!timerSet.current) setTimer(next !== 'environment');
+        startStream(next);
+      };
+      var flipTimer = function() {
+        timerSet.current = true;
+        setTimer(!timer);
+      };
+      var instead = function() {
+        if (fileRef.current) fileRef.current.click();
+      };
+      var onFile = function(e) {
+        var file = e.target.files && e.target.files[0];
+        e.target.value = '';
+        if (file) onDone(file);
+      };
+
+      var counting = phase === 'counting';
+      var says = trouble || 'stand back so all of you fits, facing the camera.';
+      if (phase === 'trouble') says = trouble;
+      else if (phase === 'taken') says = 'happy with it? use this photo, or take another.';
+      else if (counting) says = count > 0 ? 'taking it in ' + count + '…' : '';
+
+      return el('div', { className: 'modal-overlay cam-overlay', onClick: function(e) { if (e.target === e.currentTarget) onDone(null); } },
+        el('div', { className: 'cam-sheet', role: 'dialog', 'aria-label': 'take a photo' },
+          el('button', { className: 'modal-close', onClick: function() { onDone(null); }, 'aria-label': 'close' }, '×'),
+          el('h2', { className: 'me-sheet-title' }, 'take a photo'),
+          el('div', { className: 'cam-stage' + (phase === 'trouble' ? ' off' : '') },
+            el('video', { ref: videoRef, className: 'cam-video' + (mirror ? ' mirror' : '') + (phase === 'taken' ? ' gone' : ''), playsInline: true, muted: true, autoPlay: true, 'aria-label': 'what the camera sees' }),
+            phase === 'taken' && shot && el('img', { className: 'cam-shot', src: shot.url, alt: 'the photo you took' }),
+            counting && count > 0 && el('div', { className: 'cam-count', 'aria-hidden': 'true' }, String(count)),
+            phase === 'starting' && el('div', { className: 'cam-wait' }, 'opening the camera…')),
+          el('div', { className: 'cam-says' + (phase === 'trouble' ? ' bad' : ''), role: 'status', 'aria-live': 'polite' }, says),
+          el('div', { className: 'cam-acts' },
+            phase === 'live' && el('button', { ref: takeRef, type: 'button', className: 'tryon-go cam-take', onClick: take }, 'take photo'),
+            counting && el('button', { type: 'button', className: 'btn-quiet cam-stop', onClick: stopTimer }, 'stop the timer'),
+            phase === 'taken' && el('button', { type: 'button', className: 'tryon-go cam-use', onClick: use }, 'use this photo'),
+            phase === 'taken' && el('button', { type: 'button', className: 'btn-quiet cam-again', onClick: again }, 'take another'),
+            phase === 'trouble' && el('button', { type: 'button', className: 'tryon-go cam-instead', onClick: instead }, 'add a photo instead'),
+            phase === 'trouble' && retry && el('button', { type: 'button', className: 'btn-quiet cam-retry', onClick: function() { startStream(facing); } }, 'try again')),
+          phase === 'live' && el('div', { className: 'cam-opts' },
+            el('button', { type: 'button', className: 'tryon-link cam-timer', 'aria-pressed': timer, onClick: flipTimer }, timer ? '5-second timer: on' : '5-second timer: off'),
+            cams > 1 && el('button', { type: 'button', className: 'tryon-link cam-flip', onClick: flip }, 'switch camera')),
+          el('input', { ref: fileRef, type: 'file', accept: 'image/*', onChange: onFile, className: 'tryon-file', tabIndex: -1, 'aria-hidden': 'true' }),
+          el('div', { className: 'me-sheet-fine' }, meNote(kept))));
     }
 
     // The try-on panel. `pieces` is one product, or two for an outfit (in the order they go on).
@@ -3693,6 +4060,20 @@
         e.target.value = '';
         if (!file) { mark(look ? 'made' : 'none'); return; }
         if (busy) return;
+        takeFile(file);
+      };
+
+      // "take a photo": the camera's window is the app's. What she takes comes back here.
+      var snap = function() {
+        if (busy) return;
+        mark('reading');
+        meDo.snap(function(file) {
+          if (runRef.current === -1) { meDo.use(file); return; }   // this window has closed
+          takeFile(file);
+        }, function() { mark(madeRef.current ? 'made' : 'none'); });
+      };
+
+      var takeFile = function(file) {
         var my = ++runRef.current;
         setReading(true);
         setFileTrouble('');
@@ -3778,7 +4159,8 @@
         ) : (
           el(React.Fragment, null,
             el('div', { className: 'tryon-tip' }, tip),
-            el('button', { className: 'tryon-go', disabled: busy, onClick: pick }, phase === 'opening' ? 'opening your photo…' : 'choose a photo'))
+            el('button', { className: 'tryon-go', disabled: busy, onClick: pick }, phase === 'opening' ? 'opening your photo…' : 'choose a photo'),
+            el('button', { className: 'tryon-link tryon-snap', disabled: busy, onClick: snap }, 'take a photo'))
         ),
         phase === 'working' && el('div', { className: 'tryon-bar' }),
         el('div', { className: 'tryon-status' + (phase === 'error' ? ' tryon-error' : ''), role: 'status', 'aria-live': 'polite' }, status),
@@ -3966,6 +4348,11 @@
       }
       if (!written && (name === 'NotFoundError' || name === 'NotReadableError' || name === 'OverconstrainedError')) {
         return "we couldn't find a microphone. you can type instead.";
+      }
+      // ElevenLabs answered, and turned the conversation away: out of credit, or too busy.
+      // The connection is fine, so it is not hers to fix.
+      if (err && err.closeReason) {
+        return member.name.toLowerCase() + " can't talk right now. you can still shop and try things on.";
       }
       return "couldn't reach " + member.name.toLowerCase() + '. check your connection and try again.';
     }
@@ -5970,6 +6357,10 @@
       var meFront = React.useRef(null);  // the piece whose look is made next, ahead of the shop's order
       var meTimer = React.useRef(null);
       var meFile = React.useRef(null);
+      // "take a photo": the camera's window is open while `snapRef` holds what to do with the
+      // photo she takes, { use(file), cancel() }.
+      const [snapOpen, setSnapOpen] = useState(false);
+      var snapRef = React.useRef(null);
 
       var setMe = function(change) {
         meRef.current = Object.assign({}, meRef.current, change);
@@ -6156,6 +6547,22 @@
         var file = e.target.files && e.target.files[0];
         e.target.value = '';
         if (!file) return;
+        usePhoto(file);
+      };
+      var openSnap = function(use, cancel) {
+        if (snapRef.current || meRef.current.reading) return;
+        snapRef.current = { use: use || usePhoto, cancel: cancel || null };
+        setSnapOpen(true);
+      };
+      var closeSnap = function(file) {
+        var how = snapRef.current;
+        snapRef.current = null;
+        setSnapOpen(false);
+        if (!how) return;
+        if (file) how.use(file);
+        else if (how.cancel) how.cancel();
+      };
+      var usePhoto = function(file) {
         var epoch = meEpoch.current;
         setMe({ reading: true, trouble: '' });
         fitPhoto(file).then(function(image) {
@@ -6169,7 +6576,7 @@
 
       var meDo = {
         make: makeLook, want: wantLook, drop: dropLook, setPhoto: setPhoto, removePhoto: removePhoto,
-        pick: pickPhoto, resume: resumeLooks,
+        pick: pickPhoto, resume: resumeLooks, snap: openSnap, use: function(file) { usePhoto(file); },
         show: function(on) { setMe({ show: !!on }); },
         open: function() { openMe(true); },
       };
@@ -6502,6 +6909,11 @@
       useEffect(function() {
         var onPop = function() {
           var to = readRoute();
+          if (snapRef.current) {
+            closeSnap(null);
+            noteRoute(pageRef.current, zoneRef.current);
+            return;
+          }
           if (tryingOn()) {
             noteRoute(pageRef.current, zoneRef.current);
             return;
@@ -6590,6 +7002,7 @@
             meDo: meDo,
           }),
           meOpen && el(MePanel, { me: me, meDo: meDo, onClose: function() { openMe(false); } }),
+          snapOpen && el(CameraSheet, { kept: me.kept, onDone: closeSnap }),
           guide && el(GuideChat, { key: guide.name, member: guide, onAddToCart: handleAddToCart, onView: viewFromChat, acts: acts, onClose: function() { setGuideIdx(null); }, onVoice: setVoice }))
       );
     }
