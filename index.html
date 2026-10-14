@@ -4795,8 +4795,8 @@
     // the still, so nobody sees it start. It plays once when the page opens, and again when
     // a pointer comes over her. `wait` is how long after the page opens, in ms: Quinn starts
     // a little after Piper.
-    // still: her picture. clip: her walking up and waving, with no sound. hello: the same walk with
-    // her lips moving and her voice, played only on a tap. says: her words, shown while she says them.
+    // still: her picture. clip: her walking up and waving, with no sound. hello: her saying hello,
+    // with her voice, played only on a tap. says: her words, shown while she says them.
     // talk: her talking, with no sound, shown while she speaks in a voice call. It opens on the
     // still and ends on it. From `from` to `to`, in seconds, she is talking: while she speaks the
     // clip goes round between the two, and when she stops it plays on from `to`, back to how
@@ -4806,7 +4806,7 @@
     // copies of the frame at `from` (see tools/talk/make_talk.py).
     var HOME_FIGURES = {
       Piper: { still: 'img/piper-full.jpg', clip: 'img/piper-walk', wait: 600, hello: 'img/piper-hello', says: "hi, i'm piper! come shop with me.", talk: { clip: 'img/piper-talk', from: 0.927, to: 4.093 } },
-      Quinn: { still: 'img/quinn-full.jpg', clip: 'img/quinn-walk', wait: 1700, hello: 'img/quinn-hello', says: "hi, i'm quinn! let's dress bold.", talk: { clip: 'img/quinn-talk', from: 0.677, to: 4.135 } },
+      Quinn: { still: 'img/quinn-full.jpg', clip: 'img/quinn-walk', wait: 1700, hello: 'img/quinn-hello', says: "hi, i'm quinn! let's dress bold.", talk: { clip: 'img/quinn-talk', from: 1.093, to: 4.01 } },
     };
     var TALK_LINGER = 350;   // ms she goes on after her voice stops: a breath between two sentences is not the end
     var TALK_FRAME = 1 / 24;   // one frame of a talking clip, in seconds
