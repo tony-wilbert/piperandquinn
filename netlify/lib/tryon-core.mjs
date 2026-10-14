@@ -30,7 +30,7 @@ export const GARMENTS = {
 // The site's own addresses: the live site, and Netlify's addresses for this project
 // (the staging branch, deploy previews, single deploys). A look can only be started
 // from a page on one of these, or on the address the function itself was reached at.
-export const OUR_HOSTS = /^(www\.)?piperandquin\.com$|^([a-z0-9-]+--)?piperandquin\.netlify\.app$/;
+export const OUR_HOSTS = /^(www\.)?piperandquinn?\.com$|^([a-z0-9-]+--)?piperandquin\.netlify\.app$/;
 
 // A setting, trimmed: pasted keys have arrived with spaces and line breaks.
 export function setting(name) {

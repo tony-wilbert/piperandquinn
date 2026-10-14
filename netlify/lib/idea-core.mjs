@@ -27,7 +27,7 @@ const WAIT_MS = 8000; // for all the store's answers to one request, together
 // A Blobs store is shared by every deploy of the project. So the live site and the
 // previews get a store each, picked by the address the request came to, and never share
 // ideas.
-const LIVE = ["piperandquin.com", "www.piperandquin.com", "piperandquin.netlify.app"];
+const LIVE = ["piperandquinn.com", "www.piperandquinn.com", "piperandquin.com", "www.piperandquin.com", "piperandquin.netlify.app"];
 export function storeFor(host) {
   return LIVE.includes(String(host).toLowerCase()) ? "ideas-live" : "ideas-preview";
 }
