@@ -3453,7 +3453,9 @@
     var TRYON_START = '/api/tryon';
     var TRYON_STATUS = '/api/tryon-status';
     var TRYON_ASK_EVERY = 2000;
-    var TRYON_GIVE_UP = 90000;
+    // How long to wait for a look. FASHN charges for a look it finishes even after the page has
+    // stopped asking, and on 17 October 2026 one took more than a minute.
+    var TRYON_GIVE_UP = 150000;
 
     // Shrink a photo to 1536px on its long side and return it as a JPEG data URI.
     function fitPhoto(file) {
