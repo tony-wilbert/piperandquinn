@@ -9,23 +9,71 @@ export const FASHN = "https://api.fashn.ai/v1";
 export const MODEL = "tryon-v1.6";
 export const MODE = "quality"; // performance | balanced | quality (one credit either way)
 
+// FASHN's Try-On Max, for the pieces marked `max` below. It is given the garment picture and
+// her photo and works out the rest: no kind to send, no cutting out to ask for. At 1k its
+// fast setting is one credit a look, as tryon-v1.6 is; balanced is two and quality three
+// (FASHN's documentation, read 17 October 2026).
+export const MAX = "tryon-max";
+export const MAX_MODE = "fast";
+export const MAX_SIZE = "1k";
+
 // Product id in index.html -> garment picture in /img/tryon, and FASHN's name for its kind.
 // The pictures show the garment only, no person.
 //
-// `cut`: FASHN first cuts the clothes she is wearing out of the photo (its
-// segmentation_free setting, turned off). Without it both dresses kept pieces of the old
-// clothes on 10 October 2026: a trouser leg, a sleeve. FASHN's documentation gives this
-// setting for clothes that "are not removed properly".
+// `max`: the piece goes through Try-On Max. With tryon-v1.6 neither dress came out right on
+// 10 October 2026: they kept pieces of the old clothes (a trouser leg, a sleeve), and with
+// those cut out first, one had a tie at the waist the dress does not have and the other long
+// dark sleeves. The Wide Leg Pants came out narrower in the leg.
+//
+// `cut` (tryon-v1.6 only): FASHN first cuts the clothes she is wearing out of the photo (its
+// segmentation_free setting, turned off), for clothes that "are not removed properly", in
+// FASHN's words. No piece has it now.
 export const GARMENTS = {
   1: { file: "burgundy-polo.jpg", category: "tops" },
   2: { file: "blush-sweater.jpg", category: "tops" },
-  3: { file: "polka-dot-dress.jpg", category: "one-pieces", cut: true },
-  4: { file: "lime-polo-dress.jpg", category: "one-pieces", cut: true },
+  3: { file: "polka-dot-dress.jpg", category: "one-pieces", max: true },
+  4: { file: "lime-polo-dress.jpg", category: "one-pieces", max: true },
   5: { file: "classic-polo.jpg", category: "tops" },
   6: { file: "pleated-skirt.jpg", category: "bottoms" },
   7: { file: "ruffle-skirt.jpg", category: "bottoms" },
-  8: { file: "wide-leg-pants.jpg", category: "bottoms" },
+  8: { file: "wide-leg-pants.jpg", category: "bottoms", max: true },
 };
+
+// What is sent to FASHN's /run for a look of piece `g` on her photo. `garment` is the
+// address of the piece's picture.
+export function runFor(g, photo, garment, seed) {
+  if (g.max) {
+    return {
+      model_name: MAX,
+      inputs: {
+        product_image: garment,
+        model_image: photo,
+        generation_mode: MAX_MODE,
+        resolution: MAX_SIZE,
+        seed,
+        num_images: 1,
+        output_format: "jpeg",
+        return_base64: true,
+      },
+    };
+  }
+  return {
+    model_name: MODEL,
+    inputs: {
+      model_image: photo,
+      garment_image: garment,
+      category: g.category,
+      segmentation_free: !g.cut,
+      garment_photo_type: "flat-lay",
+      moderation_level: "conservative",
+      mode: MODE,
+      seed,
+      num_samples: 1,
+      output_format: "jpeg",
+      return_base64: true,
+    },
+  };
+}
 
 // The site's own addresses: the live site, and Netlify's addresses for this project
 // (the staging branch, deploy previews, single deploys). A look can only be started

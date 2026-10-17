@@ -9,7 +9,7 @@
 //
 // The photo is passed straight to FASHN. Nothing here stores it or writes it to a log.
 
-import { GARMENTS, MODEL, MODE, OUR_HOSTS, setting, json, fail, clip, log, askFashn, refusal, failure } from "../lib/tryon-core.mjs";
+import { GARMENTS, MODEL, MAX, OUR_HOSTS, setting, json, fail, clip, log, askFashn, refusal, failure, runFor } from "../lib/tryon-core.mjs";
 
 const MAX_PHOTO = 3000000; // characters; the page sends well under a third of this
 
@@ -34,6 +34,7 @@ async function check(url) {
     ready: !!key,
     missing: key ? [] : ["FASHN_API_KEY"],
     model: MODEL,
+    max: { model: MAX, pieces: Object.keys(GARMENTS).filter((id) => GARMENTS[id].max).map(Number) },
     garments: url.origin + "/img/tryon/",
     asked_fashn: false,
     says: key
@@ -140,22 +141,7 @@ async function start(req, url) {
   const r = await askFashn("/run", key, {
     method: "POST",
     ms: 25000,
-    body: {
-      model_name: MODEL,
-      inputs: {
-        model_image: photo,
-        garment_image: home + "/img/tryon/" + g.file,
-        category: g.category,
-        segmentation_free: !g.cut,
-        garment_photo_type: "flat-lay",
-        moderation_level: "conservative",
-        mode: MODE,
-        seed: Math.floor(Math.random() * 4294967296),
-        num_samples: 1,
-        output_format: "jpeg",
-        return_base64: true,
-      },
-    },
+    body: runFor(g, photo, home + "/img/tryon/" + g.file, Math.floor(Math.random() * 4294967296)),
   });
 
   if (r.status >= 200 && r.status < 300 && r.data && typeof r.data.id === "string" && r.data.id && !r.data.error) {
