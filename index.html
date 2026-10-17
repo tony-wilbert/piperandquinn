@@ -2429,11 +2429,24 @@
     }
 
     .outfit-piece {
+      padding: 0.55rem 0 0.7rem;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .outfit-piece-line {
       display: flex;
       align-items: baseline;
       gap: 1rem;
-      padding: 0.5rem 0;
-      border-bottom: 1px solid var(--line);
+    }
+
+    /* The colors a piece comes in, under its name. */
+    .outfit-piece-colors {
+      margin-top: 0.55rem;
+    }
+
+    .outfit-piece-colors .guide-color {
+      width: 26px;
+      height: 26px;
     }
 
     .outfit-piece-name {
@@ -2474,12 +2487,40 @@
       object-position: top;
     }
 
+    /* The pieces on their own, each in her color: the top over the bottom, like a flat lay,
+       and clear of the switch at the foot. */
+    .outfit-shots {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      height: 100%;
+      min-height: 400px;
+      padding: 6% 8% calc(3% + 3rem);
+      box-sizing: border-box;
+    }
+
+    .outfit-shot {
+      flex: 1 1 0;
+      min-height: 0;
+      width: 100%;
+      object-fit: contain;
+    }
+
+    .outfit-shots.two .outfit-shot.top {
+      flex-grow: 4;
+    }
+
+    .outfit-shots.two .outfit-shot.bottom {
+      flex-grow: 6;
+    }
+
     @media (max-width: 768px) {
       .modal-image.tryon-look {
         max-height: 70vh;
       }
 
-      .outfit-photos {
+      .outfit-photos,
+      .outfit-shots {
         min-height: 300px;
         height: 50vh;
       }
@@ -4275,7 +4316,8 @@
       return 'Her cart has ' + count + (count === 1 ? ' thing' : ' things') + ', $' + total + ' in all.';
     }
 
-    // Read what the agent asked for. Returns { pieces, note, problem }.
+    // Read what the agent asked for. Returns { pieces, note, problem, colors }. `colors` holds
+    // the colors asked for (dress_color, top_color, bottom_color), by piece id.
     function readOutfit(params) {
       params = params || {};
       var asked = [params.dress, params.top, params.bottom].concat(Array.isArray(params.pieces) ? params.pieces : []);
@@ -4305,7 +4347,37 @@
       }
       pieces.sort(function(a, b) { return OUTFIT_ORDER.indexOf(a.category) - OUTFIT_ORDER.indexOf(b.category); });
       var note = typeof params.note === 'string' ? params.note.replace(/\s+/g, ' ').trim().slice(0, 160) : '';
-      return { pieces: pieces, note: note, problem: problem };
+      // a color asked for a piece that is shown. One the piece does not come in is said.
+      var colors = {};
+      [['dress_color', dress], ['top_color', top], ['bottom_color', bottom]].forEach(function(ask) {
+        var said = params[ask[0]], p = ask[1];
+        if (said == null || String(said).trim() === '' || !p || pieces.indexOf(p) === -1) return;
+        var c = findColor(said, p);
+        if (c) colors[p.id] = c;
+        else problem += p.name + ' does not come in ' + String(said).slice(0, 30) + '. ';
+      });
+      return { pieces: pieces, note: note, problem: problem, colors: colors };
+    }
+
+    // The colors an outfit opens in. A piece takes the color asked for it. Otherwise the top,
+    // or the dress, takes its first color, as in the shop, and the bottom the color it is
+    // photographed in, or else the first of its colors that is not the top's, so the two read
+    // as two pieces.
+    var OUTFIT_BOTTOM_COLOR = { 'pleated-skirt': 'white', 'wide-leg-pants': 'city-khaki' };
+    function outfitColors(pieces, asked) {
+      asked = asked || {};
+      var colors = {};
+      var top = pieces.find(function(p) { return p.category !== 'bottoms'; }) || null;
+      if (top) colors[top.id] = asked[top.id] || top.colorways[0];
+      pieces.forEach(function(p) {
+        if (p === top) return;
+        var own = OUTFIT_BOTTOM_COLOR[pieceKey(p)];
+        if (asked[p.id]) colors[p.id] = asked[p.id];
+        else if (!top) colors[p.id] = p.colorways[0];
+        else if (own && p.colorways.indexOf(own) !== -1) colors[p.id] = own;
+        else colors[p.id] = p.colorways.find(function(c) { return c !== colors[top.id]; }) || p.colorways[0];
+      });
+      return colors;
     }
 
     // What the rest of the page may do with the conversation that is up. The chat sets these.
@@ -4675,7 +4747,7 @@
               var shown = asked.pieces.slice().reverse();
               var last = itemsRef.current[itemsRef.current.length - 1];
               var same = last && last.kind === 'pieces' && last.pick && last.pieces.length === shown.length && last.pieces.every(function(p, i) { return p === shown[i]; });
-              if (!same) put({ kind: 'pieces', pieces: shown, pick: true, note: asked.note });
+              if (!same) put({ kind: 'pieces', pieces: shown, pick: true, note: asked.note, colors: outfitColors(asked.pieces, asked.colors) });
             }
             return answer;
           },
@@ -5003,24 +5075,44 @@
     // that is up now: once it is another one, this window has been replaced. The look of an
     // outfit is this window's own: it is made when the outfit is shown, and goes with the
     // window. Only a piece's own look is kept.
-    function OutfitWindow({ outfit, onClose, onView, me, meDo, upRef }) {
+    //
+    // The pieces show on their own, each in a color it comes in, the top over the bottom. A
+    // piece's photo has other clothes in it, and "the pants in midnight" has to show on the
+    // pants. They open in `outfit.colors`. Her taps on a color change them, and so does her
+    // guide's show_piece, through `paint`. The window keeps `outfit.seen.colors` as it shows
+    // them, for her guide. The photos are a tap away.
+    function OutfitWindow({ outfit, paint, onClose, onView, me, meDo, upRef }) {
       var lookKey = 'outfit:' + outfit.n;
       var entry = me.looks[lookKey] || null;
       var look = (entry && entry.image) || null;
       var lookN = look ? (entry.n || 0) : -1;   // which look is showing: it changes with each one made
-      const [showLook, setShowLook] = useState(false);
+      var pieces = outfit.pieces;
+      const [view, setView] = useState('pieces');   // look | pieces | photos
+      const [colors, setColors] = useState(function() { return Object.assign(outfitColors(pieces), outfit.colors); });
+      const [noShot, setNoShot] = useState(false);  // a piece's own picture could not be loaded: the photos stand in
       const [lookCount, setLookCount] = useState(0);
       var contentRef = React.useRef(null);
       var paneRef = React.useRef(null);
-      var pieces = outfit.pieces;
+      if (outfit.seen) outfit.seen.colors = colors;
+
+      // Her guide asked for a piece of this outfit in another color.
+      useEffect(function() {
+        if (!paint || paint.n !== outfit.n) return;
+        setColors(function(now) { return Object.assign({}, now, paint.map); });
+        setView('pieces');
+      }, [paint ? paint.k : 0]);
 
       // A look has come: show it. Or her photo has changed, and the look went with it.
       var lookSeen = React.useRef(-1);
       useEffect(function() {
         if (lookN === lookSeen.current) return;
         lookSeen.current = lookN;
-        setShowLook(lookN >= 0);
-        if (lookN >= 0) setLookCount(function(n) { return n + 1; });
+        if (lookN >= 0) {
+          setView('look');
+          setLookCount(function(n) { return n + 1; });
+        } else {
+          setView(function(v) { return v === 'look' ? 'pieces' : v; });
+        }
       }, [lookN]);
 
       // The window closes: its look goes with it, and one still being made is let go.
@@ -5044,36 +5136,63 @@
           : 'The picture could not be made: ' + words);
       };
 
+      // She taps a color: the piece shows in it.
+      var pick = function(p, cw) {
+        setColors(function(now) { var next = Object.assign({}, now); next[p.id] = cw; return next; });
+        setView('pieces');
+      };
+
       var shown = pieces.slice().reverse(); // read top first, then bottom
       // one photo per piece; two pieces photographed together show that photo once
       var photos = [];
       shown.forEach(function(p) { if (photos.indexOf(p.imageUrl) === -1) photos.push(p.imageUrl); });
       var total = pieces.reduce(function(sum, p) { return sum + p.price; }, 0);
       var names = shown.map(function(p) { return p.name.toLowerCase(); }).join(' and ');
+      var colorOf = function(p) { return colors[p.id] || p.colorways[0]; };
+      var now = (view === 'look' && look) ? 'look' : (view !== 'photos' && !noShot) ? 'pieces' : 'photos';
+      var ways = (look ? [['look', 'my look']] : []).concat(noShot ? [] : [['pieces', 'the pieces']]).concat([['photos', 'photos']]);
+
+      var picture;
+      if (now === 'look') {
+        picture = el('img', { key: 'look', src: look, alt: 'you in ' + names, className: 'modal-image tryon-look' });
+      } else if (now === 'pieces') {
+        picture = el('div', { key: 'shots', className: 'outfit-shots' + (shown.length > 1 ? ' two' : '') }, shown.map(function(p) {
+          return el(PieceShot, { key: p.id, product: p, color: colorOf(p), size: 800, className: 'outfit-shot ' + (p.category === 'bottoms' ? 'bottom' : 'top'), label: p.name.toLowerCase() + ' in ' + colorName(colorOf(p)), onState: function(st) { if (st === 'failed') setNoShot(true); } });
+        }));
+      } else {
+        picture = el('div', { key: 'photos', className: 'outfit-photos' }, photos.map(function(src) {
+          var inIt = shown.filter(function(p) { return p.imageUrl === src; }).map(function(p) { return p.name; }).join(' and ');
+          return el('img', { key: src, src: src, alt: inIt });
+        }));
+      }
 
       return el('div', { className: 'modal-overlay', onClick: function(e) { if (e.target === e.currentTarget) onClose(); } },
         el('div', { className: 'modal-content', ref: contentRef, role: 'dialog', 'aria-label': outfit.by.toLowerCase() + "'s pick" },
           el('button', { className: 'modal-close', onClick: onClose, 'aria-label': 'close' }, '×'),
           el('div', { ref: paneRef, className: 'modal-pane' },
-            (look && showLook)
-              ? el('img', { key: 'look', src: look, alt: 'you in ' + names, className: 'modal-image tryon-look' })
-              : el('div', { key: 'pieces', className: 'outfit-photos' }, photos.map(function(src) {
-                  var inIt = shown.filter(function(p) { return p.imageUrl === src; }).map(function(p) { return p.name; }).join(' and ');
-                  return el('img', { key: src, src: src, alt: inIt });
-                })),
-            look && el('div', { className: 'tryon-view' },
-              el('button', { className: 'tryon-view-btn' + (showLook ? ' active' : ''), 'aria-pressed': showLook, onClick: function() { setShowLook(true); } }, 'my look'),
-              el('button', { className: 'tryon-view-btn' + (!showLook ? ' active' : ''), 'aria-pressed': !showLook, onClick: function() { setShowLook(false); } }, 'the pieces'))),
+            picture,
+            ways.length > 1 && el('div', { className: 'tryon-view' }, ways.map(function(w) {
+              return el('button', { key: w[0], className: 'tryon-view-btn' + (now === w[0] ? ' active' : ''), 'aria-pressed': now === w[0], onClick: function() { setView(w[0]); } }, w[1]);
+            }))),
           el('div', { className: 'modal-details' },
             el('div', null,
               el('div', { className: 'outfit-by' }, outfit.by.toLowerCase() + "'s pick"),
               outfit.note && el('div', { className: 'outfit-note' }, outfit.note)),
             el('div', { className: 'outfit-pieces' },
               shown.map(function(p) {
-                return el('div', { key: p.id, className: 'outfit-piece' },
-                  el('span', { className: 'outfit-piece-name' }, p.name),
-                  el('span', { className: 'outfit-piece-price' }, '$' + p.price),
-                  el('button', { className: 'tryon-link', onClick: function() { onView(p); } }, 'view'));
+                var on = colorOf(p);
+                return el('div', { key: p.id, className: 'outfit-piece', 'data-piece': pieceKey(p) },
+                  el('div', { className: 'outfit-piece-line' },
+                    el('span', { className: 'outfit-piece-name' }, p.name),
+                    el('span', { className: 'outfit-piece-price' }, '$' + p.price),
+                    el('button', { className: 'tryon-link', onClick: function() { onView(p, colorOf(p)); } }, 'view')),
+                  el('div', { className: 'outfit-piece-colors guide-piece-colors', role: 'group', 'aria-label': 'color of ' + p.name.toLowerCase() },
+                    p.colorways.map(function(cw) {
+                      var c = COLORWAYS.find(function(x) { return x.id === cw; });
+                      if (!c) return null;
+                      return el('button', { key: cw, className: 'guide-color' + (on === cw ? ' selected' : ''), style: { backgroundColor: c.hex }, title: c.name.toLowerCase(), 'aria-label': c.name.toLowerCase(), 'aria-pressed': on === cw, onClick: function() { pick(p, cw); } });
+                    }),
+                    el('span', { className: 'guide-color-name' }, colorName(on))));
               }),
               pieces.length > 1 && el('div', { className: 'outfit-total' }, el('span', null, 'together'), el('span', null, '$' + total))),
             el(TryOn, { pieces: pieces, lookKey: lookKey, me: me, meDo: meDo, startOpen: true, autoGo: outfit.auto ? outfit.n : 0, onDone: handleDone, lookRef: outfit.look }))));
@@ -5183,7 +5302,8 @@
     // a pointer comes over her. `wait` is how long after the page opens, in ms: Quinn starts
     // a little after Piper.
     // still: her picture. clip: her walking up and waving, with no sound. hello: her saying hello,
-    // with her voice, played only on a tap. says: her words, shown while she says them.
+    // with her voice, played only on a tap. With less motion it is her voice alone, from a small
+    // mp3 of its own. says: her words, shown while she says them.
     // talk: her talking, with no sound, shown while she speaks in a voice call. It opens on the
     // still and ends on it. From `from` to `to`, in seconds, she is talking: while she speaks the
     // clip goes round between the two, and when she stops it plays on from `to`, back to how
@@ -5376,11 +5496,15 @@
             onPlaying: function() { setLive(true); }, onEnded: function() { setLive(false); }, onPause: function() { setLive(false); } },
           el('source', { src: fig.clip + '.mp4', type: 'video/mp4' }),
           el('source', { src: fig.clip + '.webm', type: 'video/webm' })),
-        fig.hello && el('video', { ref: sayRef, className: 'home-say', playsInline: true, preload: 'none', tabIndex: -1, 'aria-hidden': 'true', disablePictureInPicture: true,
+        fig.hello && moves && el('video', { ref: sayRef, className: 'home-say', playsInline: true, preload: 'none', tabIndex: -1, 'aria-hidden': 'true', disablePictureInPicture: true,
             onPlaying: function() { setShown(true); }, onEnded: onSaid, onPause: onSaid },
           el('source', { src: fig.hello + '.mp4', type: 'video/mp4' }),
           // when the last file fails too, the browser waits for ever and tells nobody but this
           el('source', { src: fig.hello + '.webm', type: 'video/webm', onError: onStuck })),
+        // less motion: her voice alone, not the whole clip for its sound
+        fig.hello && !moves && el('audio', { ref: sayRef, className: 'home-say', preload: 'none', 'aria-hidden': 'true',
+            onPlaying: function() { setShown(true); }, onEnded: onSaid, onPause: onSaid },
+          el('source', { src: fig.hello + '.mp3', type: 'audio/mpeg', onError: onStuck })),
         moves && fig.talk && el('video', { ref: talkRef, className: 'home-talk', muted: true, playsInline: true, preload: 'none', tabIndex: -1, 'aria-hidden': 'true', disablePictureInPicture: true,
             onPlaying: function() { setTalking(true); }, onPause: function() { setTalking(false); }, onEnded: talked },
           el('source', { src: fig.talk.clip + '.mp4', type: 'video/mp4' }),
@@ -5406,7 +5530,7 @@
       useEffect(function() {
         return function() { near(false); };
       }, []);
-      var hellos = React.useRef({});                // each sister's hello: the <video> itself
+      var hellos = React.useRef({});                // each sister's hello: the <video> itself, or with less motion the <audio>
       var talkingNow = React.useRef(null);
       talkingNow.current = talking;
       var hushed = React.useRef({});                // a hello the page itself stopped: that is no trouble
@@ -5971,6 +6095,35 @@
       return new Blob([buf], { type: 'image/png' });
     }
 
+    // How many times she has sent a combo from this device: the idea box counts everyone's
+    // sends, hers among them. Kept in localStorage, and in the page for this visit if that cannot
+    // be written. A combo is what the idea box counts by: piece, color, print and print color.
+    var studioSentHere = {};
+    function studioCombo(idea) {
+      return [idea.piece, idea.color, idea.print, idea.ink || '-'].join('/');
+    }
+    function studioMine(combo) {
+      var kept = 0;
+      try { kept = Number((JSON.parse(window.localStorage.getItem('pq-sent') || '{}') || {})[combo]) || 0; } catch (e) {}
+      return Math.max(kept, studioSentHere[combo] || 0);
+    }
+    function studioMineAdd(combo) {
+      var n = studioMine(combo) + 1;
+      studioSentHere[combo] = n;
+      try {
+        var all = JSON.parse(window.localStorage.getItem('pq-sent') || '{}') || {};
+        all[combo] = n;
+        window.localStorage.setItem('pq-sent', JSON.stringify(all));
+      } catch (e) {}
+    }
+    // What she is told about the others who sent it: `same` from the idea box, less her own.
+    function studioSameWords(same, mine) {
+      var others = Math.max(0, same - mine);
+      if (!others) return mine ? "you're still the only one to send this combo." : "you're the first to send this combo.";
+      if (!mine) return 'this combo has been sent ' + others + (others === 1 ? ' time' : ' times') + ' before.';
+      return others === 1 ? 'someone else has sent this combo once.' : 'others have sent this combo ' + others + ' times.';
+    }
+
     // Send a design to the idea box. Settles with { ok: true, same } or { ok: false, message }.
     // It never rejects. `same` is how many times that design had been sent before.
     function studioSend(idea) {
@@ -6044,16 +6197,20 @@
         var mine = whole;
         setSending('sending');
         setNote({ text: '', bad: false });
-        studioSend({ piece: design.piece, color: design.color, print: design.print, ink: print ? design.ink : '', name: design.name, note: design.note }).then(function(out) {
-          if (!aliveRef.current) return;
+        var idea = { piece: design.piece, color: design.color, print: design.print, ink: print ? design.ink : '', name: design.name, note: design.note };
+        studioSend(idea).then(function(out) {
           if (!out.ok) {
+            if (!aliveRef.current) return;
             setSending('failed');
             setNote({ text: out.message, bad: true });
             return;
           }
+          var combo = studioCombo(idea), before = studioMine(combo);
+          studioMineAdd(combo);   // kept even if she has left the studio: it is in the idea box
+          if (!aliveRef.current) return;
           sentRef.current = mine;
           setSending('sent');
-          setNote({ text: "sent. it's in piper & quinn's idea box. " + (out.same === 0 ? "you're the first to send this combo." : 'this combo has been sent ' + out.same + (out.same === 1 ? ' time' : ' times') + ' before.'), bad: false });
+          setNote({ text: "sent. it's in piper & quinn's idea box. " + studioSameWords(out.same, before), bad: false });
           tellCrew('She sent her studio design to the idea box: ' + studioSays(design) + '.');
         });
       };
@@ -6330,6 +6487,7 @@
       const [guideIdx, setGuideIdx] = useState(first.zone);     // her guide: with her on every page until she picks another or closes the chat
       const [voice, setVoice] = useState(null);                 // the voice call with her guide: 'starting', 'listening' or 'speaking'. null: none
       const [outfit, setOutfit] = useState(null);
+      const [outfitPaint, setOutfitPaint] = useState(null);     // her guide's colors for the outfit that is up: { n, map, k }
       const [design, setDesign] = useState(STUDIO_START);        // what she has made in the studio: it stays as she goes from page to page
       var freeLooksRef = React.useRef(0);
 
@@ -6624,6 +6782,15 @@
         setOutfit(null);
       };
 
+      // Her guide named a color for a piece of the outfit that is up. `map`: { piece id: color }.
+      var paintCount = React.useRef(0);
+      var recolorOutfit = function(map) {
+        var up = outfitRef.current;
+        if (!up) return;
+        if (up.seen) up.seen.colors = Object.assign({}, up.seen.colors, map);   // a new object: the window's own is its state
+        setOutfitPaint({ n: up.n, map: map, k: ++paintCount.current });
+      };
+
       var underWay = function(look) { return !!look && (look.current === 'making' || look.current === 'reading'); };
 
       // What she is trying on right now, in words: a picture is being made, or she is choosing
@@ -6650,9 +6817,10 @@
       };
 
       // She opened a piece herself: from the shop, a zone, an outfit, or a card in the chat.
-      var viewPiece = function(product) {
+      // From an outfit, `color` is the color the piece shows in there.
+      var viewPiece = function(product, color) {
         if (pieceRef.current && pieceRef.current.product === product) return;
-        openPiece(product);
+        openPiece(product, typeof color === 'string' && product.colorways.indexOf(color) !== -1 ? color : null);
         tellCrew('She opened ' + product.name + ' on her screen.');
       };
 
@@ -6704,7 +6872,21 @@
         if (up && underWay(up.look)) {
           return { say: notIn + 'She is in the middle of trying on ' + up.product.name + ', so her screen was left as it is. ' + p.name + ' is in the chat for her to open.', piece: p, color: color };
         }
-        var opened = openPiece(p, color);
+        // A piece of the outfit that is up shows in its color there, and opens in it.
+        var fit = outfitRef.current;
+        var fitColor = fit && fit.pieces.indexOf(p) !== -1 && fit.seen && fit.seen.colors ? fit.seen.colors[p.id] || null : null;
+        // With nothing in front of the outfit, a color named for one of its pieces goes on that
+        // piece, so she sees it with the rest.
+        if (!up && fitColor && asked) {
+          foldCrewChat();
+          if (!color) return { say: notIn + 'In the outfit on her screen, ' + p.name + ' is in ' + colorName(fitColor) + '. ' + comes, piece: p, color: null };
+          if (color === fitColor) return { say: 'In the outfit on her screen, ' + p.name + ' is already in ' + colorName(color) + '. ' + comes, piece: p, color: color };
+          var map = {};
+          map[p.id] = color;
+          recolorOutfit(map);
+          return { say: 'In the outfit on her screen, ' + p.name + ' is now in ' + colorName(color) + '. ' + comes, piece: p, color: color };
+        }
+        var opened = openPiece(p, color || fitColor);
         foldCrewChat();
         return { say: notIn + 'On her screen now: ' + p.name + ' ($' + p.price + '), in ' + colorName(opened.seen.color) + '. ' + comes, piece: p, color: color };
       };
@@ -6836,7 +7018,15 @@
         if (same && !(auto && up.look.current === 'none' && !inFront)) {
           foldCrewChat();
           var how = up.look.current;
-          var there = 'That outfit is already on her screen. ';
+          // colors asked for that it does not show yet go on its pieces
+          var seen = (up.seen && up.seen.colors) || {};
+          var redo = asked.pieces.filter(function(p) { return asked.colors[p.id] && asked.colors[p.id] !== seen[p.id]; });
+          if (redo.length) {
+            var map = {};
+            redo.forEach(function(p) { map[p.id] = asked.colors[p.id]; });
+            recolorOutfit(map);
+          }
+          var there = 'That outfit is already on her screen' + (redo.length ? ', now with ' + redo.slice().reverse().map(function(p) { return p.name + ' in ' + colorName(asked.colors[p.id]); }).join(' and ') : '') + '. ';
           if (inFront) there += 'She has ' + inFront.name + ' open in front of it. ';
           if (how === 'made') there += 'The picture of it on her is made. ';
           else if (how === 'making') there += 'The page is still making the picture of it on her. ';
@@ -6850,13 +7040,14 @@
           return asked.problem + 'She is in the middle of trying on ' + inFront.name + ', so her screen was left as it is. Offer the outfit again when her picture is done.';
         }
         if (auto) freeLooksRef.current += 1;
-        var next = { pieces: asked.pieces, note: asked.note, by: member.name, auto: auto, n: Date.now() + Math.random(), look: { current: auto ? 'making' : 'none' } };
+        var colors = outfitColors(asked.pieces, asked.colors);
+        var next = { pieces: asked.pieces, note: asked.note, by: member.name, auto: auto, n: Date.now() + Math.random(), look: { current: auto ? 'making' : 'none' }, colors: colors, seen: { colors: Object.assign({}, colors) } };
         outfitRef.current = next;
         closePiece();
         setOutfit(next);
         foldCrewChat();
         var total = shown.reduce(function(sum, p) { return sum + p.price; }, 0);
-        var said = 'On her screen now: ' + shown.map(function(p) { return p.name + ' ($' + p.price + ')'; }).join(' with ') + (two ? ', $' + total + ' together. ' : '. ');
+        var said = 'On her screen now: ' + shown.map(function(p) { return p.name + ' ($' + p.price + ') in ' + colorName(colors[p.id]); }).join(' with ') + (two ? ', $' + total + ' together. ' : '. ');
         if (auto) said += 'Her photo is in, so the page is putting ' + (two ? 'the outfit' : 'it') + ' on her. That takes about ' + (two ? 'half a minute' : '15 seconds') + '. You cannot see the picture.';
         else if (hasPhoto) said += 'Her photo is in. She can tap "see it on me" to try it on.';
         else said += 'She has not added a photo. She can tap "choose a photo" to see it on her.';
@@ -6869,7 +7060,10 @@
         var said = 'She is on ' + (zone ? zone.name + "'s page, with " + zone.name + "'s picks" : PAGE_WORDS[pageRef.current] || 'the site') + '. ';
         if (pageRef.current === 'studio') said += 'Her design there: ' + designNow() + '. ';
         if (pieceRef.current) said += pieceRef.current.product.name + ' is open on her screen. ';
-        else if (outfitRef.current) said += 'An outfit is open on her screen: ' + outfitRef.current.pieces.slice().reverse().map(function(p) { return p.name; }).join(' with ') + '. ';
+        else if (outfitRef.current) {
+          var seenColors = (outfitRef.current.seen && outfitRef.current.seen.colors) || {};
+          said += 'An outfit is open on her screen: ' + outfitRef.current.pieces.slice().reverse().map(function(p) { return p.name + (seenColors[p.id] ? ' in ' + colorName(seenColors[p.id]) : ''); }).join(' with ') + '. ';
+        }
         return said + cartWords(cartRef.current);
       };
 
@@ -6989,7 +7183,7 @@
             currentPage === 'team' && el(TeamPage, { onSelectCrewMember: handleSelectCrewMember }),
             currentPage === 'cart' && el(CartPage, { cart: cart, setCart: putCart }),
             el(Footer, { navigateTo: navigateTo })),
-          outfit && el(OutfitWindow, { key: outfit.n, outfit: outfit, onClose: closeOutfit, onView: viewPiece, me: me, meDo: meDo, upRef: outfitRef }),
+          outfit && el(OutfitWindow, { key: outfit.n, outfit: outfit, paint: outfitPaint, onClose: closeOutfit, onView: viewPiece, me: me, meDo: meDo, upRef: outfitRef }),
           piece && el(ProductDetail, {
             key: piece.n,
             ask: piece,
