@@ -1,0 +1,7 @@
+# Every address on the site. Files are taken as the type they are served as. A link to another
+# site says only which site it came from. The page itself may use the camera ("take a photo")
+# and the microphone (the guides' calls), and nothing on the site may ask where she is.
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(self), microphone=(self), geolocation=()
